@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WORD DROP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #0a1628;
+            --gold: #FFD700;
+            --green: #00FF88;
+            --red: #FF4444;
+            --cyan: #00BFFF;
+            --white: #E8E8E8;
+            --gray: #8899aa;
+        }
+        
+        html, body {
+            overflow-x: hidden;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--white);
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 50%, #0a1628 100%);
+        }
+        .bg-grid::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 200%; height: 200%;
+            background-image: linear-gradient(rgba(0,191,255,0.07) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0,191,255,0.07) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove { 0% { transform: translate(0,0); } 100% { transform: translate(-50px,-50px); } }
+
+        /* PERFORMANCE: pause heavy background animation until the game actually starts */
+        body:not(.game-started) .bg-grid::before { animation-play-state: paused; }
+
+        
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 3px);
+        }
+
+        .container {
+            max-width: 100%;
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        /* MENU */
+        .menu-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .menu-screen h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 3px 3px 0 #8B0000, 0 0 30px rgba(255,215,0,0.5);
+            margin-bottom: 30px;
+        }
+
+        .aulas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .aula-card {
+            background: linear-gradient(180deg, rgba(20,40,80,0.95), rgba(10,22,40,0.98));
+            border: 2px solid var(--cyan);
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .aula-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(255,215,0,0.4);
+        }
+        .aula-card .emoji { font-size: 2.5rem; margin-bottom: 10px; }
+        .aula-card .name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        /* GAME */
+        .game-screen {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .game-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin-bottom: 5px;
+        }
+
+        .hud {
+            display: flex;
+            justify-content: space-around;
+            padding: 12px;
+            background: linear-gradient(180deg, rgba(20,40,80,0.95), rgba(10,22,40,0.98));
+            border: 2px solid #CC4444;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        .hud-item {
+            text-align: center;
+        }
+        .hud-label {
+            font-size: 0.65rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .hud-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid #CC4444;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan), var(--green));
+            transition: width 0.3s;
+        }
+
+        .arena {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            border: 3px solid #CC4444;
+            background: linear-gradient(180deg, rgba(10,22,40,0.6), rgba(20,40,80,0.4));
+            overflow: hidden;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .game-block {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .block-box {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(180deg, rgba(20,40,80,0.95), rgba(10,22,40,0.98));
+            border: 2px solid var(--cyan);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .game-block.selected .block-box {
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 20px rgba(255,215,0,0.8);
+        }
+
+        .block-aura {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 3px solid var(--gold);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 0 30px rgba(255,215,0,0.6);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .game-block.selected .block-aura {
+            opacity: 1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+        }
+
+        /* COMBO AURA */
+        .combo-aura {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 5;
+            box-shadow: 0 0 50px rgba(255,215,0,0.6);
+            opacity: 0;
+        }
+        @keyframes comboAuraPulse {
+            0% { 
+                width: 100px;
+                height: 100px;
+                opacity: 0;
+                box-shadow: 0 0 50px rgba(255,215,0,0.6);
+            }
+            50% { 
+                opacity: 1;
+                box-shadow: 0 0 100px rgba(255,215,0,0.8);
+            }
+            100% { 
+                width: 400px;
+                height: 400px;
+                opacity: 0;
+                box-shadow: 0 0 150px rgba(255,215,0,0.3);
+            }
+        }
+        .combo-aura.active {
+            animation: comboAuraPulse 0.8s ease-out forwards;
+        }
+
+        /* PARTÍCULAS */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 6;
+        }
+        @keyframes particleFloat {
+            to {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+        .particle.falling {
+            animation: particleFloat 0.8s ease-out forwards;
+        }
+
+        /* SHAKE */
+        @keyframes arenaShake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            10% { transform: translate(-3px, -3px) rotate(-0.5deg); }
+            20% { transform: translate(3px, -3px) rotate(0.5deg); }
+            30% { transform: translate(-3px, 3px) rotate(-0.5deg); }
+            40% { transform: translate(3px, 3px) rotate(0.5deg); }
+            50% { transform: translate(-2px, -2px) rotate(-0.3deg); }
+            60% { transform: translate(2px, -2px) rotate(0.3deg); }
+            70% { transform: translate(-2px, 2px) rotate(-0.3deg); }
+            80% { transform: translate(2px, 2px) rotate(0.3deg); }
+            90% { transform: translate(-1px, 0) rotate(0deg); }
+        }
+        .arena.shake {
+            animation: arenaShake 0.4s ease-in-out;
+        }
+
+        .block-hint {
+            font-size: 1rem;
+            color: var(--gold);
+            background: rgba(10,22,40,0.95);
+            border: 2px solid var(--gold);
+            padding: 6px 10px;
+            border-radius: 6px;
+            max-width: 140px;
+            text-align: center;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .option-btn {
+            padding: 12px 8px;
+            background: linear-gradient(180deg, rgba(20,40,80,0.95), rgba(10,22,40,0.98));
+            border: 2px solid var(--cyan);
+            color: var(--white);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .option-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 15px rgba(255,215,0,0.4);
+        }
+        .option-btn.correct {
+            border-color: var(--green);
+            color: var(--green);
+            box-shadow: 0 0 20px rgba(0,255,136,0.7);
+        }
+        .option-btn.wrong {
+            border-color: var(--red);
+            color: var(--red);
+            box-shadow: 0 0 20px rgba(255,68,68,0.7);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .btn-start {
+            background: linear-gradient(180deg, #FFE566, #FFD700);
+            color: #000;
+        }
+        .btn-start:hover {
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+        .btn-menu {
+            background: linear-gradient(180deg, #9B6DFF, #6B4DBB);
+            color: #fff;
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            min-height: 20px;
+            color: var(--gray);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            right: 0; bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-box {
+            background: linear-gradient(180deg, #1a2a4a, #0a1628);
+            border: 4px solid var(--gold);
+            padding: 30px;
+            max-width: 350px;
+            text-align: center;
+            border-radius: 15px;
+        }
+        .modal-icon { font-size: 3rem; margin-bottom: 15px; }
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        .modal-stats {
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .modal-stat {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 0.9rem;
+        }
+        .modal-stat-label { color: var(--cyan); }
+        .modal-stat-value { color: var(--gold); font-weight: 700; }
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .modal-btn-primary {
+            background: linear-gradient(180deg, #FFE566, #FFD700);
+            color: #000;
+        }
+    
+
+/* === UNLOCK 2026 Shared App Bar === */
+:root{--unlock-bar-h:58px;}
+body{padding-top:var(--unlock-bar-h);}
+.unlock-appbar{
+  position:fixed; top:0; left:0; right:0; height:var(--unlock-bar-h);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 14px;
+  background:rgba(10,22,40,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  z-index:99999;
+}
+.unlock-appbar .left a{
+  display:inline-flex; align-items:center; gap:8px;
+  text-decoration:none; font-weight:800;
+  color: var(--green, #00FF88);
+  letter-spacing: .2px;
+}
+.unlock-appbar .center{
+  font-family:'Orbitron', system-ui, sans-serif;
+  font-weight:900;
+  letter-spacing:1px;
+  color: var(--gold, #FFD700);
+  font-size:14px;
+}
+.unlock-appbar .right{
+  color: var(--gray, #8899aa);
+  font-weight:700;
+  font-size:12px;
+}
+.unlock-appbar .pill{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 10px;
+  border:1px solid rgba(0,255,136,0.35);
+  border-radius:999px;
+  background:rgba(17,31,61,0.7);
+}
+@media (max-width:420px){
+  .unlock-appbar{padding:0 10px;}
+  .unlock-appbar .center{display:none;}
+}
+
+</style>
+</head>
+<body>
+
+  <!-- UNLOCK 2026 shared top bar -->
+  <div class="unlock-appbar">
+    <div class="left">
+      <a href="../index.html" aria-label="Back to menu">⬅ <span>Menu</span></a>
+    </div>
+    <div class="center">UNLOCK 2026</div>
+    <div class="right">
+      <span class="pill"><span data-unlock-streak>🔥 0</span><span style="opacity:.6">•</span> 🟡 Word Drop</span>
+    </div>
+  </div>
+
+    <div class="bg-grid"></div>
+    <div class="scanlines"></div>
+    <div class="combo-aura" id="comboAura"></div>
+
+    <div class="container">
+        <!-- MENU -->
+        <div class="screen menu-screen active" id="menuScreen">
+            <h1>🎮 WORD DROP</h1>
+            <div class="aulas-grid" id="aulasGrid"></div>
+        </div>
+
+        <!-- DIFICULDADE -->
+        <div class="screen menu-screen" id="difficultyScreen" style="display: none;">
+            <h1>⚡ ESCOLHA A DIFICULDADE</h1>
+            <div class="aulas-grid" style="margin-top: 40px;">
+                <div class="aula-card" onclick="startGameWithDifficulty('easy')">
+                    <div class="emoji">🟢</div>
+                    <div class="name">FÁCIL</div>
+                    <div class="status" style="font-size: 0.75rem; margin-top: 8px;">Spawn: 2.5s<br>❤️❤️❤️❤️❤️</div>
+                </div>
+                <div class="aula-card" onclick="startGameWithDifficulty('normal')">
+                    <div class="emoji">🟡</div>
+                    <div class="name">NORMAL</div>
+                    <div class="status" style="font-size: 0.75rem; margin-top: 8px;">Spawn: 1.7s<br>❤️❤️❤️</div>
+                </div>
+                <div class="aula-card" onclick="startGameWithDifficulty('hard')">
+                    <div class="emoji">🔴</div>
+                    <div class="name">DIFÍCIL</div>
+                    <div class="status" style="font-size: 0.75rem; margin-top: 8px;">Spawn: 1.1s<br>❤️❤️</div>
+                </div>
+            </div>
+            <button class="btn btn-menu" onclick="showScreen('menu')" style="margin-top: 30px; max-width: 200px; margin-left: auto; margin-right: auto;">← VOLTAR</button>
+        </div>
+
+        <!-- GAME -->
+        <div class="screen game-screen" id="gameScreen">
+            <div class="game-header">
+                <h1 id="gameTitle">SELECT A LESSON</h1>
+            </div>
+
+            <div class="hud">
+                <div class="hud-item">
+                    <div class="hud-label">Score</div>
+                    <div class="hud-value" id="hudScore">0</div>
+                </div>
+                <div class="hud-item">
+                    <div class="hud-label">Vidas</div>
+                    <div class="hud-value" id="hudLives">❤️❤️❤️</div>
+                </div>
+                <div class="hud-item">
+                    <div class="hud-label">Acertos</div>
+                    <div class="hud-value" id="hudCorrect">0/30</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+
+            <div class="arena" id="gameArena"></div>
+
+            <div class="options" id="gameOptions"></div>
+
+            <div class="controls">
+                <button class="btn btn-start" id="gameStartBtn">INICIAR</button>
+                <button class="btn btn-menu" id="gameMenuBtn">MENU</button>
+            </div>
+
+            <div class="feedback" id="gameFeedback"></div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal" id="winModal">
+        <div class="modal-box">
+            <div class="modal-icon">🎉</div>
+            <div class="modal-title">PARABÉNS!</div>
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Score Final</span>
+                    <span class="modal-stat-value" id="winScore">0</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Acertos</span>
+                    <span class="modal-stat-value" id="winCorrect">0/30</span>
+                </div>
+            </div>
+            <button class="modal-btn modal-btn-primary" id="winMenuBtn">VOLTAR</button>
+        </div>
+    </div>
+
+    <div class="modal" id="loseModal">
+        <div class="modal-box">
+            <div class="modal-icon">💀</div>
+            <div class="modal-title">GAME OVER</div>
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Score Final</span>
+                    <span class="modal-stat-value" id="loseScore">0</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Acertos</span>
+                    <span class="modal-stat-value" id="loseCorrect">0/30</span>
+                </div>
+            </div>
+            <button class="modal-btn modal-btn-primary" id="loseRetryBtn">TENTAR NOVAMENTE</button>
+            <button class="modal-btn modal-btn-primary" id="loseMenuBtn">MENU</button>
+        </div>
+    </div>
+
+    <script>
+        const AULAS = [
+            {
+                id: 1,
+                title: "IS / ARE",
+                emoji: "🔵🟢",
+                words: [
+                    { emoji: '😊', pt: 'ele está feliz', en: ['he is happy'] },
+                    { emoji: '😢', pt: 'ela está triste', en: ['she is sad'] },
+                    { emoji: '⏰', pt: 'você está atrasado', en: ['you are late'] },
+                    { emoji: '✅', pt: 'eles estão prontos', en: ['they are ready'] },
+                    { emoji: '🏠', pt: 'a loja está fechada', en: ['the store is closed'] },
+                    { emoji: '🇧🇷', pt: 'nós estamos aqui', en: ['we are here'] },
+                    { emoji: '😴', pt: 'ele não está acordado', en: ['he is not awake'] },
+                    { emoji: '❓', pt: 'você está bem?', en: ['are you okay'] },
+                    { emoji: '😤', pt: 'ela está brava', en: ['she is angry'] },
+                    { emoji: '🎉', pt: 'eles não estão cansados', en: ['they are not tired'] },
+                    { emoji: '🏋️', pt: 'eu estou forte', en: ['i am strong'] },
+                    { emoji: '🤔', pt: 'você está confuso?', en: ['are you confused'] },
+                    { emoji: '💪', pt: 'nós somos fortes', en: ['we are strong'] },
+                    { emoji: '👨', pt: 'ele é um professor', en: ['he is a teacher'] },
+                    { emoji: '📚', pt: 'vocês estão estudando', en: ['you are studying'] },
+                    { emoji: '🚗', pt: 'o carro não está aqui', en: ['the car is not here'] },
+                    { emoji: '🌟', pt: 'elas são incríveis', en: ['they are amazing'] },
+                    { emoji: '🏆', pt: 'você é o melhor', en: ['you are the best'] },
+                    { emoji: '🎯', pt: 'ele está focado', en: ['he is focused'] },
+                    { emoji: '🌈', pt: 'o dia está bonito', en: ['the day is beautiful'] },
+                    { emoji: '❄️', pt: 'está muito frio', en: ['it is very cold'] },
+                    { emoji: '🔥', pt: 'está muito quente', en: ['it is very hot'] },
+                    { emoji: '🌧️', pt: 'está chovendo', en: ['it is raining'] },
+                    { emoji: '😳', pt: 'você está surpreso?', en: ['are you surprised'] },
+                    { emoji: '🤐', pt: 'eles estão em silêncio', en: ['they are quiet'] },
+                    { emoji: '🎵', pt: 'a música está boa', en: ['the music is good'] },
+                    { emoji: '📱', pt: 'o telefone está carregando', en: ['the phone is charging'] },
+                    { emoji: '🍽️', pt: 'a comida está deliciosa', en: ['the food is delicious'] },
+                    { emoji: '💤', pt: 'eu estou com sono', en: ['i am sleepy'] },
+                    { emoji: '🎓', pt: 'você está aprendendo', en: ['you are learning'] }
+                ]
+            },
+            {
+                id: 2,
+                title: "NUMBERS",
+                emoji: "🔢",
+                words: [
+                    { emoji: '1️⃣', pt: 'um', en: ['one'] },
+                    { emoji: '2️⃣', pt: 'dois', en: ['two'] },
+                    { emoji: '3️⃣', pt: 'três', en: ['three'] },
+                    { emoji: '4️⃣', pt: 'quatro', en: ['four'] },
+                    { emoji: '5️⃣', pt: 'cinco', en: ['five'] },
+                    { emoji: '6️⃣', pt: 'seis', en: ['six'] },
+                    { emoji: '7️⃣', pt: 'sete', en: ['seven'] },
+                    { emoji: '8️⃣', pt: 'oito', en: ['eight'] },
+                    { emoji: '9️⃣', pt: 'nove', en: ['nine'] },
+                    { emoji: '🔟', pt: 'dez', en: ['ten'] },
+                    { emoji: '1️⃣1️⃣', pt: 'onze', en: ['eleven'] },
+                    { emoji: '1️⃣2️⃣', pt: 'doze', en: ['twelve'] },
+                    { emoji: '1️⃣5️⃣', pt: 'quinze', en: ['fifteen'] },
+                    { emoji: '2️⃣0️⃣', pt: 'vinte', en: ['twenty'] },
+                    { emoji: '3️⃣0️⃣', pt: 'trinta', en: ['thirty'] },
+                    { emoji: '4️⃣0️⃣', pt: 'quarenta', en: ['forty'] },
+                    { emoji: '5️⃣0️⃣', pt: 'cinquenta', en: ['fifty'] },
+                    { emoji: '6️⃣0️⃣', pt: 'sessenta', en: ['sixty'] },
+                    { emoji: '7️⃣0️⃣', pt: 'setenta', en: ['seventy'] },
+                    { emoji: '8️⃣0️⃣', pt: 'oitenta', en: ['eighty'] },
+                    { emoji: '9️⃣0️⃣', pt: 'noventa', en: ['ninety'] },
+                    { emoji: '💯', pt: 'cem', en: ['hundred'] },
+                    { emoji: '🔢', pt: 'vinte e um', en: ['twenty-one'] },
+                    { emoji: '🔢', pt: 'trinta e cinco', en: ['thirty-five'] },
+                    { emoji: '🔢', pt: 'quarenta e sete', en: ['forty-seven'] },
+                    { emoji: '🔢', pt: 'noventa e nove', en: ['ninety-nine'] },
+                    { emoji: '🔢', pt: 'cento e vinte', en: ['one hundred twenty'] },
+                    { emoji: '💰', pt: 'duzentos', en: ['two hundred'] },
+                    { emoji: '📊', pt: 'mil', en: ['thousand'] },
+                    { emoji: '🎰', pt: 'um milhão', en: ['one million'] }
+                ]
+            }
+        
+        ,
+        {
+            id: 3,
+            title: "DO YOU HAVE",
+            emoji: "🤲❓",
+            words: [
+                { emoji: "🧃", pt: "você tem suco?", en: ["do you have juice?"] },
+                { emoji: "💳", pt: "você tem cartão?", en: ["do you have a card?"] },
+                { emoji: "📱", pt: "você tem celular?", en: ["do you have a phone?"] },
+                { emoji: "🚽", pt: "tem banheiro?", en: ["do you have a bathroom?"] },
+                { emoji: "🧾", pt: "você tem recibo?", en: ["do you have a receipt?"] },
+                { emoji: "🍕", pt: "tem pizza?", en: ["do you have pizza?"] },
+                { emoji: "🪪", pt: "você tem documento?", en: ["do you have an ID?"] },
+                { emoji: "🛜", pt: "tem wi-fi?", en: ["do you have wi-fi?"] },
+                { emoji: "💊", pt: "tem remédio?", en: ["do you have medicine?"] },
+                { emoji: "👶", pt: "tem cadeirinha?", en: ["do you have a baby seat?"] },
+                { emoji: "🧂", pt: "tem sal?", en: ["do you have salt?"] },
+                { emoji: "🧊", pt: "tem gelo?", en: ["do you have ice?"] },
+                { emoji: "🥤", pt: "tem refrigerante?", en: ["do you have soda?"] },
+                { emoji: "☕", pt: "tem café?", en: ["do you have coffee?"] },
+                { emoji: "🍺", pt: "tem cerveja?", en: ["do you have beer?"] },
+                { emoji: "🪑", pt: "tem cadeira?", en: ["do you have a chair?"] },
+                { emoji: "🕒", pt: "você tem tempo?", en: ["do you have time?"] },
+                { emoji: "📄", pt: "você tem formulário?", en: ["do you have a form?"] },
+                { emoji: "🖊️", pt: "você tem caneta?", en: ["do you have a pen?"] },
+                { emoji: "💼", pt: "você tem experiência?", en: ["do you have experience?"] },
+                { emoji: "🛏️", pt: "tem quarto?", en: ["do you have a room?"] },
+                { emoji: "🚗", pt: "você tem carro?", en: ["do you have a car?"] },
+                { emoji: "🧑‍⚕️", pt: "tem médico?", en: ["do you have a doctor?"] },
+                { emoji: "📅", pt: "você tem horário?", en: ["do you have an appointment?"] },
+                { emoji: "🧑‍🔧", pt: "tem mecânico?", en: ["do you have a mechanic?"] },
+                { emoji: "🏧", pt: "tem caixa eletrônico?", en: ["do you have an ATM?"] },
+                { emoji: "🧼", pt: "tem sabonete?", en: ["do you have soap?"] },
+                { emoji: "🧻", pt: "tem papel higiênico?", en: ["do you have toilet paper?"] },
+                { emoji: "🧯", pt: "tem extintor?", en: ["do you have a fire extinguisher?"] },
+                { emoji: "📦", pt: "você tem entrega?", en: ["do you have delivery?"] }
+            ]
+        }
+
+        
+        ,
+        {
+            id: 4,
+            title: "GET",
+            emoji: "🤲✨",
+            words: [
+                { emoji:"📦", pt:"pegar o pacote", en:["get the package"] },
+                { emoji:"☕", pt:"pegar café", en:["get coffee"] },
+                { emoji:"📞", pt:"atender o telefone", en:["get the phone"] },
+                { emoji:"🎟️", pt:"conseguir ingresso", en:["get a ticket"] },
+                { emoji:"💼", pt:"conseguir emprego", en:["get a job"] },
+                { emoji:"🏠", pt:"chegar em casa", en:["get home"] },
+                { emoji:"🤒", pt:"ficar doente", en:["get sick"] },
+                { emoji:"😡", pt:"ficar bravo", en:["get angry"] },
+                { emoji:"🧠", pt:"entender", en:["get it"] },
+                { emoji:"🛍️", pt:"comprar algo", en:["get something"] },
+                { emoji:"🚗", pt:"pegar o carro", en:["get the car"] },
+                { emoji:"🧾", pt:"pegar recibo", en:["get a receipt"] },
+                { emoji:"📄", pt:"conseguir documento", en:["get a document"] },
+                { emoji:"💰", pt:"receber dinheiro", en:["get paid"] },
+                { emoji:"📬", pt:"receber carta", en:["get mail"] },
+                { emoji:"🕒", pt:"chegar tarde", en:["get late"] },
+                { emoji:"🧊", pt:"pegar gelo", en:["get ice"] },
+                { emoji:"🍕", pt:"pegar comida", en:["get food"] },
+                { emoji:"🎓", pt:"conseguir diploma", en:["get a degree"] },
+                { emoji:"😴", pt:"ficar cansado", en:["get tired"] },
+                { emoji:"🧑‍⚕️", pt:"consultar médico", en:["get a doctor"] },
+                { emoji:"🛠️", pt:"consertar algo", en:["get it fixed"] },
+                { emoji:"📲", pt:"receber mensagem", en:["get a message"] },
+                { emoji:"🧍", pt:"entender alguém", en:["get someone"] },
+                { emoji:"🎁", pt:"ganhar presente", en:["get a gift"] },
+                { emoji:"🧭", pt:"se perder", en:["get lost"] },
+                { emoji:"🏆", pt:"conseguir vitória", en:["get a win"] },
+                { emoji:"🛏️", pt:"ir dormir", en:["get to bed"] },
+                { emoji:"🏃", pt:"ficar em forma", en:["get fit"] },
+                { emoji:"🧑‍💻", pt:"conseguir acesso", en:["get access"] }
+            ]
+        },
+        {
+            id: 5,
+            title: "GO / COME",
+            emoji: "🚶➡️⬅️",
+            words: [
+                { emoji:"🏠➡️", pt:"ir pra casa", en:["go home"] },
+                { emoji:"🏠⬅️", pt:"vir pra casa", en:["come home"] },
+                { emoji:"🏢➡️", pt:"ir pro trabalho", en:["go to work"] },
+                { emoji:"🎉⬅️", pt:"vir pra festa", en:["come to the party"] },
+                { emoji:"🛒➡️", pt:"ir ao mercado", en:["go to the store"] },
+                { emoji:"☕⬅️", pt:"vem tomar café", en:["come get coffee"] },
+                { emoji:"🚗➡️", pt:"ir de carro", en:["go by car"] },
+                { emoji:"📍⬅️", pt:"vem aqui", en:["come here"] },
+                { emoji:"🌎➡️", pt:"ir embora", en:["go away"] },
+                { emoji:"👋⬅️", pt:"vem falar comigo", en:["come talk to me"] },
+                { emoji:"🏥➡️", pt:"ir ao hospital", en:["go to the hospital"] },
+                { emoji:"🏥⬅️", pt:"vem pro hospital", en:["come to the hospital"] },
+                { emoji:"🛫➡️", pt:"ir viajar", en:["go travel"] },
+                { emoji:"🏃⬅️", pt:"vem correr", en:["come run"] },
+                { emoji:"🎬➡️", pt:"ir assistir filme", en:["go watch a movie"] },
+                { emoji:"🧑‍🏫➡️", pt:"ir pra aula", en:["go to class"] },
+                { emoji:"🍽️⬅️", pt:"vem comer", en:["come eat"] },
+                { emoji:"🚿➡️", pt:"ir tomar banho", en:["go shower"] },
+                { emoji:"🧹⬅️", pt:"vem limpar", en:["come clean"] },
+                { emoji:"🛏️➡️", pt:"ir dormir", en:["go sleep"] },
+                { emoji:"🏖️➡️", pt:"ir à praia", en:["go to the beach"] },
+                { emoji:"🏠⬅️", pt:"vem pra cá", en:["come over"] },
+                { emoji:"🛠️➡️", pt:"ir trabalhar", en:["go work"] },
+                { emoji:"📞⬅️", pt:"vem ligar", en:["come call me"] },
+                { emoji:"🧍➡️", pt:"ir sozinho", en:["go alone"] },
+                { emoji:"🧍⬅️", pt:"vem comigo", en:["come with me"] },
+                { emoji:"🏪➡️", pt:"ir à loja", en:["go to the shop"] },
+                { emoji:"🎯⬅️", pt:"vem tentar", en:["come try"] },
+                { emoji:"🏃➡️", pt:"ir correr", en:["go run"] },
+                { emoji:"🏠⬅️", pt:"vem ficar aqui", en:["come stay here"] }
+            ]
+        },
+        {
+            id: 6,
+            title: "GOING TO",
+            emoji: "🎯➡️",
+            words: [
+                { emoji:"🏃", pt:"vou correr", en:["I'm going to run"] },
+                { emoji:"🍽️", pt:"vou comer", en:["I'm going to eat"] },
+                { emoji:"🛌", pt:"vou dormir", en:["I'm going to sleep"] },
+                { emoji:"💼", pt:"vou trabalhar", en:["I'm going to work"] },
+                { emoji:"🛒", pt:"vou comprar", en:["I'm going to buy"] },
+                { emoji:"📞", pt:"vou ligar", en:["I'm going to call"] },
+                { emoji:"✈️", pt:"vou viajar", en:["I'm going to travel"] },
+                { emoji:"🎬", pt:"vou assistir", en:["I'm going to watch"] },
+                { emoji:"🧹", pt:"vou limpar", en:["I'm going to clean"] },
+                { emoji:"🏋️", pt:"vou treinar", en:["I'm going to train"] },
+                { emoji:"🧠", pt:"vou estudar", en:["I'm going to study"] },
+                { emoji:"🧑‍💻", pt:"vou trabalhar online", en:["I'm going to work online"] },
+                { emoji:"🚿", pt:"vou tomar banho", en:["I'm going to shower"] },
+                { emoji:"🧾", pt:"vou pagar conta", en:["I'm going to pay the bill"] },
+                { emoji:"🛏️", pt:"vou deitar", en:["I'm going to lie down"] },
+                { emoji:"🏠", pt:"vou ficar em casa", en:["I'm going to stay home"] },
+                { emoji:"🚗", pt:"vou dirigir", en:["I'm going to drive"] },
+                { emoji:"🧍", pt:"vou tentar", en:["I'm going to try"] },
+                { emoji:"🎯", pt:"vou decidir", en:["I'm going to decide"] },
+                { emoji:"🧑‍⚕️", pt:"vou ao médico", en:["I'm going to see a doctor"] },
+                { emoji:"📅", pt:"vou marcar horário", en:["I'm going to make an appointment"] },
+                { emoji:"💰", pt:"vou economizar", en:["I'm going to save money"] },
+                { emoji:"🧳", pt:"vou arrumar mala", en:["I'm going to pack"] },
+                { emoji:"🏖️", pt:"vou relaxar", en:["I'm going to relax"] },
+                { emoji:"📲", pt:"vou responder", en:["I'm going to reply"] },
+                { emoji:"🛠️", pt:"vou consertar", en:["I'm going to fix it"] },
+                { emoji:"🧼", pt:"vou limpar tudo", en:["I'm going to clean everything"] },
+                { emoji:"🎉", pt:"vou sair", en:["I'm going to go out"] },
+                { emoji:"🧍‍♂️", pt:"vou tentar de novo", en:["I'm going to try again"] },
+                { emoji:"🛑", pt:"vou parar", en:["I'm going to stop"] }
+            ]
+        }
+
+        
+        ,
+        {
+            id: 7,
+            title: "HAVE / HAS",
+            emoji: "✋📦",
+            words: [
+                { emoji:"👨", pt:"ele tem carro", en:["he has a car"] },
+                { emoji:"👩", pt:"ela tem casa", en:["she has a house"] },
+                { emoji:"👶", pt:"ele tem fome", en:["he is hungry"] },
+                { emoji:"😷", pt:"ela está resfriada", en:["she has a cold"] },
+                { emoji:"🧠", pt:"eu tenho ideia", en:["I have an idea"] },
+                { emoji:"⏰", pt:"nós temos tempo", en:["we have time"] },
+                { emoji:"💰", pt:"eles têm dinheiro", en:["they have money"] },
+                { emoji:"🐕", pt:"ele tem cachorro", en:["he has a dog"] },
+                { emoji:"📅", pt:"ela tem compromisso", en:["she has an appointment"] },
+                { emoji:"😰", pt:"eu estou com medo", en:["I'm scared"] },
+                { emoji:"🤕", pt:"ele tem dor", en:["he has pain"] },
+                { emoji:"📱", pt:"eu tenho celular", en:["I have a phone"] },
+                { emoji:"🚗", pt:"ela tem carro", en:["she has a car"] },
+                { emoji:"🧾", pt:"temos recibo", en:["we have a receipt"] },
+                { emoji:"🛏️", pt:"eles têm quarto", en:["they have a room"] },
+                { emoji:"🧑‍⚕️", pt:"ele tem médico", en:["he has a doctor"] },
+                { emoji:"👩‍💼", pt:"ela tem trabalho", en:["she has a job"] },
+                { emoji:"🧍", pt:"eu tenho dúvida", en:["I have a question"] },
+                { emoji:"📦", pt:"temos entrega", en:["we have delivery"] },
+                { emoji:"😴", pt:"ele tem sono", en:["he is sleepy"] },
+                { emoji:"🧳", pt:"ela tem mala", en:["she has luggage"] },
+                { emoji:"🧍‍♂️🧍‍♀️", pt:"eles têm filhos", en:["they have kids"] },
+                { emoji:"🏠", pt:"nós temos casa", en:["we have a house"] },
+                { emoji:"🪪", pt:"ele tem documento", en:["he has an ID"] },
+                { emoji:"📄", pt:"ela tem contrato", en:["she has a contract"] },
+                { emoji:"🧠", pt:"ele tem experiência", en:["he has experience"] },
+                { emoji:"💳", pt:"ela tem cartão", en:["she has a card"] },
+                { emoji:"🛠️", pt:"ele tem ferramenta", en:["he has a tool"] },
+                { emoji:"🧾", pt:"eu tenho conta", en:["I have a bill"] },
+                { emoji:"📞", pt:"ela tem número", en:["she has a number"] }
+            ]
+        },
+        {
+            id: 8,
+            title: "HAVE TO / NEED TO",
+            emoji: "⚠️✅",
+            words: [
+                { emoji:"💼", pt:"tenho que trabalhar", en:["I have to work"] },
+                { emoji:"🚗", pt:"tenho que dirigir", en:["I have to drive"] },
+                { emoji:"🛌", pt:"preciso dormir", en:["I need to sleep"] },
+                { emoji:"🧠", pt:"preciso estudar", en:["I need to study"] },
+                { emoji:"📞", pt:"tenho que ligar", en:["I have to call"] },
+                { emoji:"🧾", pt:"tenho que pagar", en:["I have to pay"] },
+                { emoji:"🏃", pt:"preciso correr", en:["I need to run"] },
+                { emoji:"🍽️", pt:"tenho que comer", en:["I have to eat"] },
+                { emoji:"🚿", pt:"preciso tomar banho", en:["I need to shower"] },
+                { emoji:"🏥", pt:"tenho que ir ao médico", en:["I have to see a doctor"] },
+                { emoji:"📅", pt:"preciso marcar horário", en:["I need to make an appointment"] },
+                { emoji:"🛒", pt:"tenho que comprar", en:["I have to buy"] },
+                { emoji:"🧹", pt:"preciso limpar", en:["I need to clean"] },
+                { emoji:"📄", pt:"tenho que assinar", en:["I have to sign"] },
+                { emoji:"⏰", pt:"preciso sair cedo", en:["I need to leave early"] },
+                { emoji:"🧑‍💻", pt:"tenho que trabalhar online", en:["I have to work online"] },
+                { emoji:"🛠️", pt:"preciso consertar", en:["I need to fix it"] },
+                { emoji:"🧳", pt:"tenho que arrumar mala", en:["I have to pack"] },
+                { emoji:"📲", pt:"preciso responder", en:["I need to reply"] },
+                { emoji:"🧠", pt:"tenho que decidir", en:["I have to decide"] },
+                { emoji:"🏠", pt:"preciso ficar em casa", en:["I need to stay home"] },
+                { emoji:"🚫", pt:"tenho que parar", en:["I have to stop"] },
+                { emoji:"🎯", pt:"preciso tentar", en:["I need to try"] },
+                { emoji:"🧍", pt:"tenho que esperar", en:["I have to wait"] },
+                { emoji:"🛏️", pt:"preciso descansar", en:["I need to rest"] },
+                { emoji:"🧾", pt:"tenho que resolver isso", en:["I have to deal with this"] },
+                { emoji:"📞", pt:"preciso falar com ele", en:["I need to talk to him"] },
+                { emoji:"🚪", pt:"tenho que sair", en:["I have to leave"] },
+                { emoji:"🧼", pt:"preciso lavar", en:["I need to wash"] },
+                { emoji:"🧠", pt:"tenho que lembrar", en:["I have to remember"] }
+            ]
+        },
+        {
+            id: 9,
+            title: "HERE / THERE",
+            emoji: "📍🗺️",
+            words: [
+                { emoji:"📍", pt:"está aqui", en:["it's here"] },
+                { emoji:"📍", pt:"fica aqui", en:["stay here"] },
+                { emoji:"🗺️", pt:"fica ali", en:["it's there"] },
+                { emoji:"🏠", pt:"minha casa é aqui", en:["my house is here"] },
+                { emoji:"🏥", pt:"o hospital é ali", en:["the hospital is there"] },
+                { emoji:"👈", pt:"vem aqui", en:["come here"] },
+                { emoji:"👉", pt:"vai ali", en:["go there"] },
+                { emoji:"🧍", pt:"fica aqui comigo", en:["stay here with me"] },
+                { emoji:"🚗", pt:"o carro está ali", en:["the car is there"] },
+                { emoji:"📦", pt:"o pacote está aqui", en:["the package is here"] },
+                { emoji:"🧾", pt:"a conta está aqui", en:["the bill is here"] },
+                { emoji:"🧑‍⚕️", pt:"o médico está ali", en:["the doctor is there"] },
+                { emoji:"🏪", pt:"a loja é ali", en:["the store is there"] },
+                { emoji:"🏠", pt:"fica aqui em casa", en:["stay here at home"] },
+                { emoji:"📍", pt:"eu estou aqui", en:["I'm here"] },
+                { emoji:"🗺️", pt:"eu estou ali", en:["I'm there"] },
+                { emoji:"👋", pt:"me espera aqui", en:["wait here"] },
+                { emoji:"🚪", pt:"a saída é ali", en:["the exit is there"] },
+                { emoji:"🪑", pt:"senta aqui", en:["sit here"] },
+                { emoji:"🧍‍♂️", pt:"fica ali", en:["stay there"] },
+                { emoji:"🧭", pt:"é perto daqui", en:["it's near here"] },
+                { emoji:"🏃", pt:"vem aqui rápido", en:["come here fast"] },
+                { emoji:"🧳", pt:"deixa isso aqui", en:["leave it here"] },
+                { emoji:"📍", pt:"é logo aqui", en:["it's right here"] },
+                { emoji:"🗺️", pt:"é logo ali", en:["it's right there"] },
+                { emoji:"🧑‍💼", pt:"ele está aqui", en:["he's here"] },
+                { emoji:"👩‍💼", pt:"ela está ali", en:["she's there"] },
+                { emoji:"🏥", pt:"fica aqui dentro", en:["stay here inside"] },
+                { emoji:"🏪", pt:"fica ali fora", en:["stay there outside"] },
+                { emoji:"📍", pt:"olha aqui", en:["look here"] }
+            ]
+        },
+        {
+            id: 10,
+            title: "HOW MUCH / HOW MANY",
+            emoji: "💰🔢",
+            words: [
+                { emoji:"💰", pt:"quanto custa?", en:["how much is it?"] },
+                { emoji:"💵", pt:"quanto é isso?", en:["how much is this?"] },
+                { emoji:"🛒", pt:"quanto custa isso?", en:["how much does this cost?"] },
+                { emoji:"🧾", pt:"quanto deu a conta?", en:["how much is the bill?"] },
+                { emoji:"🏠", pt:"quanto é o aluguel?", en:["how much is the rent?"] },
+                { emoji:"🍎", pt:"quantas maçãs?", en:["how many apples?"] },
+                { emoji:"🧍", pt:"quantas pessoas?", en:["how many people?"] },
+                { emoji:"📅", pt:"quantos dias?", en:["how many days?"] },
+                { emoji:"🚗", pt:"quantos carros?", en:["how many cars?"] },
+                { emoji:"🧾", pt:"quantos recibos?", en:["how many receipts?"] },
+                { emoji:"💳", pt:"quanto você paga?", en:["how much do you pay?"] },
+                { emoji:"⏰", pt:"quanto tempo?", en:["how much time?"] },
+                { emoji:"💊", pt:"quantos comprimidos?", en:["how many pills?"] },
+                { emoji:"📦", pt:"quantas caixas?", en:["how many boxes?"] },
+                { emoji:"🪑", pt:"quantas cadeiras?", en:["how many chairs?"] },
+                { emoji:"🧍‍♂️🧍‍♀️", pt:"quantos clientes?", en:["how many customers?"] },
+                { emoji:"🧠", pt:"quanta experiência?", en:["how much experience?"] },
+                { emoji:"💧", pt:"quanta água?", en:["how much water?"] },
+                { emoji:"🥩", pt:"quanto de carne?", en:["how much meat?"] },
+                { emoji:"🍞", pt:"quanto pão?", en:["how much bread?"] },
+                { emoji:"📄", pt:"quantos documentos?", en:["how many documents?"] },
+                { emoji:"📞", pt:"quantas ligações?", en:["how many calls?"] },
+                { emoji:"🧑‍💻", pt:"quantas horas?", en:["how many hours?"] },
+                { emoji:"🏨", pt:"quantos quartos?", en:["how many rooms?"] },
+                { emoji:"🛏️", pt:"quantas camas?", en:["how many beds?"] },
+                { emoji:"💰", pt:"quanto você ganha?", en:["how much do you make?"] },
+                { emoji:"🧾", pt:"quanto ficou?", en:["how much did it come to?"] },
+                { emoji:"🧍", pt:"quantos alunos?", en:["how many students?"] },
+                { emoji:"🚪", pt:"quantas portas?", en:["how many doors?"] },
+                { emoji:"📦", pt:"quanto pesa?", en:["how much does it weigh?"] }
+            ]
+        },
+        {
+            id: 11,
+            title: "HOW",
+            emoji: "🤷❓",
+            words: [
+                { emoji:"🤷", pt:"como?", en:["how?"] },
+                { emoji:"🚗", pt:"como chegar lá?", en:["how do I get there?"] },
+                { emoji:"🧠", pt:"como funciona?", en:["how does it work?"] },
+                { emoji:"💼", pt:"como faço isso?", en:["how do I do this?"] },
+                { emoji:"📞", pt:"como ligo?", en:["how do I call?"] },
+                { emoji:"🏠", pt:"como chego em casa?", en:["how do I get home?"] },
+                { emoji:"🧾", pt:"como pago isso?", en:["how do I pay this?"] },
+                { emoji:"📅", pt:"como marco horário?", en:["how do I make an appointment?"] },
+                { emoji:"🛠️", pt:"como conserta?", en:["how do you fix it?"] },
+                { emoji:"🧍", pt:"como falo com ele?", en:["how do I talk to him?"] },
+                { emoji:"🚿", pt:"como uso isso?", en:["how do I use this?"] },
+                { emoji:"🧠", pt:"como aprendo isso?", en:["how do I learn this?"] },
+                { emoji:"📍", pt:"como chego aqui?", en:["how do I get here?"] },
+                { emoji:"🏃", pt:"como faço rápido?", en:["how do I do it fast?"] },
+                { emoji:"💳", pt:"como funciona o pagamento?", en:["how does payment work?"] },
+                { emoji:"📄", pt:"como preencho isso?", en:["how do I fill this out?"] },
+                { emoji:"🛒", pt:"como compro isso?", en:["how do I buy this?"] },
+                { emoji:"🧑‍💻", pt:"como trabalho online?", en:["how do I work online?"] },
+                { emoji:"🏥", pt:"como marco médico?", en:["how do I book a doctor?"] },
+                { emoji:"📞", pt:"como deixo recado?", en:["how do I leave a message?"] },
+                { emoji:"🧠", pt:"como explico isso?", en:["how do I explain this?"] },
+                { emoji:"🚪", pt:"como saio daqui?", en:["how do I get out of here?"] },
+                { emoji:"🧾", pt:"como resolvo isso?", en:["how do I solve this?"] },
+                { emoji:"🛏️", pt:"como descanso?", en:["how do I rest?"] },
+                { emoji:"🧍", pt:"como começo?", en:["how do I start?"] },
+                { emoji:"🧠", pt:"como continuo?", en:["how do I continue?"] },
+                { emoji:"🏁", pt:"como termino?", en:["how do I finish?"] },
+                { emoji:"📍", pt:"como chego ali?", en:["how do I get there?"] },
+                { emoji:"🧑‍⚕️", pt:"como falo com médico?", en:["how do I talk to a doctor?"] },
+                { emoji:"📞", pt:"como retorno ligação?", en:["how do I call back?"] }
+            ]
+        },
+        {
+            id: 12,
+            title: "IS / ARE (QUESTIONS)",
+            emoji: "🔵🟢",
+            words: [
+                { emoji:"🏠", pt:"é perto?", en:["is it close?"] },
+                { emoji:"🧍", pt:"você está bem?", en:["are you okay?"] },
+                { emoji:"🚗", pt:"isso é seu?", en:["is this yours?"] },
+                { emoji:"🕒", pt:"é tarde?", en:["is it late?"] },
+                { emoji:"💰", pt:"é caro?", en:["is it expensive?"] },
+                { emoji:"👨‍👩‍👧", pt:"eles estão aqui?", en:["are they here?"] },
+                { emoji:"🏥", pt:"o hospital é longe?", en:["is the hospital far?"] },
+                { emoji:"🧑‍⚕️", pt:"o médico está disponível?", en:["is the doctor available?"] },
+                { emoji:"📦", pt:"isso está pronto?", en:["is it ready?"] },
+                { emoji:"🧾", pt:"a conta está certa?", en:["is the bill correct?"] },
+                { emoji:"🚪", pt:"a porta está aberta?", en:["is the door open?"] },
+                { emoji:"🛏️", pt:"o quarto é grande?", en:["is the room big?"] },
+                { emoji:"📅", pt:"o horário está certo?", en:["is the time correct?"] },
+                { emoji:"🧍", pt:"eles estão esperando?", en:["are they waiting?"] },
+                { emoji:"🏠", pt:"isso é aqui?", en:["is it here?"] },
+                { emoji:"🗺️", pt:"isso é ali?", en:["is it there?"] },
+                { emoji:"🧑‍💻", pt:"isso é online?", en:["is it online?"] },
+                { emoji:"🧍‍♂️🧍‍♀️", pt:"estamos prontos?", en:["are we ready?"] },
+                { emoji:"💳", pt:"isso é débito?", en:["is this debit?"] },
+                { emoji:"📞", pt:"é seu número?", en:["is this your number?"] },
+                { emoji:"🏥", pt:"eles estão fechados?", en:["are they closed?"] },
+                { emoji:"🧠", pt:"isso é importante?", en:["is it important?"] },
+                { emoji:"🛑", pt:"isso é permitido?", en:["is it allowed?"] },
+                { emoji:"🧾", pt:"isso é obrigatório?", en:["is it mandatory?"] },
+                { emoji:"🧍", pt:"ele está atrasado?", en:["is he late?"] },
+                { emoji:"🧍‍♀️", pt:"ela está ocupada?", en:["is she busy?"] },
+                { emoji:"🚗", pt:"os carros são novos?", en:["are the cars new?"] },
+                { emoji:"🏠", pt:"as casas são grandes?", en:["are the houses big?"] },
+                { emoji:"📦", pt:"as entregas são hoje?", en:["are the deliveries today?"] },
+                { emoji:"🧠", pt:"isso está claro?", en:["is that clear?"] }
+            ]
+        }
+
+        
+        ,
+        {
+            id: 13,
+            title: "CAN",
+            emoji: "💪🔓",
+            words: [
+                { emoji:"🚗", pt:"eu sei dirigir", en:["I can drive"] },
+                { emoji:"🧑‍🍳", pt:"eu sei cozinhar", en:["I can cook"] },
+                { emoji:"🗣️", pt:"eu sei falar inglês", en:["I can speak English"] },
+                { emoji:"📞", pt:"posso ligar?", en:["can I call?"] },
+                { emoji:"🚽", pt:"posso usar o banheiro?", en:["can I use the bathroom?"] },
+                { emoji:"🪑", pt:"posso sentar aqui?", en:["can I sit here?"] },
+                { emoji:"🧍", pt:"você pode me ajudar?", en:["can you help me?"] },
+                { emoji:"📦", pt:"você pode pegar isso?", en:["can you get this?"] },
+                { emoji:"🚗", pt:"você pode dirigir?", en:["can you drive?"] },
+                { emoji:"⏰", pt:"posso sair mais cedo?", en:["can I leave early?"] },
+                { emoji:"🛑", pt:"não posso parar", en:["I can't stop"] },
+                { emoji:"🗣️", pt:"não posso falar agora", en:["I can't talk now"] },
+                { emoji:"🚬", pt:"não pode fumar aqui", en:["you can't smoke here"] },
+                { emoji:"🅿️", pt:"não pode estacionar aqui", en:["you can't park here"] },
+                { emoji:"📞", pt:"não posso atender", en:["I can't answer"] },
+                { emoji:"🎧", pt:"posso ouvir música?", en:["can I listen to music?"] },
+                { emoji:"🏃", pt:"eu consigo correr", en:["I can run"] },
+                { emoji:"🧠", pt:"eu consigo entender", en:["I can understand"] },
+                { emoji:"📍", pt:"posso entrar?", en:["can I come in?"] },
+                { emoji:"💳", pt:"posso pagar com cartão?", en:["can I pay with card?"] },
+                { emoji:"🧑‍💼", pt:"ele pode ajudar", en:["he can help"] },
+                { emoji:"👩‍💼", pt:"ela sabe dirigir", en:["she can drive"] },
+                { emoji:"🌧️", pt:"pode chover", en:["it can rain"] },
+                { emoji:"🔊", pt:"pode ser alto", en:["it can be loud"] },
+                { emoji:"📦", pt:"isso pode quebrar", en:["this can break"] },
+                { emoji:"🧍", pt:"você consegue vir?", en:["can you come?"] },
+                { emoji:"🏠", pt:"posso ficar aqui?", en:["can I stay here?"] },
+                { emoji:"🕒", pt:"posso esperar?", en:["can I wait?"] },
+                { emoji:"📞", pt:"posso te ligar depois?", en:["can I call you later?"] },
+                { emoji:"❌", pt:"não posso fazer isso", en:["I can't do this"] }
+            ]
+        },
+        {
+            id: 14,
+            title: "DAYS OF THE WEEK",
+            emoji: "📅",
+            words: [
+                { emoji:"📅", pt:"domingo", en:["Sunday"] },
+                { emoji:"📅", pt:"segunda", en:["Monday"] },
+                { emoji:"📅", pt:"terça", en:["Tuesday"] },
+                { emoji:"📅", pt:"quarta", en:["Wednesday"] },
+                { emoji:"📅", pt:"quinta", en:["Thursday"] },
+                { emoji:"📅", pt:"sexta", en:["Friday"] },
+                { emoji:"📅", pt:"sábado", en:["Saturday"] },
+                { emoji:"🏢", pt:"trabalho na segunda", en:["I work on Monday"] },
+                { emoji:"🎉", pt:"saio na sexta", en:["I go out on Friday"] },
+                { emoji:"🏠", pt:"fico em casa no domingo", en:["I stay home on Sunday"] },
+                { emoji:"📚", pt:"estudo na terça", en:["I study on Tuesday"] },
+                { emoji:"🏋️", pt:"treino na quarta", en:["I train on Wednesday"] },
+                { emoji:"🛒", pt:"compro no sábado", en:["I shop on Saturday"] },
+                { emoji:"📞", pt:"te ligo na quinta", en:["I call you on Thursday"] },
+                { emoji:"🧑‍💻", pt:"trabalho na sexta", en:["I work on Friday"] },
+                { emoji:"⏰", pt:"na segunda de manhã", en:["on Monday morning"] },
+                { emoji:"🌙", pt:"na sexta à noite", en:["on Friday night"] },
+                { emoji:"📅", pt:"no fim de semana", en:["on the weekend"] },
+                { emoji:"🗓️", pt:"todo dia", en:["every day"] },
+                { emoji:"📅", pt:"dias da semana", en:["days of the week"] },
+                { emoji:"🧠", pt:"segunda é difícil", en:["Monday is hard"] },
+                { emoji:"🎉", pt:"sexta é boa", en:["Friday is good"] },
+                { emoji:"😴", pt:"domingo é tranquilo", en:["Sunday is calm"] },
+                { emoji:"🏃", pt:"quarta é corrida", en:["Wednesday is busy"] },
+                { emoji:"📆", pt:"qual dia é hoje?", en:["what day is today?"] },
+                { emoji:"📅", pt:"hoje é segunda", en:["today is Monday"] },
+                { emoji:"📅", pt:"amanhã é sexta", en:["tomorrow is Friday"] },
+                { emoji:"📅", pt:"ontem foi terça", en:["yesterday was Tuesday"] },
+                { emoji:"📅", pt:"na próxima semana", en:["next week"] },
+                { emoji:"📅", pt:"essa semana", en:["this week"] }
+            ]
+        },
+        {
+            id: 15,
+            title: "DIRECTIONS",
+            emoji: "🧭➡️",
+            words: [
+                { emoji:"⬅️", pt:"vire à esquerda", en:["turn left"] },
+                { emoji:"➡️", pt:"vire à direita", en:["turn right"] },
+                { emoji:"⬆️", pt:"siga reto", en:["go straight"] },
+                { emoji:"📍", pt:"é aqui", en:["it's here"] },
+                { emoji:"📍", pt:"é ali", en:["it's there"] },
+                { emoji:"🏢", pt:"é na esquina", en:["it's on the corner"] },
+                { emoji:"🏦", pt:"é do lado do banco", en:["it's next to the bank"] },
+                { emoji:"🚶", pt:"vá a pé", en:["go on foot"] },
+                { emoji:"🚗", pt:"vá de carro", en:["go by car"] },
+                { emoji:"🛑", pt:"pare aqui", en:["stop here"] },
+                { emoji:"📏", pt:"é perto", en:["it's close"] },
+                { emoji:"📏", pt:"é longe", en:["it's far"] },
+                { emoji:"👈", pt:"fica à esquerda", en:["it's on the left"] },
+                { emoji:"👉", pt:"fica à direita", en:["it's on the right"] },
+                { emoji:"🏠", pt:"fica em frente", en:["it's in front"] },
+                { emoji:"🏠", pt:"fica atrás", en:["it's behind"] },
+                { emoji:"🏠", pt:"fica perto daqui", en:["it's near here"] },
+                { emoji:"🏠", pt:"fica longe daqui", en:["it's far from here"] },
+                { emoji:"🚦", pt:"no sinal", en:["at the traffic light"] },
+                { emoji:"🛣️", pt:"na rua principal", en:["on the main street"] },
+                { emoji:"📍", pt:"só um quarteirão", en:["just one block"] },
+                { emoji:"📍", pt:"dois quarteirões", en:["two blocks"] },
+                { emoji:"🧭", pt:"onde fica?", en:["where is it?"] },
+                { emoji:"🧍", pt:"me mostra no mapa", en:["show me on the map"] },
+                { emoji:"🚶", pt:"continue andando", en:["keep walking"] },
+                { emoji:"🔄", pt:"volta", en:["go back"] },
+                { emoji:"🏁", pt:"chegou", en:["you're there"] },
+                { emoji:"🚪", pt:"é ali dentro", en:["it's inside"] },
+                { emoji:"🌳", pt:"é ali fora", en:["it's outside"] },
+                { emoji:"📍", pt:"logo ali", en:["right there"] }
+            ]
+        },
+        {
+            id: 16,
+            title: "DO / DOES / DID",
+            emoji: "🔵🔴🟡",
+            words: [
+                { emoji:"❓", pt:"você trabalha aqui?", en:["do you work here?"] },
+                { emoji:"❓", pt:"você gosta disso?", en:["do you like this?"] },
+                { emoji:"❓", pt:"eles moram aqui?", en:["do they live here?"] },
+                { emoji:"❓", pt:"ela trabalha aqui?", en:["does she work here?"] },
+                { emoji:"❓", pt:"ele gosta disso?", en:["does he like this?"] },
+                { emoji:"❓", pt:"isso funciona?", en:["does it work?"] },
+                { emoji:"❓", pt:"vocês precisam disso?", en:["do you need this?"] },
+                { emoji:"❓", pt:"ela mora longe?", en:["does she live far?"] },
+                { emoji:"❓", pt:"ele dirige?", en:["does he drive?"] },
+                { emoji:"❓", pt:"isso ajuda?", en:["does this help?"] },
+                { emoji:"❓", pt:"você foi ontem?", en:["did you go yesterday?"] },
+                { emoji:"❓", pt:"ele ligou?", en:["did he call?"] },
+                { emoji:"❓", pt:"ela pagou?", en:["did she pay?"] },
+                { emoji:"❓", pt:"vocês entenderam?", en:["did you understand?"] },
+                { emoji:"❓", pt:"isso funcionou?", en:["did it work?"] },
+                { emoji:"🗣️", pt:"sim, eu trabalho", en:["yes, I do"] },
+                { emoji:"🗣️", pt:"não, eu não gosto", en:["no, I don't"] },
+                { emoji:"🗣️", pt:"sim, ela mora", en:["yes, she does"] },
+                { emoji:"🗣️", pt:"não, ele não dirige", en:["no, he doesn't"] },
+                { emoji:"🗣️", pt:"sim, eu fui", en:["yes, I did"] },
+                { emoji:"🗣️", pt:"não, eu não fui", en:["no, I didn't"] },
+                { emoji:"🧠", pt:"você entende?", en:["do you understand?"] },
+                { emoji:"🧠", pt:"ela entende?", en:["does she understand?"] },
+                { emoji:"🧠", pt:"você entendeu?", en:["did you understand?"] },
+                { emoji:"📞", pt:"ele ligou ontem?", en:["did he call yesterday?"] },
+                { emoji:"🛒", pt:"você compra aqui?", en:["do you shop here?"] },
+                { emoji:"🛒", pt:"ela compra aqui?", en:["does she shop here?"] },
+                { emoji:"🛒", pt:"vocês compraram?", en:["did you buy?"] },
+                { emoji:"🕒", pt:"você tem tempo?", en:["do you have time?"] },
+                { emoji:"🏠", pt:"eles moraram aqui?", en:["did they live here?"] }
+            ]
+        }
+
+        
+        ,
+        {
+            id: 17,
+            title: "LET ME / CAN I",
+            emoji: "🙋✋",
+            words: [
+                { emoji:"🚪", pt:"deixa eu entrar", en:["let me in"] },
+                { emoji:"📞", pt:"deixa eu ligar", en:["let me call"] },
+                { emoji:"🪑", pt:"deixa eu sentar", en:["let me sit"] },
+                { emoji:"🧠", pt:"deixa eu explicar", en:["let me explain"] },
+                { emoji:"🛑", pt:"deixa eu tentar", en:["let me try"] },
+                { emoji:"🚽", pt:"posso usar o banheiro?", en:["can I use the bathroom?"] },
+                { emoji:"🪑", pt:"posso sentar aqui?", en:["can I sit here?"] },
+                { emoji:"📞", pt:"posso ligar depois?", en:["can I call later?"] },
+                { emoji:"🚗", pt:"posso dirigir?", en:["can I drive?"] },
+                { emoji:"🕒", pt:"posso esperar?", en:["can I wait?"] },
+                { emoji:"🧍", pt:"deixa eu ver", en:["let me see"] },
+                { emoji:"📄", pt:"deixa eu ler", en:["let me read"] },
+                { emoji:"🛒", pt:"deixa eu pagar", en:["let me pay"] },
+                { emoji:"🧍‍♂️", pt:"deixa eu falar", en:["let me talk"] },
+                { emoji:"🛠️", pt:"deixa eu consertar", en:["let me fix it"] },
+                { emoji:"🏠", pt:"posso ficar aqui?", en:["can I stay here?"] },
+                { emoji:"🧳", pt:"posso levar isso?", en:["can I take this?"] },
+                { emoji:"🍽️", pt:"posso pedir agora?", en:["can I order now?"] },
+                { emoji:"📦", pt:"deixa eu pegar isso", en:["let me get this"] },
+                { emoji:"🧠", pt:"deixa eu pensar", en:["let me think"] },
+                { emoji:"🚪", pt:"posso sair?", en:["can I leave?"] },
+                { emoji:"📍", pt:"deixa eu mostrar", en:["let me show you"] },
+                { emoji:"📞", pt:"posso te ligar?", en:["can I call you?"] },
+                { emoji:"🕒", pt:"posso ir mais cedo?", en:["can I leave early?"] },
+                { emoji:"🧍", pt:"deixa eu ajudar", en:["let me help"] },
+                { emoji:"🧑‍💼", pt:"posso falar com você?", en:["can I talk to you?"] },
+                { emoji:"🛑", pt:"deixa eu parar", en:["let me stop"] },
+                { emoji:"🚗", pt:"posso estacionar aqui?", en:["can I park here?"] },
+                { emoji:"🧠", pt:"deixa eu entender", en:["let me understand"] },
+                { emoji:"🏁", pt:"deixa eu terminar", en:["let me finish"] }
+            ]
+        },
+        {
+            id: 18,
+            title: "LIKE / LOVE / HATE",
+            emoji: "👍❤️👎",
+            words: [
+                { emoji:"🍕", pt:"eu gosto de pizza", en:["I like pizza"] },
+                { emoji:"☕", pt:"eu amo café", en:["I love coffee"] },
+                { emoji:"⏰", pt:"eu odeio acordar cedo", en:["I hate waking up early"] },
+                { emoji:"🎶", pt:"eu gosto de música", en:["I like music"] },
+                { emoji:"🏋️", pt:"eu amo treinar", en:["I love training"] },
+                { emoji:"🚗", pt:"eu não gosto de dirigir", en:["I don't like driving"] },
+                { emoji:"🧠", pt:"eu gosto disso", en:["I like this"] },
+                { emoji:"🧍", pt:"eu amo isso", en:["I love this"] },
+                { emoji:"🛑", pt:"eu odeio isso", en:["I hate this"] },
+                { emoji:"🌧️", pt:"eu não gosto de chuva", en:["I don't like rain"] },
+                { emoji:"🍔", pt:"eu amo hambúrguer", en:["I love burgers"] },
+                { emoji:"🥗", pt:"eu não gosto disso", en:["I don't like this"] },
+                { emoji:"🏖️", pt:"eu gosto da praia", en:["I like the beach"] },
+                { emoji:"🏠", pt:"eu amo minha casa", en:["I love my house"] },
+                { emoji:"🧍‍♂️", pt:"eu odeio esperar", en:["I hate waiting"] },
+                { emoji:"🎬", pt:"eu gosto de filmes", en:["I like movies"] },
+                { emoji:"📚", pt:"eu gosto de estudar", en:["I like studying"] },
+                { emoji:"🛒", pt:"eu não gosto disso aqui", en:["I don't like this here"] },
+                { emoji:"🧠", pt:"eu amo aprender", en:["I love learning"] },
+                { emoji:"🛑", pt:"eu odeio isso aqui", en:["I hate this here"] },
+                { emoji:"🧑‍💻", pt:"eu gosto de trabalhar online", en:["I like working online"] },
+                { emoji:"🚗", pt:"eu amo viajar", en:["I love traveling"] },
+                { emoji:"🧍", pt:"eu não gosto disso", en:["I don't like it"] },
+                { emoji:"🧠", pt:"eu amo isso", en:["I love it"] },
+                { emoji:"🛑", pt:"eu odeio isso", en:["I hate it"] },
+                { emoji:"🍽️", pt:"eu gosto de comer fora", en:["I like eating out"] },
+                { emoji:"🏋️", pt:"eu não gosto de academia", en:["I don't like the gym"] },
+                { emoji:"📞", pt:"eu odeio ligar", en:["I hate calling"] },
+                { emoji:"🧍‍♀️", pt:"ela gosta disso", en:["she likes this"] },
+                { emoji:"🧍‍♂️", pt:"ele odeia isso", en:["he hates this"] }
+            ]
+        },
+        {
+            id: 19,
+            title: "I'M LOOKING FOR",
+            emoji: "🔍👀",
+            words: [
+                { emoji:"👕", pt:"estou procurando uma camisa", en:["I'm looking for a shirt"] },
+                { emoji:"👟", pt:"estou procurando um tênis", en:["I'm looking for shoes"] },
+                { emoji:"🏠", pt:"estou procurando um lugar", en:["I'm looking for a place"] },
+                { emoji:"🚗", pt:"estou procurando meu carro", en:["I'm looking for my car"] },
+                { emoji:"📱", pt:"estou procurando meu celular", en:["I'm looking for my phone"] },
+                { emoji:"🧾", pt:"estou procurando a conta", en:["I'm looking for the bill"] },
+                { emoji:"🛒", pt:"estou procurando isso", en:["I'm looking for this"] },
+                { emoji:"📍", pt:"estou procurando aqui", en:["I'm looking here"] },
+                { emoji:"🧍", pt:"estou procurando alguém", en:["I'm looking for someone"] },
+                { emoji:"🏪", pt:"estou procurando a loja", en:["I'm looking for the store"] },
+                { emoji:"🧑‍💼", pt:"estou procurando um trabalho", en:["I'm looking for a job"] },
+                { emoji:"🧳", pt:"estou procurando minha mala", en:["I'm looking for my bag"] },
+                { emoji:"🧠", pt:"estou procurando ajuda", en:["I'm looking for help"] },
+                { emoji:"📦", pt:"estou procurando o pacote", en:["I'm looking for the package"] },
+                { emoji:"🏥", pt:"estou procurando o hospital", en:["I'm looking for the hospital"] },
+                { emoji:"🍽️", pt:"estou procurando um restaurante", en:["I'm looking for a restaurant"] },
+                { emoji:"🚽", pt:"estou procurando o banheiro", en:["I'm looking for the bathroom"] },
+                { emoji:"🏦", pt:"estou procurando o banco", en:["I'm looking for the bank"] },
+                { emoji:"🛏️", pt:"estou procurando um quarto", en:["I'm looking for a room"] },
+                { emoji:"📍", pt:"estou procurando ali", en:["I'm looking there"] },
+                { emoji:"🧍‍♂️", pt:"estou procurando ele", en:["I'm looking for him"] },
+                { emoji:"🧍‍♀️", pt:"estou procurando ela", en:["I'm looking for her"] },
+                { emoji:"📄", pt:"estou procurando um documento", en:["I'm looking for a document"] },
+                { emoji:"💳", pt:"estou procurando um caixa", en:["I'm looking for an ATM"] },
+                { emoji:"🏠", pt:"estou procurando minha casa", en:["I'm looking for my house"] },
+                { emoji:"🛒", pt:"estou procurando algo barato", en:["I'm looking for something cheap"] },
+                { emoji:"🧠", pt:"estou procurando uma solução", en:["I'm looking for a solution"] },
+                { emoji:"📞", pt:"estou procurando um número", en:["I'm looking for a number"] },
+                { emoji:"🧳", pt:"estou procurando bagagem", en:["I'm looking for luggage"] },
+                { emoji:"📍", pt:"estou procurando por aqui", en:["I'm looking around here"] }
+            ]
+        },
+        {
+            id: 20,
+            title: "MONTHS & SEASONS",
+            emoji: "📅🌦️",
+            words: [
+                { emoji:"📅", pt:"janeiro", en:["January"] },
+                { emoji:"📅", pt:"fevereiro", en:["February"] },
+                { emoji:"📅", pt:"março", en:["March"] },
+                { emoji:"📅", pt:"abril", en:["April"] },
+                { emoji:"📅", pt:"maio", en:["May"] },
+                { emoji:"📅", pt:"junho", en:["June"] },
+                { emoji:"📅", pt:"julho", en:["July"] },
+                { emoji:"📅", pt:"agosto", en:["August"] },
+                { emoji:"📅", pt:"setembro", en:["September"] },
+                { emoji:"📅", pt:"outubro", en:["October"] },
+                { emoji:"📅", pt:"novembro", en:["November"] },
+                { emoji:"📅", pt:"dezembro", en:["December"] },
+                { emoji:"❄️", pt:"inverno", en:["winter"] },
+                { emoji:"🌸", pt:"primavera", en:["spring"] },
+                { emoji:"☀️", pt:"verão", en:["summer"] },
+                { emoji:"🍂", pt:"outono", en:["fall"] },
+                { emoji:"📍", pt:"em janeiro", en:["in January"] },
+                { emoji:"☀️", pt:"no verão", en:["in the summer"] },
+                { emoji:"❄️", pt:"no inverno", en:["in the winter"] },
+                { emoji:"🍂", pt:"no outono", en:["in the fall"] },
+                { emoji:"🌸", pt:"na primavera", en:["in the spring"] },
+                { emoji:"🎉", pt:"em dezembro", en:["in December"] },
+                { emoji:"🏖️", pt:"viajo no verão", en:["I travel in the summer"] },
+                { emoji:"🧥", pt:"está frio no inverno", en:["it's cold in the winter"] },
+                { emoji:"🌡️", pt:"está quente no verão", en:["it's hot in the summer"] },
+                { emoji:"📅", pt:"meu aniversário é em maio", en:["my birthday is in May"] },
+                { emoji:"📅", pt:"em novembro", en:["in November"] },
+                { emoji:"📅", pt:"no próximo mês", en:["next month"] },
+                { emoji:"📅", pt:"esse mês", en:["this month"] },
+                { emoji:"📅", pt:"mês passado", en:["last month"] }
+            ]
+        },
+        {
+            id: 21,
+            title: "MOODS & FEELINGS",
+            emoji: "🙂😡😴",
+            words: [
+                { emoji:"🙂", pt:"estou feliz", en:["I'm happy"] },
+                { emoji:"😡", pt:"estou bravo", en:["I'm angry"] },
+                { emoji:"😴", pt:"estou cansado", en:["I'm tired"] },
+                { emoji:"😰", pt:"estou nervoso", en:["I'm nervous"] },
+                { emoji:"😔", pt:"estou triste", en:["I'm sad"] },
+                { emoji:"😌", pt:"estou tranquilo", en:["I'm calm"] },
+                { emoji:"🤒", pt:"estou doente", en:["I'm sick"] },
+                { emoji:"😵", pt:"estou confuso", en:["I'm confused"] },
+                { emoji:"😃", pt:"estou animado", en:["I'm excited"] },
+                { emoji:"😐", pt:"estou ok", en:["I'm okay"] },
+                { emoji:"😤", pt:"estou estressado", en:["I'm stressed"] },
+                { emoji:"😎", pt:"estou bem", en:["I'm good"] },
+                { emoji:"😞", pt:"não estou bem", en:["I'm not okay"] },
+                { emoji:"😕", pt:"estou inseguro", en:["I'm unsure"] },
+                { emoji:"😃", pt:"estou feliz hoje", en:["I'm happy today"] },
+                { emoji:"😴", pt:"estou com sono", en:["I'm sleepy"] },
+                { emoji:"😬", pt:"estou desconfortável", en:["I'm uncomfortable"] },
+                { emoji:"😌", pt:"estou relaxado", en:["I'm relaxed"] },
+                { emoji:"😡", pt:"estou irritado", en:["I'm annoyed"] },
+                { emoji:"😟", pt:"estou preocupado", en:["I'm worried"] },
+                { emoji:"🤕", pt:"não estou bem", en:["I'm not well"] },
+                { emoji:"😃", pt:"estou de boa", en:["I'm fine"] },
+                { emoji:"😐", pt:"estou assim assim", en:["I'm so-so"] },
+                { emoji:"😴", pt:"estou exausto", en:["I'm exhausted"] },
+                { emoji:"😄", pt:"estou ótimo", en:["I'm great"] },
+                { emoji:"😞", pt:"estou pra baixo", en:["I'm down"] },
+                { emoji:"😌", pt:"estou em paz", en:["I'm at peace"] },
+                { emoji:"😤", pt:"estou sem paciência", en:["I'm impatient"] },
+                { emoji:"🙂", pt:"estou melhor", en:["I'm better"] },
+                { emoji:"😵", pt:"não estou legal", en:["I'm not feeling well"] }
+            ]
+        }
+
+        
+        ,
+        {
+            id: 22,
+            title: "NUMBERS",
+            emoji: "🔢",
+            words: [
+                { emoji:"🔢", pt:"um", en:["one"] },
+                { emoji:"🔢", pt:"dois", en:["two"] },
+                { emoji:"🔢", pt:"três", en:["three"] },
+                { emoji:"🔢", pt:"quatro", en:["four"] },
+                { emoji:"🔢", pt:"cinco", en:["five"] },
+                { emoji:"🔢", pt:"seis", en:["six"] },
+                { emoji:"🔢", pt:"sete", en:["seven"] },
+                { emoji:"🔢", pt:"oito", en:["eight"] },
+                { emoji:"🔢", pt:"nove", en:["nine"] },
+                { emoji:"🔢", pt:"dez", en:["ten"] },
+                { emoji:"🔢", pt:"onze", en:["eleven"] },
+                { emoji:"🔢", pt:"doze", en:["twelve"] },
+                { emoji:"🔢", pt:"vinte", en:["twenty"] },
+                { emoji:"🔢", pt:"trinta", en:["thirty"] },
+                { emoji:"🔢", pt:"quarenta", en:["forty"] },
+                { emoji:"🔢", pt:"cinquenta", en:["fifty"] },
+                { emoji:"🔢", pt:"cem", en:["one hundred"] },
+                { emoji:"🔢", pt:"mil", en:["one thousand"] },
+                { emoji:"🔢", pt:"vinte e um", en:["twenty-one"] },
+                { emoji:"🔢", pt:"trinta e dois", en:["thirty-two"] },
+                { emoji:"💰", pt:"custa dez dólares", en:["it costs ten dollars"] },
+                { emoji:"🕒", pt:"dez horas", en:["ten o'clock"] },
+                { emoji:"📞", pt:"ligar no número dois", en:["number two"] },
+                { emoji:"🧾", pt:"conta de vinte", en:["twenty-dollar bill"] },
+                { emoji:"🚗", pt:"carro número três", en:["car number three"] },
+                { emoji:"🧍", pt:"somos dois", en:["we are two"] },
+                { emoji:"📦", pt:"duas caixas", en:["two boxes"] },
+                { emoji:"🧠", pt:"primeira vez", en:["first time"] },
+                { emoji:"🏁", pt:"última vez", en:["last time"] },
+                { emoji:"🔢", pt:"qual número?", en:["what number?"] }
+            ]
+        },
+        {
+            id: 23,
+            title: "ORDERING FOOD",
+            emoji: "🍔🍟",
+            words: [
+                { emoji:"🍔", pt:"quero um hambúrguer", en:["I want a burger"] },
+                { emoji:"🍟", pt:"quero batata frita", en:["I want fries"] },
+                { emoji:"🥤", pt:"quero uma bebida", en:["I want a drink"] },
+                { emoji:"☕", pt:"quero café", en:["I want coffee"] },
+                { emoji:"🍕", pt:"quero pizza", en:["I want pizza"] },
+                { emoji:"🍽️", pt:"vou pedir agora", en:["I'll order now"] },
+                { emoji:"🧾", pt:"pode ser isso", en:["that's fine"] },
+                { emoji:"🍔", pt:"vou querer isso", en:["I'll have this"] },
+                { emoji:"🍗", pt:"vou querer frango", en:["I'll have chicken"] },
+                { emoji:"🥗", pt:"vou querer salada", en:["I'll have salad"] },
+                { emoji:"🚫", pt:"sem cebola", en:["no onions"] },
+                { emoji:"➕", pt:"com queijo extra", en:["extra cheese"] },
+                { emoji:"🌶️", pt:"não muito apimentado", en:["not too spicy"] },
+                { emoji:"🧂", pt:"sem sal", en:["no salt"] },
+                { emoji:"🧊", pt:"sem gelo", en:["no ice"] },
+                { emoji:"🍽️", pt:"para viagem", en:["to go"] },
+                { emoji:"🍽️", pt:"para comer aqui", en:["for here"] },
+                { emoji:"🕒", pt:"quanto demora?", en:["how long does it take?"] },
+                { emoji:"💳", pt:"vou pagar no cartão", en:["I'll pay by card"] },
+                { emoji:"💵", pt:"vou pagar em dinheiro", en:["I'll pay cash"] },
+                { emoji:"🍔", pt:"isso vem com batata?", en:["does this come with fries?"] },
+                { emoji:"🧾", pt:"pode dividir a conta?", en:["can we split the bill?"] },
+                { emoji:"🍽️", pt:"só isso", en:["that's it"] },
+                { emoji:"😋", pt:"estava ótimo", en:["it was great"] },
+                { emoji:"🧾", pt:"pode trazer a conta?", en:["can I get the bill?"] },
+                { emoji:"🍔", pt:"o pedido está errado", en:["the order is wrong"] },
+                { emoji:"🕒", pt:"está demorando", en:["it's taking long"] },
+                { emoji:"🍟", pt:"falta isso", en:["this is missing"] },
+                { emoji:"👍", pt:"tudo certo", en:["everything's fine"] },
+                { emoji:"🍽️", pt:"obrigado, estava bom", en:["thanks, it was good"] }
+            ]
+        },
+        {
+            id: 24,
+            title: "THIS / THAT",
+            emoji: "👉👈",
+            words: [
+                { emoji:"👉", pt:"isso aqui", en:["this"] },
+                { emoji:"👈", pt:"isso ali", en:["that"] },
+                { emoji:"👉📦", pt:"isso aqui é meu", en:["this is mine"] },
+                { emoji:"👈📦", pt:"isso ali é seu", en:["that is yours"] },
+                { emoji:"👉🏠", pt:"essa casa aqui", en:["this house"] },
+                { emoji:"👈🏠", pt:"aquela casa ali", en:["that house"] },
+                { emoji:"👉🍔", pt:"esse hambúrguer", en:["this burger"] },
+                { emoji:"👈🍔", pt:"aquele hambúrguer", en:["that burger"] },
+                { emoji:"👉📞", pt:"esse número aqui", en:["this number"] },
+                { emoji:"👈📞", pt:"aquele número ali", en:["that number"] },
+                { emoji:"👉🧾", pt:"essa conta aqui", en:["this bill"] },
+                { emoji:"👈🧾", pt:"aquela conta ali", en:["that bill"] },
+                { emoji:"👉📍", pt:"é isso aqui", en:["it's this"] },
+                { emoji:"👈📍", pt:"é aquilo ali", en:["it's that"] },
+                { emoji:"👉🧠", pt:"eu quero isso aqui", en:["I want this"] },
+                { emoji:"👈🧠", pt:"eu quero aquilo", en:["I want that"] },
+                { emoji:"👉🚗", pt:"esse carro aqui", en:["this car"] },
+                { emoji:"👈🚗", pt:"aquele carro ali", en:["that car"] },
+                { emoji:"👉🧍", pt:"isso aqui funciona", en:["this works"] },
+                { emoji:"👈🧍", pt:"aquilo funciona", en:["that works"] },
+                { emoji:"👉📦", pt:"isso aqui está pronto", en:["this is ready"] },
+                { emoji:"👈📦", pt:"aquilo está pronto", en:["that is ready"] },
+                { emoji:"👉🛒", pt:"vou pegar isso aqui", en:["I'll take this"] },
+                { emoji:"👈🛒", pt:"vou pegar aquilo", en:["I'll take that"] },
+                { emoji:"👉🧾", pt:"isso aqui está errado", en:["this is wrong"] },
+                { emoji:"👈🧾", pt:"aquilo está errado", en:["that is wrong"] },
+                { emoji:"👉❓", pt:"o que é isso aqui?", en:["what's this?"] },
+                { emoji:"👈❓", pt:"o que é aquilo?", en:["what's that?"] },
+                { emoji:"👉📍", pt:"é isso", en:["this is it"] },
+                { emoji:"👈📍", pt:"é aquilo", en:["that's it"] }
+            ]
+        },
+        {
+            id: 25,
+            title: "WANT / NEED",
+            emoji: "🎯⚠️",
+            words: [
+                { emoji:"🎯", pt:"eu quero isso", en:["I want this"] },
+                { emoji:"🎯", pt:"eu quero aquilo", en:["I want that"] },
+                { emoji:"🎯", pt:"eu quero ajuda", en:["I want help"] },
+                { emoji:"🎯", pt:"eu quero comer", en:["I want to eat"] },
+                { emoji:"🎯", pt:"eu quero ir", en:["I want to go"] },
+                { emoji:"⚠️", pt:"eu preciso disso", en:["I need this"] },
+                { emoji:"⚠️", pt:"eu preciso de ajuda", en:["I need help"] },
+                { emoji:"⚠️", pt:"eu preciso comer", en:["I need to eat"] },
+                { emoji:"⚠️", pt:"eu preciso ir agora", en:["I need to go now"] },
+                { emoji:"⚠️", pt:"eu preciso dormir", en:["I need to sleep"] },
+                { emoji:"🎯", pt:"eu quero trabalhar", en:["I want to work"] },
+                { emoji:"⚠️", pt:"eu preciso trabalhar", en:["I need to work"] },
+                { emoji:"🎯", pt:"eu quero isso aqui", en:["I want this here"] },
+                { emoji:"⚠️", pt:"eu preciso disso agora", en:["I need this now"] },
+                { emoji:"🎯", pt:"eu quero tentar", en:["I want to try"] },
+                { emoji:"⚠️", pt:"eu preciso tentar", en:["I need to try"] },
+                { emoji:"🎯", pt:"eu quero comprar isso", en:["I want to buy this"] },
+                { emoji:"⚠️", pt:"eu preciso pagar isso", en:["I need to pay this"] },
+                { emoji:"🎯", pt:"eu quero falar com você", en:["I want to talk to you"] },
+                { emoji:"⚠️", pt:"eu preciso falar com você", en:["I need to talk to you"] },
+                { emoji:"🎯", pt:"eu quero ficar aqui", en:["I want to stay here"] },
+                { emoji:"⚠️", pt:"eu preciso ficar aqui", en:["I need to stay here"] },
+                { emoji:"🎯", pt:"eu quero saber", en:["I want to know"] },
+                { emoji:"⚠️", pt:"eu preciso saber", en:["I need to know"] },
+                { emoji:"🎯", pt:"eu quero isso hoje", en:["I want this today"] },
+                { emoji:"⚠️", pt:"eu preciso disso hoje", en:["I need this today"] },
+                { emoji:"🎯", pt:"eu quero algo barato", en:["I want something cheap"] },
+                { emoji:"⚠️", pt:"eu preciso de tempo", en:["I need time"] },
+                { emoji:"🎯", pt:"eu quero tentar de novo", en:["I want to try again"] },
+                { emoji:"⚠️", pt:"eu preciso resolver isso", en:["I need to deal with this"] }
+            ]
+        }
+
+        ];
+
+        // STATE
+        let currentAulaIndex = null;
+        let gameRunning = false;
+        let difficulty = 'normal'; // easy, normal, hard
+        let spawnTimer = 0;
+        let lastSelectedBlockId = null; // Rastreia bloco selecionado anterior
+        let currentFloorY = 0;
+        const ANSWER_ZONE_OFFSET = 140; // px acima do chão para liberar auto-seleção
+
+        let gameState = {
+            score: 0,
+            lives: 3,
+            correct: 0,
+            total: 30,
+            deck: [],
+            blocks: [],
+            blockIdCounter: 0,
+            selectedBlockId: null,
+            currentWord: null
+        };
+
+        const DIFFICULTY_SETTINGS = {
+            easy: {
+                spawnInterval: 2500,    // 2.5 segundos entre blocos
+                initialLives: 5,
+                scoreMultiplier: 1
+            },
+            normal: {
+                spawnInterval: 1700,    // 1.7 segundos entre blocos
+                initialLives: 3,
+                scoreMultiplier: 1.5
+            },
+            hard: {
+                spawnInterval: 1100,    // 1.1 segundos entre blocos
+                initialLives: 2,
+                scoreMultiplier: 2
+            }
+        };
+
+        const norm = (s) => (s || '').toString().trim().toLowerCase();
+        
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function showScreen(name) {
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active');
+                s.style.display = 'none';
+            });
+            const screen = document.getElementById(name + 'Screen');
+            screen.classList.add('active');
+            screen.style.display = 'block';
+        }
+
+        function renderMenu() {
+            const grid = document.getElementById('aulasGrid');
+            grid.innerHTML = '';
+            AULAS.forEach((aula, i) => {
+                const card = document.createElement('div');
+                card.className = 'aula-card';
+                card.innerHTML = `
+                    <div class="emoji">${aula.emoji}</div>
+                    <div class="name">${aula.title}</div>
+                `;
+                card.addEventListener('click', () => {
+                    currentAulaIndex = i;
+                    showScreen('difficulty');
+                });
+                grid.appendChild(card);
+            });
+        }
+
+        function startGameWithDifficulty(diff) {
+            difficulty = diff;
+            const settings = DIFFICULTY_SETTINGS[diff];
+            const aula = AULAS[currentAulaIndex];
+            
+            gameState.deck = shuffle([...aula.words]);
+            gameState.score = 0;
+            gameState.lives = settings.initialLives;
+            gameState.correct = 0;
+            gameState.blocks = [];
+            gameState.blockIdCounter = 0;
+            gameState.selectedBlockId = null;
+
+            document.getElementById('gameTitle').textContent = `${aula.emoji} ${aula.title}`;
+            updateHUD();
+            showScreen('game');
+        }
+
+        function updateHUD() {
+            document.getElementById('hudScore').textContent = gameState.score;
+            document.getElementById('hudLives').textContent = '❤️'.repeat(Math.max(0, gameState.lives));
+            document.getElementById('hudCorrect').textContent = gameState.correct + '/30';
+            document.getElementById('progressFill').style.width = (gameState.correct / 30 * 100) + '%';
+        }
+
+        function createBlock() {
+            if (gameState.deck.length === 0) return;
+
+            const word = gameState.deck.shift();
+            const arena = document.getElementById('gameArena');
+            const id = gameState.blockIdCounter++;
+            const x = Math.random() * (arena.offsetWidth - 70);
+
+            const el = document.createElement('div');
+            el.className = 'game-block';
+            el.id = `block-${id}`;
+            el.style.left = x + 'px';
+            el.style.top = '-80px';
+
+            el.innerHTML = `
+                <div class="block-aura"></div>
+                <div class="block-box">${word.emoji}</div>
+                <div class="block-hint">${word.pt}</div>
+            `;
+
+            el.addEventListener('click', () => selectBlock(id, word));
+            arena.appendChild(el);
+
+            const block = {
+                id, word, el,
+                x, y: -80,
+                speed: 0.8 + Math.random() * 0.3,
+                createdAt: Date.now()
+            };
+            gameState.blocks.push(block);
+
+            // ✅ PRIMEIRO BLOCO: auto-seleciona e gera opções imediatamente
+            if (gameState.blocks.length === 1) {
+                selectAndGenerateOptions(id, word);
+            }
+        }
+
+        function selectOldestBlock(force = false) {
+            if (gameState.blocks.length === 0) return;
+
+            // Se ainda existe um bloco selecionado e ele ainda está na tela, não troca.
+            if (!force && gameState.selectedBlockId !== null) {
+                const stillThere = document.getElementById(`block-${gameState.selectedBlockId}`);
+                if (stillThere) return;
+            }
+
+            // Define candidatos:
+            // - force=false: só blocos que já caíram o suficiente (zona de resposta)
+            // - force=true: qualquer bloco (usado após acerto ou após um bloco bater no chão)
+            const eligible = force
+                ? gameState.blocks.slice()
+                : gameState.blocks.filter(b => b.y >= (currentFloorY - ANSWER_ZONE_OFFSET));
+
+            if (eligible.length === 0) return;
+
+            // Escolhe o bloco mais "baixo" (mais perto do chão) para manter o ritmo.
+            const next = eligible.reduce((prev, curr) => (prev.y > curr.y ? prev : curr));
+            selectAndGenerateOptions(next.id, next.word);
+        }
+
+        function selectBlock(blockId, word) {
+            if (!gameRunning) return;
+
+            // Remove seleção anterior
+            document.querySelectorAll('.game-block.selected').forEach(el => el.classList.remove('selected'));
+
+            // Seleciona novo bloco (apenas visual - aura)
+            gameState.selectedBlockId = blockId;
+            gameState.currentWord = word;
+            document.getElementById(`block-${blockId}`).classList.add('selected');
+
+            // NÃO gera opções ao clicar! Opções SÓ mudam ao passar pro próximo bloco
+        }
+
+        function selectAndGenerateOptions(blockId, word) {
+            // Seleciona E gera opções (usado apenas quando passa automaticamente pro próximo)
+            selectBlock(blockId, word);
+            generateOptions(word);
+        }
+
+        function generateOptions(word) {
+            const correct = word.en[0];
+            const pool = [correct];
+            const aula = AULAS[currentAulaIndex];
+
+            // Gera 5 erradas
+            const shuffled = shuffle([...aula.words]);
+            for (const w of shuffled) {
+                if (pool.length >= 6) break;
+                if (w.en[0] !== correct && !pool.includes(w.en[0])) {
+                    pool.push(w.en[0]);
+                }
+            }
+
+            const options = shuffle(pool);
+            const optEl = document.getElementById('gameOptions');
+            optEl.innerHTML = '';
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.addEventListener('click', () => checkAnswer(opt, correct));
+                optEl.appendChild(btn);
+            });
+        }
+
+        // FUNÇÕES DE EFEITO VISUAL
+        function createParticleExplosion(blockEl) {
+            const rect = blockEl.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Cria 12-16 partículas
+            const particleCount = 12 + Math.floor(Math.random() * 5);
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle falling';
+                
+                // Cores variadas (ouro, verde, cyan)
+                const colors = ['#FFD700', '#00FF88', '#00BFFF'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                particle.style.width = '8px';
+                particle.style.height = '8px';
+                particle.style.backgroundColor = color;
+                particle.style.borderRadius = '50%';
+                particle.style.boxShadow = `0 0 10px ${color}`;
+                
+                // Ângulo aleatório em todas as direções
+                const angle = (Math.PI * 2 * i) / particleCount + (Math.random() - 0.5) * 0.5;
+                const distance = 80 + Math.random() * 60;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance - 100; // Biased upward
+                
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+                
+                document.body.appendChild(particle);
+                
+                // Remove após animação
+                setTimeout(() => particle.remove(), 800);
+            }
+        }
+
+        function triggerArenaShake() {
+            const arena = document.getElementById('gameArena');
+            arena.classList.remove('shake'); // Reset animation
+            void arena.offsetWidth; // Trigger reflow
+            arena.classList.add('shake');
+            
+            setTimeout(() => {
+                arena.classList.remove('shake');
+            }, 400);
+        }
+
+        function triggerComboAura(comboCount) {
+            // Aura aparece a cada 3 acertos
+            if (comboCount % 3 === 0) {
+                const aura = document.getElementById('comboAura');
+                aura.classList.remove('active'); // Reset
+                void aura.offsetWidth; // Trigger reflow
+                aura.classList.add('active');
+            }
+        }
+
+        function checkAnswer(selected, correct) {
+            if (!gameRunning) return;
+
+            const isCorrect = norm(selected) === norm(correct);
+            const settings = DIFFICULTY_SETTINGS[difficulty];
+
+            if (isCorrect) {
+                gameState.correct++;
+                const scoreGain = Math.round(10 * settings.scoreMultiplier);
+                gameState.score += scoreGain;
+
+                document.getElementById('gameFeedback').textContent = `✅ ${correct}!`;
+                document.getElementById('gameFeedback').style.color = 'var(--green)';
+
+                // ESTOURA o bloco
+                const blockEl = document.getElementById(`block-${gameState.selectedBlockId}`);
+                if (blockEl) {
+                    // Cria explosão de partículas ANTES de remover
+                    createParticleExplosion(blockEl);
+                    
+                    blockEl.style.transform = 'scale(0)';
+                    blockEl.style.opacity = '0';
+                    setTimeout(() => blockEl.remove(), 200);
+                }
+
+                // Trigger combo aura
+                triggerComboAura(gameState.correct);
+
+                gameState.blocks = gameState.blocks.filter(b => b.id !== gameState.selectedBlockId);
+                lastSelectedBlockId = null; // Reseta para gerar novas opções no próximo bloco
+                updateHUD();
+                spawnTimer = 0; // Reset spawn timer
+
+                if (gameState.correct >= 30) {
+                    gameRunning = false;
+                    endGameWin();
+                } else {
+                    // Limpa opções e seleciona próximo bloco (agora SEM depender do spawn)
+                    document.getElementById('gameOptions').innerHTML = '';
+                    gameState.selectedBlockId = null;
+                    gameState.currentWord = null;
+                    document.querySelectorAll('.game-block.selected').forEach(el => el.classList.remove('selected'));
+                    selectOldestBlock(true);
+                }
+            } else {
+                gameState.lives--;
+                document.getElementById('gameFeedback').textContent = `❌ Era "${correct}"`;
+                document.getElementById('gameFeedback').style.color = 'var(--red)';
+                updateHUD();
+                
+                // Trigger shake on wrong answer
+                triggerArenaShake();
+
+                if (gameState.lives <= 0) {
+                    gameRunning = false;
+                    endGameLose();
+                }
+            }
+        }
+
+        function hitFloor(block) {
+            gameState.lives--;
+            document.getElementById('gameFeedback').textContent = `💥 ${block.word.en[0]}`;
+            document.getElementById('gameFeedback').style.color = 'var(--red)';
+
+            // Trigger shake when block hits floor
+            triggerArenaShake();
+
+            // Se o bloco que caiu era o selecionado, limpa seleção/opções
+            if (gameState.selectedBlockId === block.id) {
+                gameState.selectedBlockId = null;
+                gameState.currentWord = null;
+                document.querySelectorAll('.game-block.selected').forEach(el => el.classList.remove('selected'));
+                document.getElementById('gameOptions').innerHTML = '';
+            }
+
+            block.el.remove();
+            gameState.blocks = gameState.blocks.filter(b => b.id !== block.id);
+            updateHUD();
+            spawnTimer = 0; // Reset para fazer spawn rápido do próximo
+
+            if (gameState.lives <= 0) {
+                gameRunning = false;
+                endGameLose();
+            } else {
+                // Só escolhe automaticamente após "cair tudo" (evento do chão)
+                selectOldestBlock(true);
+            }
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            const arena = document.getElementById('gameArena');
+            const floorY = arena.offsetHeight - 60;
+            currentFloorY = floorY;
+            const settings = DIFFICULTY_SETTINGS[difficulty];
+
+            // Atualiza blocos
+            for (let i = gameState.blocks.length - 1; i >= 0; i--) {
+                const block = gameState.blocks[i];
+                block.y += block.speed;
+                block.el.style.top = block.y + 'px';
+
+                if (block.y > floorY) {
+                    hitFloor(block);
+                }
+            }
+
+            // Spawn progressivo - cria novo bloco baseado no timer
+            spawnTimer++;
+            if (gameRunning && spawnTimer >= settings.spawnInterval / 16) {
+                createBlock();
+                spawnTimer = 0;
+            }
+
+            // Auto-seleção: só quando algum bloco entra na zona perto do chão
+            selectOldestBlock(false);
+
+                        requestAnimationFrame(gameLoop);
+        }
+
+        function endGameWin() {
+            document.getElementById('winScore').textContent = gameState.score;
+            document.getElementById('winCorrect').textContent = '30/30';
+            document.getElementById('winModal').classList.add('show');
+        }
+
+        function endGameLose() {
+            document.getElementById('loseScore').textContent = gameState.score;
+            document.getElementById('loseCorrect').textContent = gameState.correct + '/30';
+            document.getElementById('loseModal').classList.add('show');
+        }
+
+        // EVENTOS
+        document.getElementById('gameStartBtn').addEventListener('click', () => {
+            // Start instantly (no 6s wait on Easy / etc.)
+            document.body.classList.add('game-started');
+            gameRunning = true;
+            spawnTimer = 0;
+
+            document.getElementById('gameStartBtn').disabled = true;
+            document.getElementById('gameStartBtn').textContent = 'RODANDO...';
+
+            // Spawn the first block immediately so the game "feels alive" right away
+            createBlock();
+
+            gameLoop();
+        });
+
+        document.getElementById('gameMenuBtn').addEventListener('click', () => {
+            gameRunning = false;
+            spawnTimer = 0;
+            document.getElementById('gameStartBtn').disabled = false;
+            document.getElementById('gameStartBtn').textContent = 'INICIAR';
+            document.getElementById('gameArena').innerHTML = '';
+            document.body.classList.remove('game-started');
+            showScreen('menu');
+        });
+
+        document.getElementById('winMenuBtn').addEventListener('click', () => {
+            document.getElementById('winModal').classList.remove('show');
+            gameRunning = false;
+            spawnTimer = 0;
+            document.getElementById('gameStartBtn').disabled = false;
+            document.getElementById('gameStartBtn').textContent = 'INICIAR';
+            document.getElementById('gameArena').innerHTML = '';
+            document.body.classList.remove('game-started');
+            showScreen('menu');
+        });
+
+        document.getElementById('loseRetryBtn').addEventListener('click', () => {
+            document.getElementById('loseModal').classList.remove('show');
+            spawnTimer = 0;
+            startGameWithDifficulty(difficulty);
+        });
+
+        document.getElementById('loseMenuBtn').addEventListener('click', () => {
+            document.getElementById('loseModal').classList.remove('show');
+            gameRunning = false;
+            spawnTimer = 0;
+            document.getElementById('gameStartBtn').disabled = false;
+            document.getElementById('gameStartBtn').textContent = 'INICIAR';
+            document.getElementById('gameArena').innerHTML = '';
+            document.body.classList.remove('game-started');
+            showScreen('menu');
+        });
+
+        // INIT
+        renderMenu();
+    </script>
+  <script src="../assets/unlock-core.js"></script>
+</body>
+</html>

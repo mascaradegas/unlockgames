@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>WORD MATCH</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a1628;
+  --gold:#FFD700;
+  --green:#00FF88;
+  --red:#FF4444;
+  --cyan:#00BFFF;
+  --purple:#9B6DFF;
+  --white:#E8E8E8;
+  --gray:#6a7a8a;
+}
+html,body{
+  min-height:100vh;
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--white);
+  overflow-x:hidden;
+}
+
+/* Background */
+.bg-grid{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background:linear-gradient(135deg,#0a1628 0%,#1a2a4a 50%,#0a1628 100%);
+  pointer-events:none;
+}
+.bg-grid::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;
+  width:200%;height:200%;
+  background-image:
+    linear-gradient(rgba(155,109,255,0.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(155,109,255,0.06) 1px,transparent 1px);
+  background-size:50px 50px;
+  animation:gridMove 20s linear infinite;
+}
+@keyframes gridMove{
+  0%{transform:translate(0,0)}
+  100%{transform:translate(-50px,-50px)}
+}
+
+/* Screens */
+.screen{
+  display:none;
+  position:relative;
+  z-index:2;
+  min-height:100vh;
+  padding:20px;
+}
+.screen.active{display:flex;flex-direction:column;align-items:center}
+
+/* Menu */
+.menu-title{
+  font-family:'Orbitron',sans-serif;
+  font-size:2.2rem;
+  font-weight:900;
+  color:var(--purple);
+  text-shadow:3px 3px 0 #4a2c7a, 0 0 30px rgba(155,109,255,0.6);
+  margin-bottom:10px;
+  text-align:center;
+}
+.menu-sub{
+  color:var(--cyan);
+  font-size:14px;
+  margin-bottom:30px;
+  text-align:center;
+}
+.aulas{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+  max-width:400px;
+  width:100%;
+}
+.aula{
+  background:linear-gradient(180deg,rgba(20,40,80,0.95),rgba(10,22,40,0.98));
+  border:3px solid var(--purple);
+  border-radius:12px;
+  padding:25px 15px;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.aula:hover{
+  border-color:var(--gold);
+  transform:translateY(-4px);
+  box-shadow:0 0 25px rgba(255,215,0,0.4);
+}
+.aula-emoji{font-size:2.5rem;margin-bottom:10px}
+.aula-name{
+  font-family:'Orbitron',sans-serif;
+  font-size:12px;
+  color:var(--gold);
+  font-weight:700;
+}
+
+/* Mode */
+.mode-title{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.5rem;
+  font-weight:900;
+  color:var(--gold);
+  margin-bottom:30px;
+  text-align:center;
+}
+.mode-buttons{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  max-width:320px;
+  width:100%;
+  margin-bottom:30px;
+}
+.mode-btn{
+  padding:18px 20px;
+  border:3px solid var(--purple);
+  border-radius:12px;
+  background:linear-gradient(180deg,rgba(155,109,255,0.15),rgba(10,22,40,0.9));
+  color:var(--white);
+  font-family:'Orbitron',sans-serif;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.mode-btn:hover{
+  border-color:var(--cyan);
+  background:linear-gradient(180deg,rgba(0,191,255,0.15),rgba(10,22,40,0.9));
+}
+.mode-btn.selected{
+  border-color:var(--gold);
+  background:linear-gradient(180deg,rgba(255,215,0,0.2),rgba(10,22,40,0.9));
+  color:var(--gold);
+  box-shadow:0 0 25px rgba(255,215,0,0.4);
+}
+.start-btn{
+  width:220px;
+  padding:18px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(180deg,#FFE566,#FFD700);
+  color:var(--bg);
+  font-family:'Orbitron',sans-serif;
+  font-size:18px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 0 30px rgba(255,215,0,0.4);
+  transition:all 0.2s;
+}
+.start-btn:hover{box-shadow:0 0 45px rgba(255,215,0,0.6)}
+.start-btn:disabled{opacity:0.4;cursor:not-allowed}
+.back-link{
+  margin-top:20px;
+  color:var(--gray);
+  cursor:pointer;
+}
+.back-link:hover{color:var(--cyan)}
+
+/* Game */
+.game-container{
+  max-width:550px;
+  width:100%;
+}
+.game-header{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:15px;
+}
+.game-header-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:100%;
+  margin-bottom:10px;
+}
+.game-back{
+  background:none;
+  border:none;
+  color:var(--cyan);
+  font-size:28px;
+  cursor:pointer;
+}
+.game-title{
+  font-family:'Orbitron',sans-serif;
+  font-size:18px;
+  font-weight:900;
+  color:var(--purple);
+  text-align:center;
+}
+.game-hud{
+  display:flex;
+  gap:15px;
+  font-family:'Orbitron',sans-serif;
+  font-size:14px;
+  font-weight:700;
+}
+.hud-value{color:var(--gold)}
+.timer-value{color:var(--cyan)}
+.timer-value.danger{color:var(--red);animation:pulse 0.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+
+.progress-bar{
+  height:8px;
+  background:rgba(0,0,0,0.4);
+  border:2px solid var(--purple);
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:15px;
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--purple),var(--cyan),var(--green));
+  transition:width 0.4s;
+}
+.round-text{
+  text-align:center;
+  font-family:'Orbitron',sans-serif;
+  font-size:13px;
+  color:var(--gray);
+  margin-bottom:15px;
+}
+.round-text span{color:var(--gold)}
+
+/* Match Area */
+.match-area{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+.column-title{
+  text-align:center;
+  font-family:'Orbitron',sans-serif;
+  font-size:12px;
+  font-weight:700;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:10px;
+}
+.column-title.pt{
+  color:var(--green);
+  background:rgba(0,255,136,0.1);
+  border:2px solid rgba(0,255,136,0.3);
+}
+.column-title.en{
+  color:var(--cyan);
+  background:rgba(0,191,255,0.1);
+  border:2px solid rgba(0,191,255,0.3);
+}
+.cards{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* Cards */
+.card{
+  padding:18px 12px;
+  border:3px solid rgba(255,255,255,0.15);
+  border-radius:12px;
+  background:linear-gradient(180deg,rgba(20,40,80,0.9),rgba(10,22,40,0.95));
+  text-align:center;
+  font-size:14px;
+  font-weight:700;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.15s;
+  min-height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.card:hover{
+  border-color:var(--purple);
+  transform:translateY(-2px);
+}
+.card.focused{
+  border-color:var(--cyan);
+  box-shadow:0 0 20px rgba(0,191,255,0.6);
+  outline:2px solid var(--cyan);
+  outline-offset:2px;
+}
+.card.selected{
+  border-color:var(--gold);
+  background:linear-gradient(180deg,rgba(255,215,0,0.25),rgba(10,22,40,0.95));
+  color:var(--gold);
+  box-shadow:0 0 25px rgba(255,215,0,0.5);
+}
+.card.correct{
+  border-color:var(--green);
+  background:linear-gradient(180deg,rgba(0,255,136,0.3),rgba(10,22,40,0.95));
+  color:var(--green);
+  box-shadow:0 0 30px rgba(0,255,136,0.6);
+  animation:pop 0.4s;
+}
+@keyframes pop{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.05)}
+  100%{transform:scale(1)}
+}
+.card.wrong{
+  border-color:var(--red);
+  background:linear-gradient(180deg,rgba(255,68,68,0.3),rgba(10,22,40,0.95));
+  color:var(--red);
+  animation:shake 0.4s;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+.card.hidden{
+  opacity:0;
+  transform:scale(0.8);
+  pointer-events:none;
+}
+
+/* Effects */
+.combo-aura{
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:50;
+  opacity:0;
+}
+@keyframes auraPulse{
+  0%{width:80px;height:80px;opacity:0;box-shadow:0 0 40px var(--gold)}
+  50%{opacity:1}
+  100%{width:350px;height:350px;opacity:0;box-shadow:0 0 120px var(--gold)}
+}
+.combo-aura.active{animation:auraPulse 0.7s ease-out forwards}
+
+.particle{
+  position:fixed;
+  pointer-events:none;
+  z-index:60;
+  border-radius:50%;
+}
+@keyframes particleFly{
+  to{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}
+}
+.particle.fly{animation:particleFly 0.7s ease-out forwards}
+
+.time-bonus{
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  padding:20px 35px;
+  border-radius:15px;
+  background:linear-gradient(180deg,rgba(0,255,136,0.25),rgba(10,22,40,0.95));
+  border:3px solid var(--green);
+  color:var(--green);
+  font-family:'Orbitron',sans-serif;
+  font-size:22px;
+  font-weight:900;
+  z-index:100;
+  animation:bonusPop 1s ease-out forwards;
+}
+@keyframes bonusPop{
+  0%{transform:translate(-50%,-50%) scale(0.5);opacity:0}
+  20%{transform:translate(-50%,-50%) scale(1.1);opacity:1}
+  80%{transform:translate(-50%,-50%) scale(1);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(0.8);opacity:0}
+}
+
+/* Modal */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.9);
+  z-index:200;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.modal.show{display:flex}
+.modal-box{
+  background:linear-gradient(180deg,rgba(20,40,80,0.98),rgba(10,22,40,0.99));
+  border:4px solid var(--gold);
+  border-radius:20px;
+  padding:35px;
+  text-align:center;
+  max-width:350px;
+  width:100%;
+}
+.modal-icon{font-size:60px;margin-bottom:15px}
+.modal-title{
+  font-family:'Orbitron',sans-serif;
+  font-size:24px;
+  font-weight:900;
+  color:var(--gold);
+  margin-bottom:10px;
+}
+.modal-score{
+  font-size:18px;
+  margin-bottom:25px;
+}
+.modal-btn{
+  display:block;
+  width:100%;
+  padding:16px;
+  margin-top:12px;
+  border:none;
+  border-radius:10px;
+  font-family:'Orbitron',sans-serif;
+  font-weight:700;
+  font-size:14px;
+  cursor:pointer;
+}
+.modal-btn.primary{
+  background:linear-gradient(180deg,#FFE566,#FFD700);
+  color:var(--bg);
+}
+.modal-btn.secondary{
+  background:transparent;
+  border:3px solid var(--purple);
+  color:var(--purple);
+}
+
+/* Responsive */
+@media (min-width:600px){
+  .menu-title{font-size:2.8rem}
+  .card{padding:22px 15px;font-size:15px;min-height:70px}
+}
+
+
+/* === UNLOCK 2026 Shared App Bar === */
+:root{--unlock-bar-h:58px;}
+body{padding-top:var(--unlock-bar-h);}
+.unlock-appbar{
+  position:fixed; top:0; left:0; right:0; height:var(--unlock-bar-h);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 14px;
+  background:rgba(10,22,40,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  z-index:99999;
+}
+.unlock-appbar .left a{
+  display:inline-flex; align-items:center; gap:8px;
+  text-decoration:none; font-weight:800;
+  color: var(--green, #00FF88);
+  letter-spacing: .2px;
+}
+.unlock-appbar .center{
+  font-family:'Orbitron', system-ui, sans-serif;
+  font-weight:900;
+  letter-spacing:1px;
+  color: var(--gold, #FFD700);
+  font-size:14px;
+}
+.unlock-appbar .right{
+  color: var(--gray, #8899aa);
+  font-weight:700;
+  font-size:12px;
+}
+.unlock-appbar .pill{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 10px;
+  border:1px solid rgba(0,255,136,0.35);
+  border-radius:999px;
+  background:rgba(17,31,61,0.7);
+}
+@media (max-width:420px){
+  .unlock-appbar{padding:0 10px;}
+  .unlock-appbar .center{display:none;}
+}
+
+</style>
+</head>
+<body>
+
+  <!-- UNLOCK 2026 shared top bar -->
+  <div class="unlock-appbar">
+    <div class="left">
+      <a href="../index.html" aria-label="Back to menu">⬅ <span>Menu</span></a>
+    </div>
+    <div class="center">UNLOCK 2026</div>
+    <div class="right">
+      <span class="pill"><span data-unlock-streak>🔥 0</span><span style="opacity:.6">•</span> 🔵 Word Match</span>
+    </div>
+  </div>
+
+<div class="bg-grid"></div>
+<div class="combo-aura" id="combo-aura"></div>
+
+<!-- Menu -->
+<div class="screen active" id="screen-menu">
+  <h1 class="menu-title">🔗 WORD MATCH</h1>
+  <p class="menu-sub">Conecte português ↔ inglês</p>
+  <div class="aulas" id="aulas-list"></div>
+</div>
+
+<!-- Mode Select -->
+<div class="screen" id="screen-mode">
+  <h2 class="mode-title" id="mode-aula-name">IS / ARE</h2>
+  <div class="mode-buttons" id="mode-buttons">
+    <button class="mode-btn" data-mode="relaxed">😌 RELAXADO (SEM TIMER)</button>
+    <button class="mode-btn" data-mode="60">⚡ SPEED — 60 SEGUNDOS</button>
+    <button class="mode-btn" data-mode="90">⏱️ NORMAL — 90 SEGUNDOS</button>
+    <button class="mode-btn" data-mode="120">🧘 TRANQUILO — 120 SEGUNDOS</button>
+  </div>
+  <button class="start-btn" id="start-btn" disabled>COMEÇAR</button>
+  <div class="back-link" id="back-to-menu">← Voltar</div>
+</div>
+
+<!-- Game -->
+<div class="screen" id="screen-game">
+  <div class="game-container">
+    <header class="game-header">
+      <div class="game-header-row">
+        <button class="game-back" id="game-back">←</button>
+        <div class="game-hud">
+          <span id="timer-wrap" style="display:none">
+            <span class="timer-value" id="game-timer">60</span>s
+          </span>
+          <span class="hud-value" id="game-score">0</span>
+        </div>
+      </div>
+      <div class="game-title" id="game-title">WORD MATCH</div>
+    </header>
+    
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    
+    <div class="round-text">Round <span id="game-round">1</span> / 3</div>
+    
+    <div class="match-area">
+      <div>
+        <div class="column-title pt">🇧🇷 PORTUGUÊS</div>
+        <div class="cards" id="col-pt"></div>
+      </div>
+      <div>
+        <div class="column-title en">🇺🇸 ENGLISH</div>
+        <div class="cards" id="col-en"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Win Modal -->
+<div class="modal" id="modal-win">
+  <div class="modal-box">
+    <div class="modal-icon">🏆</div>
+    <div class="modal-title">PARABÉNS!</div>
+    <div class="modal-score">Score: <span id="win-score">0</span></div>
+    <button class="modal-btn primary" id="win-retry">JOGAR DE NOVO</button>
+    <button class="modal-btn secondary" id="win-menu">MENU</button>
+  </div>
+</div>
+
+<!-- Lose Modal -->
+<div class="modal" id="modal-lose">
+  <div class="modal-box">
+    <div class="modal-icon">⏰</div>
+    <div class="modal-title">TEMPO ESGOTADO!</div>
+    <div class="modal-score">Score: <span id="lose-score">0</span></div>
+    <button class="modal-btn primary" id="lose-retry">TENTAR DE NOVO</button>
+    <button class="modal-btn secondary" id="lose-menu">MENU</button>
+  </div>
+</div>
+
+<script>
+const AULAS = [
+  {id:1,title:"IS / ARE",emoji:"🔵🟢",pairs:[{pt:"ele está feliz",en:"he is happy"},{pt:"ela está triste",en:"she is sad"},{pt:"eu estou cansado",en:"i am tired"},{pt:"você está atrasado",en:"you are late"},{pt:"nós estamos prontos",en:"we are ready"},{pt:"eles estão aqui",en:"they are here"},{pt:"a loja está aberta",en:"the store is open"},{pt:"a loja está fechada",en:"the store is closed"},{pt:"o dia está bom",en:"the day is good"},{pt:"está frio hoje",en:"it is cold today"},{pt:"está quente hoje",en:"it is hot today"},{pt:"eu estou com fome",en:"i am hungry"},{pt:"eu estou com sede",en:"i am thirsty"},{pt:"você está bem",en:"you are okay"},{pt:"ela está ocupada",en:"she is busy"},{pt:"ele está livre",en:"he is free"},{pt:"nós estamos perdidos",en:"we are lost"},{pt:"eles estão cansados",en:"they are tired"},{pt:"o carro está aqui",en:"the car is here"},{pt:"o banheiro está ali",en:"the bathroom is there"},{pt:"eu estou confuso",en:"i am confused"},{pt:"você está certo",en:"you are right"},{pt:"você está errado",en:"you are wrong"},{pt:"a comida está boa",en:"the food is good"},{pt:"o lugar está cheio",en:"the place is full"},{pt:"o lugar está vazio",en:"the place is empty"},{pt:"eu estou com sono",en:"i am sleepy"},{pt:"ela está feliz agora",en:"she is happy now"},{pt:"eles estão prontos agora",en:"they are ready now"},{pt:"nós estamos bem",en:"we are fine"}]},
+  {id:2,title:"NUMBERS",emoji:"🔢",pairs:[{pt:"um",en:"one"},{pt:"dois",en:"two"},{pt:"três",en:"three"},{pt:"quatro",en:"four"},{pt:"cinco",en:"five"},{pt:"seis",en:"six"},{pt:"sete",en:"seven"},{pt:"oito",en:"eight"},{pt:"nove",en:"nine"},{pt:"dez",en:"ten"},{pt:"onze",en:"eleven"},{pt:"doze",en:"twelve"},{pt:"quinze",en:"fifteen"},{pt:"vinte",en:"twenty"},{pt:"trinta",en:"thirty"},{pt:"quarenta",en:"forty"},{pt:"cinquenta",en:"fifty"},{pt:"sessenta",en:"sixty"},{pt:"setenta",en:"seventy"},{pt:"oitenta",en:"eighty"},{pt:"noventa",en:"ninety"},{pt:"cem",en:"hundred"},{pt:"mil",en:"thousand"},{pt:"vinte e um",en:"twenty one"},{pt:"trinta e cinco",en:"thirty five"},{pt:"quarenta e sete",en:"forty seven"},{pt:"noventa e nove",en:"ninety nine"},{pt:"cem reais",en:"one hundred reais"},{pt:"dois dólares",en:"two dollars"},{pt:"um milhão",en:"one million"}]},
+  {id:3,title:"DO YOU HAVE",emoji:"🤲❓",pairs:[{pt:"você tem água",en:"do you have water"},{pt:"você tem café",en:"do you have coffee"},{pt:"você tem banheiro",en:"do you have a bathroom"},{pt:"você tem wi fi",en:"do you have wifi"},{pt:"você tem cartão",en:"do you have a card"},{pt:"você tem dinheiro",en:"do you have cash"},{pt:"você tem recibo",en:"do you have a receipt"},{pt:"você tem vaga",en:"do you have space"},{pt:"você tem tempo",en:"do you have time"},{pt:"você tem carro",en:"do you have a car"},{pt:"você tem documento",en:"do you have an id"},{pt:"você tem remédio",en:"do you have medicine"},{pt:"você tem comida",en:"do you have food"},{pt:"você tem gelo",en:"do you have ice"},{pt:"você tem sal",en:"do you have salt"},{pt:"você tem açúcar",en:"do you have sugar"},{pt:"você tem entrega",en:"do you have delivery"},{pt:"você tem horário",en:"do you have an appointment"},{pt:"você tem experiência",en:"do you have experience"},{pt:"você tem vaga hoje",en:"do you have availability today"},{pt:"você tem mesa",en:"do you have a table"},{pt:"você tem quarto",en:"do you have a room"},{pt:"você tem troco",en:"do you have change"},{pt:"você tem número",en:"do you have a number"},{pt:"você tem endereço",en:"do you have an address"},{pt:"você tem caneta",en:"do you have a pen"},{pt:"você tem papel",en:"do you have paper"},{pt:"você tem cadeira",en:"do you have a chair"},{pt:"você tem ajuda",en:"do you have help"},{pt:"você tem desconto",en:"do you have a discount"}]},
+  {id:4,title:"GET",emoji:"🤲✨",pairs:[{pt:"pegar o carro",en:"get the car"},{pt:"pegar o ônibus",en:"get the bus"},{pt:"pegar comida",en:"get food"},{pt:"pegar café",en:"get coffee"},{pt:"pegar o telefone",en:"get the phone"},{pt:"pegar o pacote",en:"get the package"},{pt:"conseguir um emprego",en:"get a job"},{pt:"conseguir dinheiro",en:"get money"},{pt:"conseguir ajuda",en:"get help"},{pt:"chegar em casa",en:"get home"},{pt:"chegar cedo",en:"get early"},{pt:"chegar tarde",en:"get late"},{pt:"ficar bravo",en:"get angry"},{pt:"ficar cansado",en:"get tired"},{pt:"ficar doente",en:"get sick"},{pt:"entender isso",en:"get it"},{pt:"pegar a ideia",en:"get the idea"},{pt:"receber mensagem",en:"get a message"},{pt:"receber pagamento",en:"get paid"},{pt:"receber resposta",en:"get an answer"},{pt:"pegar um táxi",en:"get a taxi"},{pt:"pegar ingresso",en:"get a ticket"},{pt:"pegar um presente",en:"get a gift"},{pt:"pegar gelo",en:"get ice"},{pt:"pegar água",en:"get water"},{pt:"pegar lugar",en:"get a seat"},{pt:"pegar fila",en:"get in line"},{pt:"pegar estrada",en:"get on the road"},{pt:"pegar acesso",en:"get access"},{pt:"pegar problema",en:"get in trouble"}]},
+  {id:5,title:"GO / COME",emoji:"🚶➡️⬅️",pairs:[{pt:"ir pra casa",en:"go home"},{pt:"vir pra casa",en:"come home"},{pt:"ir ao trabalho",en:"go to work"},{pt:"vir trabalhar",en:"come to work"},{pt:"ir ao mercado",en:"go to the store"},{pt:"vir aqui",en:"come here"},{pt:"ir embora",en:"go away"},{pt:"vir comigo",en:"come with me"},{pt:"ir sozinho",en:"go alone"},{pt:"vir agora",en:"come now"},{pt:"ir amanhã",en:"go tomorrow"},{pt:"vir hoje",en:"come today"},{pt:"ir de carro",en:"go by car"},{pt:"vir a pé",en:"come on foot"},{pt:"ir rápido",en:"go fast"},{pt:"vir rápido",en:"come fast"},{pt:"ir buscar",en:"go get"},{pt:"vir buscar",en:"come get"},{pt:"ir ao hospital",en:"go to the hospital"},{pt:"vir ao hospital",en:"come to the hospital"},{pt:"ir trabalhar cedo",en:"go to work early"},{pt:"vir falar comigo",en:"come talk to me"},{pt:"ir dormir",en:"go sleep"},{pt:"vir comer",en:"come eat"},{pt:"ir estudar",en:"go study"},{pt:"vir estudar",en:"come study"},{pt:"ir pra fora",en:"go outside"},{pt:"vir pra dentro",en:"come inside"},{pt:"ir agora",en:"go now"},{pt:"vir depois",en:"come later"}]},
+  {id:6,title:"GOING TO",emoji:"🎯➡️",pairs:[{pt:"eu vou trabalhar",en:"i am going to work"},{pt:"eu vou estudar",en:"i am going to study"},{pt:"eu vou comer",en:"i am going to eat"},{pt:"eu vou dormir",en:"i am going to sleep"},{pt:"eu vou sair",en:"i am going to go out"},{pt:"eu vou viajar",en:"i am going to travel"},{pt:"eu vou ligar",en:"i am going to call"},{pt:"eu vou comprar",en:"i am going to buy"},{pt:"eu vou pagar",en:"i am going to pay"},{pt:"eu vou tentar",en:"i am going to try"},{pt:"eu vou decidir",en:"i am going to decide"},{pt:"eu vou dirigir",en:"i am going to drive"},{pt:"eu vou correr",en:"i am going to run"},{pt:"eu vou treinar",en:"i am going to train"},{pt:"eu vou limpar",en:"i am going to clean"},{pt:"eu vou responder",en:"i am going to reply"},{pt:"eu vou ficar aqui",en:"i am going to stay here"},{pt:"eu vou sair cedo",en:"i am going to leave early"},{pt:"eu vou chegar tarde",en:"i am going to arrive late"},{pt:"eu vou economizar",en:"i am going to save money"},{pt:"eu vou resolver isso",en:"i am going to solve this"},{pt:"eu vou chamar ele",en:"i am going to call him"},{pt:"eu vou esperar",en:"i am going to wait"},{pt:"eu vou ajudar",en:"i am going to help"},{pt:"eu vou começar",en:"i am going to start"},{pt:"eu vou terminar",en:"i am going to finish"},{pt:"eu vou tentar de novo",en:"i am going to try again"},{pt:"eu vou parar",en:"i am going to stop"},{pt:"eu vou continuar",en:"i am going to continue"},{pt:"eu vou voltar",en:"i am going to come back"}]},
+  {id:7,title:"HAVE / HAS",emoji:"✋📦",pairs:[{pt:"eu tenho tempo",en:"i have time"},{pt:"eu tenho dinheiro",en:"i have money"},{pt:"eu tenho fome",en:"i am hungry"},{pt:"eu tenho sede",en:"i am thirsty"},{pt:"eu tenho uma ideia",en:"i have an idea"},{pt:"eu tenho carro",en:"i have a car"},{pt:"eu tenho trabalho",en:"i have a job"},{pt:"eu tenho dúvida",en:"i have a question"},{pt:"ele tem carro",en:"he has a car"},{pt:"ele tem dinheiro",en:"he has money"},{pt:"ele tem tempo",en:"he has time"},{pt:"ele tem dor",en:"he has pain"},{pt:"ela tem casa",en:"she has a house"},{pt:"ela tem trabalho",en:"she has a job"},{pt:"ela tem compromisso",en:"she has an appointment"},{pt:"nós temos tempo",en:"we have time"},{pt:"nós temos dinheiro",en:"we have money"},{pt:"eles têm filhos",en:"they have kids"},{pt:"eles têm casa",en:"they have a house"},{pt:"eles têm problema",en:"they have a problem"},{pt:"eu tenho conta",en:"i have a bill"},{pt:"eu tenho celular",en:"i have a phone"},{pt:"ele tem documento",en:"he has an id"},{pt:"ela tem cartão",en:"she has a card"},{pt:"nós temos entrega",en:"we have delivery"},{pt:"eles têm experiência",en:"they have experience"},{pt:"eu tenho medo",en:"i am scared"},{pt:"ele tem sono",en:"he is sleepy"},{pt:"ela tem razão",en:"she is right"},{pt:"nós temos escolha",en:"we have a choice"}]},
+  {id:8,title:"HAVE TO / NEED TO",emoji:"⚠️✅",pairs:[{pt:"eu tenho que trabalhar",en:"i have to work"},{pt:"eu tenho que pagar",en:"i have to pay"},{pt:"eu tenho que sair",en:"i have to leave"},{pt:"eu tenho que esperar",en:"i have to wait"},{pt:"eu tenho que ligar",en:"i have to call"},{pt:"eu tenho que estudar",en:"i have to study"},{pt:"eu preciso dormir",en:"i need to sleep"},{pt:"eu preciso comer",en:"i need to eat"},{pt:"eu preciso estudar",en:"i need to study"},{pt:"eu preciso descansar",en:"i need to rest"},{pt:"eu preciso ajuda",en:"i need help"},{pt:"eu tenho que dirigir",en:"i have to drive"},{pt:"eu tenho que decidir",en:"i have to decide"},{pt:"eu tenho que resolver isso",en:"i have to deal with this"},{pt:"eu preciso tentar",en:"i need to try"},{pt:"eu preciso sair cedo",en:"i need to leave early"},{pt:"eu tenho que chegar cedo",en:"i have to arrive early"},{pt:"eu preciso ligar pra ele",en:"i need to call him"},{pt:"eu tenho que trabalhar hoje",en:"i have to work today"},{pt:"eu preciso marcar horário",en:"i need to make an appointment"},{pt:"eu tenho que pagar a conta",en:"i have to pay the bill"},{pt:"eu preciso limpar",en:"i need to clean"},{pt:"eu tenho que lembrar",en:"i have to remember"},{pt:"eu preciso resolver",en:"i need to solve it"},{pt:"eu tenho que esperar aqui",en:"i have to wait here"},{pt:"eu preciso continuar",en:"i need to continue"},{pt:"eu tenho que parar",en:"i have to stop"},{pt:"eu preciso sair agora",en:"i need to leave now"},{pt:"eu tenho que tentar de novo",en:"i have to try again"},{pt:"eu preciso ajuda agora",en:"i need help now"}]},
+  {id:9,title:"HERE / THERE",emoji:"📍🗺️",pairs:[{pt:"é aqui",en:"it is here"},{pt:"é ali",en:"it is there"},{pt:"fica aqui",en:"stay here"},{pt:"fica ali",en:"stay there"},{pt:"vem aqui",en:"come here"},{pt:"vai ali",en:"go there"},{pt:"estou aqui",en:"i am here"},{pt:"estou ali",en:"i am there"},{pt:"minha casa é aqui",en:"my house is here"},{pt:"o carro está ali",en:"the car is there"},{pt:"senta aqui",en:"sit here"},{pt:"espera aqui",en:"wait here"},{pt:"deixa aqui",en:"leave it here"},{pt:"pega ali",en:"get it there"},{pt:"fica aqui comigo",en:"stay here with me"},{pt:"fica ali fora",en:"stay there outside"},{pt:"é perto daqui",en:"it is near here"},{pt:"é longe daqui",en:"it is far from here"},{pt:"entra aqui",en:"come in here"},{pt:"sai ali",en:"go out there"},{pt:"é logo aqui",en:"it is right here"},{pt:"é logo ali",en:"it is right there"},{pt:"o banheiro é aqui",en:"the bathroom is here"},{pt:"a saída é ali",en:"the exit is there"},{pt:"fica aqui dentro",en:"stay here inside"},{pt:"fica ali atrás",en:"stay there behind"},{pt:"olha aqui",en:"look here"},{pt:"olha ali",en:"look there"},{pt:"volta aqui",en:"come back here"},{pt:"vai ali rápido",en:"go there fast"}]},
+  {id:10,title:"HOW MUCH / HOW MANY",emoji:"💰🔢",pairs:[{pt:"quanto custa",en:"how much is it"},{pt:"quanto é isso",en:"how much is this"},{pt:"quanto deu a conta",en:"how much is the bill"},{pt:"quanto é o aluguel",en:"how much is the rent"},{pt:"quanto você paga",en:"how much do you pay"},{pt:"quanto você ganha",en:"how much do you make"},{pt:"quanta água",en:"how much water"},{pt:"quanto tempo",en:"how much time"},{pt:"quanta experiência",en:"how much experience"},{pt:"quanto pesa",en:"how much does it weigh"},{pt:"quantas pessoas",en:"how many people"},{pt:"quantos dias",en:"how many days"},{pt:"quantos carros",en:"how many cars"},{pt:"quantos quartos",en:"how many rooms"},{pt:"quantas cadeiras",en:"how many chairs"},{pt:"quantas horas",en:"how many hours"},{pt:"quantos alunos",en:"how many students"},{pt:"quantas caixas",en:"how many boxes"},{pt:"quantos recibos",en:"how many receipts"},{pt:"quantas chamadas",en:"how many calls"},{pt:"quanto custa isso aqui",en:"how much is this here"},{pt:"quantos clientes",en:"how many customers"},{pt:"quanto ficou",en:"how much did it come to"},{pt:"quantas camas",en:"how many beds"},{pt:"quanto pão",en:"how much bread"},{pt:"quanto arroz",en:"how much rice"},{pt:"quantas garrafas",en:"how many bottles"},{pt:"quanto dinheiro",en:"how much money"},{pt:"quantos documentos",en:"how many documents"},{pt:"quanto você precisa",en:"how much do you need"}]},
+  {id:11,title:"HOW",emoji:"🤷❓",pairs:[{pt:"como",en:"how"},{pt:"como funciona",en:"how does it work"},{pt:"como faço isso",en:"how do i do this"},{pt:"como chego lá",en:"how do i get there"},{pt:"como chego em casa",en:"how do i get home"},{pt:"como pago isso",en:"how do i pay this"},{pt:"como ligo",en:"how do i call"},{pt:"como uso isso",en:"how do i use this"},{pt:"como resolvo isso",en:"how do i solve this"},{pt:"como começo",en:"how do i start"},{pt:"como termino",en:"how do i finish"},{pt:"como continuo",en:"how do i continue"},{pt:"como marco horário",en:"how do i make an appointment"},{pt:"como falo com ele",en:"how do i talk to him"},{pt:"como explico isso",en:"how do i explain this"},{pt:"como faço rápido",en:"how do i do it fast"},{pt:"como entro",en:"how do i get in"},{pt:"como saio",en:"how do i get out"},{pt:"como trabalho aqui",en:"how do i work here"},{pt:"como faço pagamento",en:"how do i pay"},{pt:"como uso o app",en:"how do i use the app"},{pt:"como chego aqui",en:"how do i get here"},{pt:"como falo com médico",en:"how do i talk to a doctor"},{pt:"como retorno ligação",en:"how do i call back"},{pt:"como faço isso agora",en:"how do i do this now"},{pt:"como resolvo hoje",en:"how do i fix this today"},{pt:"como faço sozinho",en:"how do i do it alone"},{pt:"como faço online",en:"how do i do it online"},{pt:"como faço de novo",en:"how do i do it again"},{pt:"como funciona isso",en:"how does this work"}]},
+  {id:12,title:"IS / ARE QUESTIONS",emoji:"🔵🟢❓",pairs:[{pt:"é perto",en:"is it close"},{pt:"é longe",en:"is it far"},{pt:"é caro",en:"is it expensive"},{pt:"é barato",en:"is it cheap"},{pt:"está aberto",en:"is it open"},{pt:"está fechado",en:"is it closed"},{pt:"você está bem",en:"are you okay"},{pt:"eles estão aqui",en:"are they here"},{pt:"isso é seu",en:"is this yours"},{pt:"é tarde",en:"is it late"},{pt:"é cedo",en:"is it early"},{pt:"estamos prontos",en:"are we ready"},{pt:"eles estão esperando",en:"are they waiting"},{pt:"o médico está aqui",en:"is the doctor here"},{pt:"o hospital é longe",en:"is the hospital far"},{pt:"isso é permitido",en:"is it allowed"},{pt:"isso é obrigatório",en:"is it mandatory"},{pt:"isso é importante",en:"is it important"},{pt:"isso está pronto",en:"is it ready"},{pt:"a conta está certa",en:"is the bill correct"},{pt:"a porta está aberta",en:"is the door open"},{pt:"o quarto é grande",en:"is the room big"},{pt:"o horário está certo",en:"is the time correct"},{pt:"isso é online",en:"is it online"},{pt:"eles estão fechados",en:"are they closed"},{pt:"ele está atrasado",en:"is he late"},{pt:"ela está ocupada",en:"is she busy"},{pt:"os carros são novos",en:"are the cars new"},{pt:"as casas são grandes",en:"are the houses big"},{pt:"isso está claro",en:"is that clear"}]},
+  {id:13,title:"CAN",emoji:"💪🔓",pairs:[{pt:"eu sei dirigir",en:"i can drive"},{pt:"eu sei cozinhar",en:"i can cook"},{pt:"eu sei falar inglês",en:"i can speak english"},{pt:"posso entrar",en:"can i come in"},{pt:"posso sentar aqui",en:"can i sit here"},{pt:"posso usar o banheiro",en:"can i use the bathroom"},{pt:"posso pagar com cartão",en:"can i pay with card"},{pt:"posso ligar depois",en:"can i call later"},{pt:"você pode me ajudar",en:"can you help me"},{pt:"você pode esperar",en:"can you wait"},{pt:"você pode vir",en:"can you come"},{pt:"ele pode ajudar",en:"he can help"},{pt:"ela sabe dirigir",en:"she can drive"},{pt:"eu posso esperar",en:"i can wait"},{pt:"eu não posso agora",en:"i cannot now"},{pt:"eu não posso fazer isso",en:"i cannot do this"},{pt:"não pode estacionar aqui",en:"you cannot park here"},{pt:"não pode fumar aqui",en:"you cannot smoke here"},{pt:"pode chover",en:"it can rain"},{pt:"isso pode quebrar",en:"this can break"},{pt:"posso ficar aqui",en:"can i stay here"},{pt:"posso sair cedo",en:"can i leave early"},{pt:"você consegue vir",en:"can you come"},{pt:"posso ajudar",en:"can i help"},{pt:"eu consigo entender",en:"i can understand"},{pt:"eu consigo correr",en:"i can run"},{pt:"posso tentar",en:"can i try"},{pt:"posso falar agora",en:"can i talk now"},{pt:"posso voltar depois",en:"can i come back later"},{pt:"eu posso continuar",en:"i can continue"}]},
+  {id:14,title:"DAYS OF THE WEEK",emoji:"📅",pairs:[{pt:"domingo",en:"sunday"},{pt:"segunda",en:"monday"},{pt:"terça",en:"tuesday"},{pt:"quarta",en:"wednesday"},{pt:"quinta",en:"thursday"},{pt:"sexta",en:"friday"},{pt:"sábado",en:"saturday"},{pt:"hoje é segunda",en:"today is monday"},{pt:"amanhã é sexta",en:"tomorrow is friday"},{pt:"ontem foi terça",en:"yesterday was tuesday"},{pt:"eu trabalho na segunda",en:"i work on monday"},{pt:"eu estudo na terça",en:"i study on tuesday"},{pt:"eu treino na quarta",en:"i train on wednesday"},{pt:"eu ligo na quinta",en:"i call on thursday"},{pt:"eu saio na sexta",en:"i go out on friday"},{pt:"eu descanso no sábado",en:"i rest on saturday"},{pt:"eu fico em casa no domingo",en:"i stay home on sunday"},{pt:"toda semana",en:"every week"},{pt:"todo dia",en:"every day"},{pt:"no fim de semana",en:"on the weekend"},{pt:"essa semana",en:"this week"},{pt:"semana que vem",en:"next week"},{pt:"segunda de manhã",en:"monday morning"},{pt:"sexta à noite",en:"friday night"},{pt:"sábado de manhã",en:"saturday morning"},{pt:"domingo à noite",en:"sunday night"},{pt:"qual dia é hoje",en:"what day is today"},{pt:"que dia é hoje",en:"what day is it"},{pt:"hoje é sexta",en:"today is friday"},{pt:"amanhã é sábado",en:"tomorrow is saturday"}]},
+  {id:15,title:"DIRECTIONS",emoji:"🧭➡️",pairs:[{pt:"vire à esquerda",en:"turn left"},{pt:"vire à direita",en:"turn right"},{pt:"siga reto",en:"go straight"},{pt:"é aqui",en:"it is here"},{pt:"é ali",en:"it is there"},{pt:"é na esquina",en:"it is on the corner"},{pt:"é perto",en:"it is close"},{pt:"é longe",en:"it is far"},{pt:"fica à esquerda",en:"it is on the left"},{pt:"fica à direita",en:"it is on the right"},{pt:"fica em frente",en:"it is in front"},{pt:"fica atrás",en:"it is behind"},{pt:"perto daqui",en:"near here"},{pt:"longe daqui",en:"far from here"},{pt:"no sinal",en:"at the traffic light"},{pt:"na rua principal",en:"on the main street"},{pt:"um quarteirão",en:"one block"},{pt:"dois quarteirões",en:"two blocks"},{pt:"onde fica",en:"where is it"},{pt:"mostra no mapa",en:"show me on the map"},{pt:"continue andando",en:"keep walking"},{pt:"volte",en:"go back"},{pt:"chegou",en:"you are there"},{pt:"é ali dentro",en:"it is inside"},{pt:"é ali fora",en:"it is outside"},{pt:"logo ali",en:"right there"},{pt:"perto do banco",en:"near the bank"},{pt:"perto do mercado",en:"near the store"},{pt:"fica ali do lado",en:"it is right next to it"},{pt:"fica ali na frente",en:"it is right in front"}]},
+  {id:16,title:"DO DOES DID",emoji:"🔵🔴🟡",pairs:[{pt:"você trabalha aqui",en:"do you work here"},{pt:"você gosta disso",en:"do you like this"},{pt:"eles moram aqui",en:"do they live here"},{pt:"ela trabalha aqui",en:"does she work here"},{pt:"ele gosta disso",en:"does he like this"},{pt:"isso funciona",en:"does it work"},{pt:"você precisa disso",en:"do you need this"},{pt:"ela mora longe",en:"does she live far"},{pt:"ele dirige",en:"does he drive"},{pt:"isso ajuda",en:"does this help"},{pt:"você foi ontem",en:"did you go yesterday"},{pt:"ele ligou",en:"did he call"},{pt:"ela pagou",en:"did she pay"},{pt:"vocês entenderam",en:"did you understand"},{pt:"isso funcionou",en:"did it work"},{pt:"sim eu trabalho",en:"yes i do"},{pt:"não eu não gosto",en:"no i do not"},{pt:"sim ela mora",en:"yes she does"},{pt:"não ele não dirige",en:"no he does not"},{pt:"sim eu fui",en:"yes i did"},{pt:"não eu não fui",en:"no i did not"},{pt:"você entende",en:"do you understand"},{pt:"ela entende",en:"does she understand"},{pt:"você entendeu",en:"did you understand"},{pt:"ele ligou ontem",en:"did he call yesterday"},{pt:"você compra aqui",en:"do you shop here"},{pt:"ela compra aqui",en:"does she shop here"},{pt:"vocês compraram",en:"did you buy"},{pt:"você tem tempo",en:"do you have time"},{pt:"eles moraram aqui",en:"did they live here"}]},
+  {id:17,title:"LET ME CAN I",emoji:"🙋✋",pairs:[{pt:"deixa eu entrar",en:"let me in"},{pt:"deixa eu ligar",en:"let me call"},{pt:"deixa eu sentar",en:"let me sit"},{pt:"deixa eu explicar",en:"let me explain"},{pt:"deixa eu tentar",en:"let me try"},{pt:"deixa eu ver",en:"let me see"},{pt:"deixa eu ajudar",en:"let me help"},{pt:"deixa eu pagar",en:"let me pay"},{pt:"posso entrar",en:"can i come in"},{pt:"posso sentar aqui",en:"can i sit here"},{pt:"posso ligar depois",en:"can i call later"},{pt:"posso usar o banheiro",en:"can i use the bathroom"},{pt:"posso ficar aqui",en:"can i stay here"},{pt:"posso esperar",en:"can i wait"},{pt:"posso tentar",en:"can i try"},{pt:"posso ajudar",en:"can i help"},{pt:"posso falar agora",en:"can i talk now"},{pt:"posso sair cedo",en:"can i leave early"},{pt:"posso voltar depois",en:"can i come back later"},{pt:"posso pagar agora",en:"can i pay now"},{pt:"deixa eu resolver isso",en:"let me handle this"},{pt:"deixa eu pensar",en:"let me think"},{pt:"deixa eu verificar",en:"let me check"},{pt:"deixa eu confirmar",en:"let me confirm"},{pt:"posso começar",en:"can i start"},{pt:"posso terminar",en:"can i finish"},{pt:"deixa eu continuar",en:"let me continue"},{pt:"posso tentar de novo",en:"can i try again"},{pt:"deixa eu explicar melhor",en:"let me explain better"},{pt:"posso falar com você",en:"can i talk to you"}]},
+  {id:18,title:"LIKE / LOVE / HATE",emoji:"👍❤️👎",pairs:[{pt:"eu gosto disso",en:"i like this"},{pt:"eu gosto de café",en:"i like coffee"},{pt:"eu gosto de música",en:"i like music"},{pt:"eu gosto daqui",en:"i like it here"},{pt:"eu gosto do trabalho",en:"i like the job"},{pt:"eu gosto de estudar",en:"i like studying"},{pt:"eu amo isso",en:"i love this"},{pt:"eu amo café",en:"i love coffee"},{pt:"eu amo música",en:"i love music"},{pt:"eu amo essa cidade",en:"i love this city"},{pt:"eu amo meu trabalho",en:"i love my job"},{pt:"eu amo aprender inglês",en:"i love learning english"},{pt:"eu odeio isso",en:"i hate this"},{pt:"eu odeio trânsito",en:"i hate traffic"},{pt:"eu odeio acordar cedo",en:"i hate waking up early"},{pt:"eu odeio esperar",en:"i hate waiting"},{pt:"você gosta disso",en:"do you like this"},{pt:"você gosta daqui",en:"do you like it here"},{pt:"você ama isso",en:"do you love this"},{pt:"você odeia isso",en:"do you hate this"},{pt:"eu gosto mais disso",en:"i like this more"},{pt:"eu gosto menos disso",en:"i like this less"},{pt:"eu não gosto disso",en:"i do not like this"},{pt:"eu não amo isso",en:"i do not love this"},{pt:"eu não odeio isso",en:"i do not hate this"},{pt:"ele gosta disso",en:"he likes this"},{pt:"ela ama isso",en:"she loves this"},{pt:"eles odeiam isso",en:"they hate this"},{pt:"eu gosto muito disso",en:"i really like this"},{pt:"eu amo muito isso",en:"i really love this"}]},
+  {id:19,title:"IM LOOKING FOR",emoji:"🔎🗺️",pairs:[{pt:"estou procurando isso",en:"i am looking for this"},{pt:"estou procurando ajuda",en:"i am looking for help"},{pt:"estou procurando trabalho",en:"i am looking for a job"},{pt:"estou procurando banheiro",en:"i am looking for a bathroom"},{pt:"estou procurando um lugar",en:"i am looking for a place"},{pt:"estou procurando comida",en:"i am looking for food"},{pt:"estou procurando café",en:"i am looking for coffee"},{pt:"estou procurando mercado",en:"i am looking for a store"},{pt:"estou procurando endereço",en:"i am looking for an address"},{pt:"estou procurando hotel",en:"i am looking for a hotel"},{pt:"estou procurando médico",en:"i am looking for a doctor"},{pt:"estou procurando farmácia",en:"i am looking for a pharmacy"},{pt:"estou procurando ônibus",en:"i am looking for the bus"},{pt:"estou procurando uber",en:"i am looking for an uber"},{pt:"estou procurando caixa eletrônico",en:"i am looking for an atm"},{pt:"estou procurando vaga",en:"i am looking for parking"},{pt:"estou procurando emprego melhor",en:"i am looking for a better job"},{pt:"estou procurando apartamento",en:"i am looking for an apartment"},{pt:"estou procurando casa",en:"i am looking for a house"},{pt:"estou procurando quarto",en:"i am looking for a room"},{pt:"estou procurando preço",en:"i am looking for the price"},{pt:"estou procurando tamanho",en:"i am looking for a size"},{pt:"estou procurando promoção",en:"i am looking for a deal"},{pt:"estou procurando isso aqui",en:"i am looking for this here"},{pt:"estou procurando ali",en:"i am looking for that there"},{pt:"você está procurando isso",en:"are you looking for this"},{pt:"ele está procurando trabalho",en:"he is looking for a job"},{pt:"ela está procurando ajuda",en:"she is looking for help"},{pt:"estamos procurando lugar",en:"we are looking for a place"},{pt:"eles estão procurando casa",en:"they are looking for a house"}]},
+  {id:20,title:"MONTHS AND SEASONS",emoji:"🗓️🍂",pairs:[{pt:"janeiro",en:"january"},{pt:"fevereiro",en:"february"},{pt:"março",en:"march"},{pt:"abril",en:"april"},{pt:"maio",en:"may"},{pt:"junho",en:"june"},{pt:"julho",en:"july"},{pt:"agosto",en:"august"},{pt:"setembro",en:"september"},{pt:"outubro",en:"october"},{pt:"novembro",en:"november"},{pt:"dezembro",en:"december"},{pt:"verão",en:"summer"},{pt:"outono",en:"fall"},{pt:"inverno",en:"winter"},{pt:"primavera",en:"spring"},{pt:"em janeiro",en:"in january"},{pt:"em dezembro",en:"in december"},{pt:"no verão",en:"in the summer"},{pt:"no inverno",en:"in the winter"},{pt:"no outono",en:"in the fall"},{pt:"na primavera",en:"in the spring"},{pt:"este mês",en:"this month"},{pt:"mês que vem",en:"next month"},{pt:"mês passado",en:"last month"},{pt:"este ano",en:"this year"},{pt:"ano que vem",en:"next year"},{pt:"ano passado",en:"last year"},{pt:"está frio no inverno",en:"it is cold in the winter"},{pt:"está quente no verão",en:"it is hot in the summer"}]},
+  {id:21,title:"MOODS AND FEELINGS",emoji:"🙂😡😴",pairs:[{pt:"estou feliz",en:"i am happy"},{pt:"estou triste",en:"i am sad"},{pt:"estou bravo",en:"i am angry"},{pt:"estou cansado",en:"i am tired"},{pt:"estou com sono",en:"i am sleepy"},{pt:"estou animado",en:"i am excited"},{pt:"estou nervoso",en:"i am nervous"},{pt:"estou calmo",en:"i am calm"},{pt:"estou estressado",en:"i am stressed"},{pt:"estou bem",en:"i am fine"},{pt:"estou mal",en:"i am not well"},{pt:"estou confuso",en:"i am confused"},{pt:"estou focado",en:"i am focused"},{pt:"estou ocupado",en:"i am busy"},{pt:"estou livre",en:"i am free"},{pt:"estou com medo",en:"i am scared"},{pt:"estou relaxado",en:"i am relaxed"},{pt:"estou com fome",en:"i am hungry"},{pt:"estou com sede",en:"i am thirsty"},{pt:"estou doente",en:"i am sick"},{pt:"estou melhor",en:"i am better"},{pt:"estou pior",en:"i am worse"},{pt:"estou pronto",en:"i am ready"},{pt:"estou atrasado",en:"i am late"},{pt:"estou cedo",en:"i am early"},{pt:"ele está feliz",en:"he is happy"},{pt:"ela está cansada",en:"she is tired"},{pt:"eles estão animados",en:"they are excited"},{pt:"estamos bem",en:"we are fine"},{pt:"estou ok agora",en:"i am okay now"}]},
+  {id:22,title:"NUMBERS REAL LIFE",emoji:"🔢💯",pairs:[{pt:"um dólar",en:"one dollar"},{pt:"dois dólares",en:"two dollars"},{pt:"dez dólares",en:"ten dollars"},{pt:"vinte dólares",en:"twenty dollars"},{pt:"cinquenta dólares",en:"fifty dollars"},{pt:"cem dólares",en:"one hundred dollars"},{pt:"mil dólares",en:"one thousand dollars"},{pt:"dois reais",en:"two reais"},{pt:"dez reais",en:"ten reais"},{pt:"vinte reais",en:"twenty reais"},{pt:"quanto custa",en:"how much is it"},{pt:"custa dez",en:"it costs ten"},{pt:"custa vinte",en:"it costs twenty"},{pt:"são cinco pessoas",en:"there are five people"},{pt:"são dez minutos",en:"it is ten minutes"},{pt:"tenho dois irmãos",en:"i have two siblings"},{pt:"tenho três filhos",en:"i have three kids"},{pt:"moro aqui há dois anos",en:"i live here for two years"},{pt:"trabalho cinco dias",en:"i work five days"},{pt:"são oito horas",en:"it is eight hours"},{pt:"chego em dez minutos",en:"i arrive in ten minutes"},{pt:"faltam cinco minutos",en:"five minutes left"},{pt:"são cem metros",en:"it is one hundred meters"},{pt:"são dois quarteirões",en:"it is two blocks"},{pt:"tenho vinte anos",en:"i am twenty years old"},{pt:"ele tem trinta anos",en:"he is thirty years old"},{pt:"ela tem quarenta anos",en:"she is forty years old"},{pt:"custa cem reais",en:"it costs one hundred reais"},{pt:"paguei cinquenta",en:"i paid fifty"},{pt:"ganhei cem",en:"i made one hundred"}]},
+  {id:23,title:"THIS THAT",emoji:"👉👈",pairs:[{pt:"isso aqui",en:"this"},{pt:"isso ali",en:"that"},{pt:"isso aqui é bom",en:"this is good"},{pt:"isso ali é ruim",en:"that is bad"},{pt:"eu quero isso",en:"i want this"},{pt:"eu quero aquilo",en:"i want that"},{pt:"isso aqui é meu",en:"this is mine"},{pt:"isso ali é seu",en:"that is yours"},{pt:"isso aqui funciona",en:"this works"},{pt:"isso ali não funciona",en:"that does not work"},{pt:"isso aqui é caro",en:"this is expensive"},{pt:"isso ali é barato",en:"that is cheap"},{pt:"eu gosto disso aqui",en:"i like this"},{pt:"eu gosto disso ali",en:"i like that"},{pt:"isso aqui está certo",en:"this is right"},{pt:"isso ali está errado",en:"that is wrong"},{pt:"pega isso aqui",en:"get this"},{pt:"pega isso ali",en:"get that"},{pt:"olha isso aqui",en:"look at this"},{pt:"olha isso ali",en:"look at that"},{pt:"isso aqui agora",en:"this now"},{pt:"isso ali depois",en:"that later"},{pt:"isso aqui é melhor",en:"this is better"},{pt:"isso ali é pior",en:"that is worse"},{pt:"eu escolho isso",en:"i choose this"},{pt:"eu escolho aquilo",en:"i choose that"},{pt:"isso aqui é fácil",en:"this is easy"},{pt:"isso ali é difícil",en:"that is hard"},{pt:"isso aqui funciona bem",en:"this works well"},{pt:"isso ali não funciona",en:"that does not work"}]},
+  {id:24,title:"WANT NEED",emoji:"✅🔥",pairs:[{pt:"eu quero isso",en:"i want this"},{pt:"eu quero aquilo",en:"i want that"},{pt:"eu quero café",en:"i want coffee"},{pt:"eu quero comida",en:"i want food"},{pt:"eu quero ajuda",en:"i want help"},{pt:"eu quero trabalhar",en:"i want to work"},{pt:"eu quero estudar",en:"i want to study"},{pt:"eu quero sair",en:"i want to go out"},{pt:"eu quero voltar",en:"i want to come back"},{pt:"eu quero pagar",en:"i want to pay"},{pt:"eu preciso disso",en:"i need this"},{pt:"eu preciso daquilo",en:"i need that"},{pt:"eu preciso ajuda",en:"i need help"},{pt:"eu preciso trabalhar",en:"i need to work"},{pt:"eu preciso estudar",en:"i need to study"},{pt:"eu preciso dormir",en:"i need to sleep"},{pt:"eu preciso comer",en:"i need to eat"},{pt:"eu preciso sair",en:"i need to leave"},{pt:"eu preciso voltar",en:"i need to come back"},{pt:"eu preciso pagar",en:"i need to pay"},{pt:"eu quero agora",en:"i want it now"},{pt:"eu preciso agora",en:"i need it now"},{pt:"eu quero depois",en:"i want it later"},{pt:"eu preciso hoje",en:"i need it today"},{pt:"você quer isso",en:"do you want this"},{pt:"você precisa disso",en:"do you need this"},{pt:"ele quer ajuda",en:"he wants help"},{pt:"ela precisa ajuda",en:"she needs help"},{pt:"nós queremos isso",en:"we want this"},{pt:"eles precisam disso",en:"they need this"}]}
+];
+
+// State
+let currentAula = null;
+let selectedMode = null;
+let score = 0;
+let round = 1;
+let timerSeconds = 0;
+let timerInterval = null;
+let matchedCount = 0;
+let roundErrors = 0;
+let selectedPt = null;
+let selectedEn = null;
+let currentPairs = [];
+let comboCount = 0;
+let focusedColumn = 'pt';
+let focusedIndex = 0;
+
+// Utils
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+// Effects
+function createParticles(el, count = 10) {
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const colors = ['#FFD700', '#00FF88', '#00BFFF', '#9B6DFF'];
+  
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle fly';
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const size = 4 + Math.random() * 5;
+    p.style.cssText = `left:${cx}px;top:${cy}px;width:${size}px;height:${size}px;background:${color};box-shadow:0 0 ${size*2}px ${color}`;
+    const angle = (Math.PI * 2 * i) / count;
+    const dist = 50 + Math.random() * 40;
+    p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 700);
+  }
+}
+
+function triggerAura() {
+  const aura = document.getElementById('combo-aura');
+  aura.classList.remove('active');
+  void aura.offsetWidth;
+  aura.classList.add('active');
+}
+
+function showTimeBonus(text, isPerfect) {
+  const toast = document.createElement('div');
+  toast.className = 'time-bonus';
+  toast.textContent = text;
+  if (isPerfect) {
+    toast.style.borderColor = 'var(--gold)';
+    toast.style.color = 'var(--gold)';
+    toast.style.background = 'linear-gradient(180deg,rgba(255,215,0,0.25),rgba(10,22,40,0.95))';
+  }
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 1000);
+}
+
+// Menu
+function renderMenu() {
+  const container = document.getElementById('aulas-list');
+  container.innerHTML = '';
+  AULAS.forEach(aula => {
+    const div = document.createElement('div');
+    div.className = 'aula';
+    div.innerHTML = `<div class="aula-emoji">${aula.emoji}</div><div class="aula-name">${aula.title}</div>`;
+    div.addEventListener('click', () => selectAula(aula));
+    container.appendChild(div);
+  });
+}
+
+function selectAula(aula) {
+  currentAula = aula;
+  selectedMode = null;
+  document.getElementById('mode-aula-name').textContent = aula.emoji + ' ' + aula.title;
+  document.getElementById('start-btn').disabled = true;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+  showScreen('mode');
+}
+
+function goToMenu() {
+  if (timerInterval) clearInterval(timerInterval);
+  document.getElementById('modal-win').classList.remove('show');
+  document.getElementById('modal-lose').classList.remove('show');
+  showScreen('menu');
+}
+
+// Mode buttons
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    selectedMode = this.dataset.mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+    this.classList.add('selected');
+    document.getElementById('start-btn').disabled = false;
+  });
+});
+
+// Game
+function startGame() {
+  if (!selectedMode || !currentAula) return;
+  
+  if (timerInterval) clearInterval(timerInterval);
+  
+  score = 0;
+  round = 1;
+  matchedCount = 0;
+  roundErrors = 0;
+  comboCount = 0;
+  
+  document.getElementById('game-score').textContent = '0';
+  document.getElementById('game-round').textContent = '1';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('game-title').textContent = currentAula.title;
+  
+  const timerWrap = document.getElementById('timer-wrap');
+  const timerEl = document.getElementById('game-timer');
+  
+  if (selectedMode === 'relaxed') {
+    timerWrap.style.display = 'none';
+    timerSeconds = 0;
+  } else {
+    timerSeconds = parseInt(selectedMode);
+    timerWrap.style.display = 'inline';
+    timerEl.textContent = timerSeconds;
+    timerEl.classList.remove('danger');
+    startTimer();
+  }
+  
+  showScreen('game');
+  loadRound();
+}
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  const timerEl = document.getElementById('game-timer');
+  
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    timerEl.textContent = timerSeconds;
+    
+    if (timerSeconds <= 10) timerEl.classList.add('danger');
+    else timerEl.classList.remove('danger');
+    
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      endGame(false);
+    }
+  }, 1000);
+}
+
+function loadRound() {
+  matchedCount = 0;
+  roundErrors = 0;
+  selectedPt = null;
+  selectedEn = null;
+  
+  currentPairs = shuffle(currentAula.pairs).slice(0, 8);
+  renderCards();
+  
+  focusedColumn = 'pt';
+  focusedIndex = 0;
+  setTimeout(updateFocus, 100);
+}
+
+function renderCards() {
+  const colPt = document.getElementById('col-pt');
+  const colEn = document.getElementById('col-en');
+  
+  colPt.innerHTML = '';
+  colEn.innerHTML = '';
+  
+  const shuffledPt = shuffle([...currentPairs]);
+  const shuffledEn = shuffle([...currentPairs]);
+  
+  shuffledPt.forEach(pair => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.textContent = pair.pt;
+    card.dataset.pairId = pair.en;
+    card.addEventListener('click', () => clickCard(card, 'pt'));
+    colPt.appendChild(card);
+  });
+  
+  shuffledEn.forEach(pair => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.textContent = pair.en;
+    card.dataset.pairId = pair.en;
+    card.addEventListener('click', () => clickCard(card, 'en'));
+    colEn.appendChild(card);
+  });
+}
+
+function clickCard(card, type) {
+  if (card.classList.contains('hidden')) return;
+  
+  if (card.classList.contains('selected')) {
+    card.classList.remove('selected');
+    if (type === 'pt') selectedPt = null;
+    else selectedEn = null;
+    return;
+  }
+  
+  if (type === 'pt') {
+    if (selectedPt) selectedPt.classList.remove('selected');
+    selectedPt = card;
+  } else {
+    if (selectedEn) selectedEn.classList.remove('selected');
+    selectedEn = card;
+  }
+  card.classList.add('selected');
+  
+  if (selectedPt && selectedEn) {
+    checkMatch();
+  }
+}
+
+function checkMatch() {
+  const ptId = selectedPt.dataset.pairId;
+  const enId = selectedEn.dataset.pairId;
+  
+  if (ptId === enId) {
+    // Correct!
+    selectedPt.classList.remove('selected');
+    selectedEn.classList.remove('selected');
+    selectedPt.classList.add('correct');
+    selectedEn.classList.add('correct');
+    
+    createParticles(selectedPt);
+    createParticles(selectedEn);
+    
+    comboCount++;
+    if (comboCount % 3 === 0) triggerAura();
+    
+    score += 100;
+    matchedCount++;
+    document.getElementById('game-score').textContent = score;
+    updateProgress();
+    
+    setTimeout(() => {
+      selectedPt.classList.add('hidden');
+      selectedEn.classList.add('hidden');
+      selectedPt = null;
+      selectedEn = null;
+      
+      if (matchedCount >= 8) {
+        // Round complete
+        if (selectedMode !== 'relaxed') {
+          let timeBonus = 15;
+          let isPerfect = roundErrors === 0;
+          if (isPerfect) timeBonus += 10;
+          timerSeconds += timeBonus;
+          document.getElementById('game-timer').textContent = timerSeconds;
+          document.getElementById('game-timer').classList.remove('danger');
+          showTimeBonus(isPerfect ? '+25s PERFEITO! 🔥' : '+15s', isPerfect);
+        }
+        
+        round++;
+        if (round > 3) {
+          setTimeout(() => endGame(true), 800);
+        } else {
+          document.getElementById('game-round').textContent = round;
+          setTimeout(loadRound, 1000);
+        }
+      } else {
+        updateFocus();
+      }
+    }, 500);
+    
+  } else {
+    // Wrong
+    roundErrors++;
+    comboCount = 0;
+    selectedPt.classList.add('wrong');
+    selectedEn.classList.add('wrong');
+    
+    setTimeout(() => {
+      selectedPt.classList.remove('selected', 'wrong');
+      selectedEn.classList.remove('selected', 'wrong');
+      selectedPt = null;
+      selectedEn = null;
+    }, 500);
+  }
+}
+
+function updateProgress() {
+  const total = (round - 1) * 8 + matchedCount;
+  document.getElementById('progress-fill').style.width = (total / 24 * 100) + '%';
+}
+
+function endGame(won) {
+  if (timerInterval) clearInterval(timerInterval);
+  
+  if (won) {
+    document.getElementById('win-score').textContent = score;
+    document.getElementById('modal-win').classList.add('show');
+  } else {
+    document.getElementById('lose-score').textContent = score;
+    document.getElementById('modal-lose').classList.add('show');
+  }
+}
+
+// Keyboard Controls
+function getVisibleCards(col) {
+  const container = document.getElementById('col-' + col);
+  if (!container) return [];
+  return [...container.querySelectorAll('.card:not(.hidden)')];
+}
+
+function updateFocus() {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('focused'));
+  
+  let cards = getVisibleCards(focusedColumn);
+  if (cards.length === 0) {
+    focusedColumn = focusedColumn === 'pt' ? 'en' : 'pt';
+    cards = getVisibleCards(focusedColumn);
+  }
+  if (cards.length === 0) return;
+  
+  if (focusedIndex >= cards.length) focusedIndex = cards.length - 1;
+  if (focusedIndex < 0) focusedIndex = 0;
+  
+  cards[focusedIndex].classList.add('focused');
+}
+
+document.addEventListener('keydown', (e) => {
+  const gameScreen = document.getElementById('screen-game');
+  if (!gameScreen.classList.contains('active')) return;
+  if (document.getElementById('modal-win').classList.contains('show')) return;
+  if (document.getElementById('modal-lose').classList.contains('show')) return;
+  
+  const ptCards = getVisibleCards('pt');
+  const enCards = getVisibleCards('en');
+  if (ptCards.length === 0 && enCards.length === 0) return;
+  
+  switch(e.key) {
+    case 'ArrowUp':
+      e.preventDefault();
+      focusedIndex = Math.max(0, focusedIndex - 1);
+      updateFocus();
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      const max = getVisibleCards(focusedColumn).length - 1;
+      focusedIndex = Math.min(max, focusedIndex + 1);
+      updateFocus();
+      break;
+    case 'ArrowLeft':
+      e.preventDefault();
+      if (focusedColumn === 'en' && ptCards.length > 0) {
+        focusedColumn = 'pt';
+        focusedIndex = Math.min(focusedIndex, ptCards.length - 1);
+        updateFocus();
+      }
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      if (focusedColumn === 'pt' && enCards.length > 0) {
+        focusedColumn = 'en';
+        focusedIndex = Math.min(focusedIndex, enCards.length - 1);
+        updateFocus();
+      }
+      break;
+    case ' ':
+    case 'Enter':
+      e.preventDefault();
+      const cards = getVisibleCards(focusedColumn);
+      if (cards[focusedIndex]) {
+        clickCard(cards[focusedIndex], focusedColumn);
+        setTimeout(updateFocus, 100);
+      }
+      break;
+  }
+});
+
+// Event Listeners
+document.getElementById('start-btn').addEventListener('click', startGame);
+document.getElementById('back-to-menu').addEventListener('click', goToMenu);
+document.getElementById('game-back').addEventListener('click', goToMenu);
+document.getElementById('win-retry').addEventListener('click', () => {
+  document.getElementById('modal-win').classList.remove('show');
+  startGame();
+});
+document.getElementById('win-menu').addEventListener('click', goToMenu);
+document.getElementById('lose-retry').addEventListener('click', () => {
+  document.getElementById('modal-lose').classList.remove('show');
+  startGame();
+});
+document.getElementById('lose-menu').addEventListener('click', goToMenu);
+
+// Init
+renderMenu();
+</script>
+  <script src="../assets/unlock-core.js"></script>
+</body>
+</html>

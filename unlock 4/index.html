@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UNLOCK 2026</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#0a1628;
+      --panel:#111f3d;
+      --panel2:#0e1b34;
+      --gold:#FFD700;
+      --green:#00FF88;
+      --cyan:#00BFFF;
+      --purple:#9B6DFF;
+      --red:#FF4444;
+      --gray:#8899aa;
+      --white:#E8E8E8;
+    }
+    html,body{min-height:100vh}
+    body{
+      font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+      background:
+        radial-gradient(1200px 600px at 50% -10%, rgba(0,191,255,.14), transparent 60%),
+        radial-gradient(900px 500px at 10% 10%, rgba(155,109,255,.12), transparent 55%),
+        radial-gradient(900px 500px at 90% 15%, rgba(0,255,136,.10), transparent 55%),
+        linear-gradient(180deg, #071224 0%, var(--bg) 55%, #06101f 100%);
+      color:var(--white);
+      overflow-x:hidden;
+    }
+
+    /* subtle grid */
+    body:before{
+      content:"";
+      position:fixed; inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size:36px 36px;
+      opacity:.12;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width:520px;
+      margin:0 auto;
+      padding:28px 18px 34px;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:16px;
+    }
+
+    .brand{
+      text-align:center;
+      margin-bottom:6px;
+    }
+    .brand .title{
+      font-family:'Orbitron',system-ui,sans-serif;
+      font-weight:900;
+      letter-spacing:1.6px;
+      color:var(--gold);
+      font-size:32px;
+      text-shadow:0 0 18px rgba(255,215,0,.18);
+    }
+    .brand .sub{
+      margin-top:8px;
+      color:var(--gray);
+      font-weight:700;
+      font-size:14px;
+    }
+
+    .card{
+      background:rgba(17,31,61,.75);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:
+        0 16px 40px rgba(0,0,0,.35),
+        0 0 0 1px rgba(0,255,136,.10) inset;
+      border-radius:18px;
+      padding:18px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .btn{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:16px 14px;
+      border-radius:16px;
+      border:2px solid rgba(0,255,136,.55);
+      background:linear-gradient(180deg, rgba(17,31,61,.92) 0%, rgba(14,27,52,.92) 100%);
+      color:var(--white);
+      text-decoration:none;
+      font-weight:900;
+      letter-spacing:.2px;
+      font-size:18px;
+      box-shadow:
+        0 10px 22px rgba(0,0,0,.32),
+        0 0 0 1px rgba(0,255,136,.12) inset;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:hover{
+      transform: translateY(-2px);
+      border-color: rgba(0,255,136,.85);
+      box-shadow:
+        0 16px 30px rgba(0,0,0,.38),
+        0 0 22px rgba(0,255,136,.10);
+    }
+    .btn:active{
+      transform: translateY(0px);
+    }
+
+    .dot{
+      width:10px;height:10px;border-radius:999px; display:inline-block;
+      box-shadow:0 0 14px currentColor;
+    }
+    .dot.yellow{color:var(--gold); background:var(--gold)}
+    .dot.blue{color:var(--cyan); background:var(--cyan)}
+    .dot.purple{color:var(--purple); background:var(--purple)}
+
+    .footer{
+      margin-top:10px;
+      text-align:center;
+      color:rgba(136,153,170,.9);
+      font-size:12px;
+      font-weight:700;
+    }
+    .footer span{
+      color:rgba(232,232,232,.9);
+    }
+
+    @media (max-width:420px){
+      .brand .title{font-size:28px}
+      .btn{font-size:17px}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="title">UNLOCK 2026</div>
+      <div class="sub">Escolha um jogo e começa agora</div>
+      <div class="sub" style="margin-top:10px; display:flex; justify-content:center; gap:10px;"><span style="display:inline-flex; align-items:center; gap:8px; padding:7px 10px; border:1px solid rgba(255,215,0,.22); border-radius:999px; background:rgba(17,31,61,.55);">🔥 <span id="unlockStreakValue">0</span>-day streak</span><span style="display:inline-flex; align-items:center; gap:8px; padding:7px 10px; border:1px solid rgba(0,255,136,.22); border-radius:999px; background:rgba(17,31,61,.55); color:rgba(232,232,232,.9);">ID <span id="unlockUserIdShort">--------</span></span></div>
+    </div>
+
+    <div class="card">
+      <a class="btn" href="./games/word-drop.html">
+        <span class="dot yellow"></span> Word Drop
+      </a>
+      <div style="height:12px"></div>
+      <a class="btn" href="./games/word-match.html">
+        <span class="dot blue"></span> Word Match
+      </a>
+      <div style="height:12px"></div>
+      <a class="btn" href="./games/word-stack.html">
+        <span class="dot purple"></span> Word Stack
+      </a>
+    </div>
+
+    <div class="footer">
+      <span>Dica:</span> depois a gente coloca progresso, lock/unlock e streak aqui.
+    </div>
+  </div>
+  <script src="./assets/unlock-core.js"></script>
+</body>
+</html>
