@@ -876,6 +876,8 @@ body{padding-top:var(--unlock-bar-h);}
 
             <div class="quick-play-arena" id="quickPlayArena"></div>
 
+            <div class="game-options" id="quickPlayOptions"></div>
+
             <div class="controls">
                 <button class="btn btn-start" id="quickPlayStartBtn">INICIAR</button>
                 <button class="btn btn-menu" id="quickPlayMenuBtn">MENU</button>
@@ -2722,33 +2724,39 @@ body{padding-top:var(--unlock-bar-h);}
             lives: 3,
             combo: 0,
             wave: 1,
-            droppingEmojis: new Set(),
             running: false,
-            dropIdCounter: 0,
+            blockIdCounter: 0,
+            selectedBlockId: null,
+            currentWord: null,
+            blocks: [],
+            deck: [],
             spawnCounter: 0
         };
 
         function startQuickPlay() {
-            // Pool all emojis from all AULAS
-            const allEmojis = [];
+            // Pool all words from all AULAS
+            const allWords = [];
             AULAS.forEach(aula => {
                 aula.words.forEach(word => {
-                    allEmojis.push(word.emoji);
+                    allWords.push(word);
                 });
             });
 
-            quickPlayState.allEmojis = allEmojis;
+            quickPlayState.deck = shuffle([...allWords]);
             quickPlayState.score = 0;
             quickPlayState.lives = 3;
             quickPlayState.combo = 0;
             quickPlayState.wave = 1;
             quickPlayState.running = true;
-            quickPlayState.droppingEmojis = new Set();
-            quickPlayState.dropIdCounter = 0;
+            quickPlayState.blocks = [];
+            quickPlayState.blockIdCounter = 0;
+            quickPlayState.selectedBlockId = null;
+            quickPlayState.currentWord = null;
             quickPlayState.spawnCounter = 0;
 
-            // Clear arena
+            // Clear arena and options
             document.getElementById('quickPlayArena').innerHTML = '';
+            document.getElementById('quickPlayOptions').innerHTML = '';
 
             // Show screen
             showScreen('quickPlay');
@@ -2764,58 +2772,159 @@ body{padding-top:var(--unlock-bar-h);}
             quickPlayGameLoop();
         }
 
-        function spawnQuickPlayEmoji() {
+        function spawnQuickPlayBlock() {
+            if (!quickPlayState.running || quickPlayState.deck.length === 0) return;
+
+            const word = quickPlayState.deck.shift();
+            const arena = document.getElementById('quickPlayArena');
+            const id = quickPlayState.blockIdCounter++;
+            const x = Math.random() * (arena.offsetWidth - 70);
+
+            const el = document.createElement('div');
+            el.className = 'game-block';
+            el.id = `qp-block-${id}`;
+            el.style.left = x + 'px';
+            el.style.top = '-80px';
+
+            el.innerHTML = `
+                <div class="block-aura"></div>
+                <div class="block-box">${word.emoji}</div>
+                <div class="block-hint">${word.pt.toUpperCase()}</div>
+            `;
+
+            el.addEventListener('click', () => selectQuickPlayBlock(id, word));
+            arena.appendChild(el);
+
+            quickPlayState.blocks.push({
+                id,
+                word,
+                el,
+                y: -80,
+                speed: 1 + (quickPlayState.wave * 0.3) // Faster as waves increase
+            });
+        }
+
+        function selectQuickPlayBlock(id, word) {
+            if (quickPlayState.selectedBlockId === id) return;
+
+            document.querySelectorAll('.game-block.selected').forEach(el => el.classList.remove('selected'));
+            document.getElementById(`qp-block-${id}`).classList.add('selected');
+
+            quickPlayState.selectedBlockId = id;
+            quickPlayState.currentWord = word;
+
+            showQuickPlayOptions(word);
+        }
+
+        function showQuickPlayOptions(word) {
+            const optionsContainer = document.getElementById('quickPlayOptions');
+            optionsContainer.innerHTML = '';
+
+            // Pick 3 random wrong answers
+            const allWords = [];
+            AULAS.forEach(aula => {
+                aula.words.forEach(w => {
+                    if (w !== word) allWords.push(w.en[0]);
+                });
+            });
+
+            const options = [word.en[0]];
+            for (let i = 0; i < 3 && allWords.length > 0; i++) {
+                const idx = Math.floor(Math.random() * allWords.length);
+                options.push(allWords[idx]);
+                allWords.splice(idx, 1);
+            }
+
+            shuffle(options);
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.addEventListener('click', () => checkQuickPlayAnswer(opt, word.en[0]));
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkQuickPlayAnswer(selected, correct) {
             if (!quickPlayState.running) return;
 
-            const emoji = quickPlayState.allEmojis[Math.floor(Math.random() * quickPlayState.allEmojis.length)];
-            const dropId = 'qp-drop-' + (quickPlayState.dropIdCounter++);
-            const arena = document.getElementById('quickPlayArena');
+            const isCorrect = norm(selected) === norm(correct);
 
-            const drop = document.createElement('div');
-            drop.id = dropId;
-            drop.className = 'quick-play-drop';
-            drop.textContent = emoji;
-            drop.style.left = Math.random() * 85 + 7.5 + '%';
-
-            drop.addEventListener('click', () => {
-                // ANY click counts as a hit - no matching needed!
-                drop.classList.add('matched');
-                quickPlayState.score += 10 * (1 + quickPlayState.combo * 0.1);
+            if (isCorrect) {
                 quickPlayState.combo++;
-                quickPlayState.droppingEmojis.delete(dropId);
+                quickPlayState.score += 10 * (1 + quickPlayState.combo * 0.1);
 
-                // Play sound and show encouragement for hit
+                // Play sound and show encouragement for correct match
                 playSound('correct');
                 showEncouragement('correct');
 
-                // Show score popup at drop location
-                const rect = drop.getBoundingClientRect();
-                showScorePopup(10 * (1 + (quickPlayState.combo - 1) * 0.1), rect.left, rect.top);
+                // Remove block
+                const blockEl = document.getElementById(`qp-block-${quickPlayState.selectedBlockId}`);
+                if (blockEl) {
+                    createParticleExplosion(blockEl);
+                    blockEl.style.transform = 'scale(0)';
+                    blockEl.style.opacity = '0';
+                    setTimeout(() => blockEl.remove(), 200);
+
+                    const rect = blockEl.getBoundingClientRect();
+                    showScorePopup(10 * (1 + quickPlayState.combo * 0.1), rect.left, rect.top);
+                }
+
+                quickPlayState.blocks = quickPlayState.blocks.filter(b => b.id !== quickPlayState.selectedBlockId);
+                quickPlayState.selectedBlockId = null;
+                quickPlayState.currentWord = null;
+                document.getElementById('quickPlayOptions').innerHTML = '';
 
                 // Combo milestone every 5 hits
                 if (quickPlayState.combo % 5 === 0) {
                     playSound('combo');
                     showEncouragement('combo');
                 }
+            } else {
+                quickPlayState.lives--;
+                quickPlayState.combo = 0;
 
-                setTimeout(() => drop.remove(), 500);
-                updateQuickPlayHUD();
-            });
+                // Play sound and show encouragement for wrong answer
+                playSound('wrong');
+                showEncouragement('wrong');
+                showDamageNumber(1, window.innerWidth / 2, window.innerHeight / 2);
 
-            arena.appendChild(drop);
-            quickPlayState.droppingEmojis.add(dropId);
+                if (quickPlayState.lives <= 0) {
+                    quickPlayState.running = false;
+                    endQuickPlay();
+                }
+            }
 
-            // Auto-remove if not clicked (emoji falls off bottom)
-            setTimeout(() => {
-                if (document.getElementById(dropId)) {
-                    quickPlayState.lives--;
-                    quickPlayState.combo = 0;
+            updateQuickPlayHUD();
+        }
 
-                    // Play wrong sound for missed emoji
-                    playSound('wrong');
+        function quickPlayHitFloor(block) {
+            quickPlayState.lives--;
+            quickPlayState.combo = 0;
 
-                    const rect = drop.getBoundingClientRect();
-                    showDamageNumber(1, rect.left, rect.top);
+            // Play wrong sound for missed block
+            playSound('wrong');
+
+            if (block.el) {
+                const rect = block.el.getBoundingClientRect();
+                showDamageNumber(1, rect.left, rect.top);
+            }
+
+            block.el.remove();
+            quickPlayState.blocks = quickPlayState.blocks.filter(b => b.id !== block.id);
+
+            if (quickPlayState.selectedBlockId === block.id) {
+                quickPlayState.selectedBlockId = null;
+                quickPlayState.currentWord = null;
+                document.getElementById('quickPlayOptions').innerHTML = '';
+            }
+
+            updateQuickPlayHUD();
+
+            if (quickPlayState.lives <= 0) {
+                quickPlayState.running = false;
+                endQuickPlay();
 
                     document.getElementById(dropId).remove();
                     quickPlayState.droppingEmojis.delete(dropId);
@@ -2826,7 +2935,6 @@ body{padding-top:var(--unlock-bar-h);}
                         endQuickPlay();
                     }
                 }
-            }, 2500);
         }
 
         function updateQuickPlayHUD() {
@@ -2839,18 +2947,25 @@ body{padding-top:var(--unlock-bar-h);}
         function quickPlayGameLoop() {
             if (!quickPlayState.running) return;
 
-            // Spawn more emojis as difficulty increases
-            // Wave 1: slower, Wave 5+: faster spawning
+            // Move blocks down
+            quickPlayState.blocks.forEach(block => {
+                block.y += block.speed;
+                block.el.style.top = block.y + 'px';
+
+                // Check if block hit floor
+                const arena = document.getElementById('quickPlayArena');
+                if (block.y > arena.offsetHeight) {
+                    quickPlayHitFloor(block);
+                }
+            });
+
+            // Spawn blocks based on wave intensity
             const spawnIntensity = Math.min(quickPlayState.wave, 8);
-            const spawnThreshold = Math.max(2, 8 - spawnIntensity); // Spawn every 2-8 frames
+            const spawnThreshold = Math.max(8, 15 - spawnIntensity); // Faster spawning at higher waves
 
             quickPlayState.spawnCounter++;
             if (quickPlayState.spawnCounter >= spawnThreshold) {
-                // 1-3 emojis per spawn depending on wave
-                const emojiCount = 1 + Math.floor((spawnIntensity - 1) / 2);
-                for (let i = 0; i < emojiCount; i++) {
-                    spawnQuickPlayEmoji();
-                }
+                spawnQuickPlayBlock();
                 quickPlayState.spawnCounter = 0;
             }
 
@@ -2945,6 +3060,7 @@ body{padding-top:var(--unlock-bar-h);}
             document.getElementById('quickPlayStartBtn').disabled = false;
             document.getElementById('quickPlayStartBtn').textContent = 'INICIAR';
             document.getElementById('quickPlayArena').innerHTML = '';
+            document.getElementById('quickPlayOptions').innerHTML = '';
             document.body.classList.remove('game-started');
             showScreen('menu');
         });
