@@ -909,9 +909,7 @@ body{padding-top:var(--unlock-bar-h);}
                 </div>
             </div>
 
-            <div class="quick-play-arena" id="quickPlayArena">
-                <div class="quick-play-selector" id="quickPlaySelector"></div>
-            </div>
+            <div class="quick-play-arena" id="quickPlayArena"></div>
 
             <div class="controls">
                 <button class="btn btn-start" id="quickPlayStartBtn">INICIAR</button>
@@ -2760,10 +2758,9 @@ body{padding-top:var(--unlock-bar-h);}
             combo: 0,
             wave: 1,
             droppingEmojis: new Set(),
-            selectedEmoji: null,
             running: false,
             dropIdCounter: 0,
-            spawnRate: 1.2 // seconds
+            spawnCounter: 0
         };
 
         function startQuickPlay() {
@@ -2782,9 +2779,11 @@ body{padding-top:var(--unlock-bar-h);}
             quickPlayState.wave = 1;
             quickPlayState.running = true;
             quickPlayState.droppingEmojis = new Set();
+            quickPlayState.dropIdCounter = 0;
+            quickPlayState.spawnCounter = 0;
 
-            // Create selector with 4 random emojis
-            updateQuickPlaySelector();
+            // Clear arena
+            document.getElementById('quickPlayArena').innerHTML = '';
 
             // Show screen
             showScreen('quickPlay');
@@ -2800,37 +2799,6 @@ body{padding-top:var(--unlock-bar-h);}
             quickPlayGameLoop();
         }
 
-        function updateQuickPlaySelector() {
-            const selector = document.getElementById('quickPlaySelector');
-            selector.innerHTML = '';
-
-            // Pick 4 random emojis
-            const choices = [];
-            for (let i = 0; i < 4; i++) {
-                const emoji = quickPlayState.allEmojis[Math.floor(Math.random() * quickPlayState.allEmojis.length)];
-                choices.push(emoji);
-            }
-            quickPlayState.selectorEmojis = choices;
-
-            choices.forEach(emoji => {
-                const btn = document.createElement('div');
-                btn.className = 'quick-play-choice';
-                btn.textContent = emoji;
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.quick-play-choice').forEach(e => e.classList.remove('selected'));
-                    btn.classList.add('selected');
-                    quickPlayState.selectedEmoji = emoji;
-                });
-                selector.appendChild(btn);
-            });
-
-            // Auto-select first emoji
-            if (choices.length > 0) {
-                document.querySelector('.quick-play-choice').classList.add('selected');
-                quickPlayState.selectedEmoji = choices[0];
-            }
-        }
-
         function spawnQuickPlayEmoji() {
             if (!quickPlayState.running) return;
 
@@ -2842,65 +2810,48 @@ body{padding-top:var(--unlock-bar-h);}
             drop.id = dropId;
             drop.className = 'quick-play-drop';
             drop.textContent = emoji;
-            drop.style.left = Math.random() * 80 + 10 + '%';
+            drop.style.left = Math.random() * 85 + 7.5 + '%';
 
             drop.addEventListener('click', () => {
-                if (emoji === quickPlayState.selectedEmoji) {
-                    // MATCH!
-                    drop.classList.add('matched');
-                    quickPlayState.score += 10 * (1 + quickPlayState.combo * 0.1);
-                    quickPlayState.combo++;
-                    quickPlayState.droppingEmojis.delete(dropId);
+                // ANY click counts as a hit - no matching needed!
+                drop.classList.add('matched');
+                quickPlayState.score += 10 * (1 + quickPlayState.combo * 0.1);
+                quickPlayState.combo++;
+                quickPlayState.droppingEmojis.delete(dropId);
 
-                    // Play sound and show encouragement for correct match
-                    playSound('correct');
-                    showEncouragement('correct');
+                // Play sound and show encouragement for hit
+                playSound('correct');
+                showEncouragement('correct');
 
-                    // Show score popup at drop location
-                    const rect = drop.getBoundingClientRect();
-                    showScorePopup(10 * (1 + (quickPlayState.combo - 1) * 0.1), rect.left, rect.top);
+                // Show score popup at drop location
+                const rect = drop.getBoundingClientRect();
+                showScorePopup(10 * (1 + (quickPlayState.combo - 1) * 0.1), rect.left, rect.top);
 
-                    setTimeout(() => drop.remove(), 500);
-
-                    // Spawn new selector every 3 matches
-                    if (quickPlayState.combo % 3 === 0) {
-                        updateQuickPlaySelector();
-                        playSound('combo');
-                        showEncouragement('combo');
-                    }
-                } else {
-                    // MISS!
-                    drop.classList.add('missed');
-                    quickPlayState.lives--;
-                    quickPlayState.combo = 0;
-                    quickPlayState.droppingEmojis.delete(dropId);
-
-                    // Play sound and show encouragement for miss
-                    playSound('wrong');
-                    showEncouragement('wrong');
-
-                    // Show damage number at drop location
-                    const rect = drop.getBoundingClientRect();
-                    showDamageNumber(1, rect.left, rect.top);
-
-                    setTimeout(() => drop.remove(), 500);
-
-                    if (quickPlayState.lives <= 0) {
-                        quickPlayState.running = false;
-                        endQuickPlay();
-                    }
+                // Combo milestone every 5 hits
+                if (quickPlayState.combo % 5 === 0) {
+                    playSound('combo');
+                    showEncouragement('combo');
                 }
+
+                setTimeout(() => drop.remove(), 500);
                 updateQuickPlayHUD();
             });
 
             arena.appendChild(drop);
             quickPlayState.droppingEmojis.add(dropId);
 
-            // Auto-remove if missed (emoji falls off)
+            // Auto-remove if not clicked (emoji falls off bottom)
             setTimeout(() => {
                 if (document.getElementById(dropId)) {
                     quickPlayState.lives--;
                     quickPlayState.combo = 0;
+
+                    // Play wrong sound for missed emoji
+                    playSound('wrong');
+
+                    const rect = drop.getBoundingClientRect();
+                    showDamageNumber(1, rect.left, rect.top);
+
                     document.getElementById(dropId).remove();
                     quickPlayState.droppingEmojis.delete(dropId);
                     updateQuickPlayHUD();
@@ -2910,12 +2861,12 @@ body{padding-top:var(--unlock-bar-h);}
                         endQuickPlay();
                     }
                 }
-            }, 3000);
+            }, 2500);
         }
 
         function updateQuickPlayHUD() {
             document.getElementById('quickPlayScore').textContent = Math.floor(quickPlayState.score);
-            document.getElementById('quickPlayLives').textContent = '❤️'.repeat(quickPlayState.lives) + '🖤'.repeat(3 - quickPlayState.lives);
+            document.getElementById('quickPlayLives').textContent = '❤️'.repeat(Math.max(0, quickPlayState.lives)) + '🖤'.repeat(Math.max(0, 3 - quickPlayState.lives));
             document.getElementById('quickPlayCombo').textContent = quickPlayState.combo + 'x';
             document.getElementById('quickPlayWave').textContent = quickPlayState.wave;
         }
@@ -2923,15 +2874,22 @@ body{padding-top:var(--unlock-bar-h);}
         function quickPlayGameLoop() {
             if (!quickPlayState.running) return;
 
-            // Adjust spawn rate based on score
-            quickPlayState.spawnRate = Math.max(0.6, 1.2 - quickPlayState.score / 500);
+            // Spawn more emojis as difficulty increases
+            // Wave 1: slower, Wave 5+: faster spawning
+            const spawnIntensity = Math.min(quickPlayState.wave, 8);
+            const spawnThreshold = Math.max(2, 8 - spawnIntensity); // Spawn every 2-8 frames
 
-            // Randomly spawn emojis
-            if (Math.random() < 0.3) {
-                spawnQuickPlayEmoji();
+            quickPlayState.spawnCounter++;
+            if (quickPlayState.spawnCounter >= spawnThreshold) {
+                // 1-3 emojis per spawn depending on wave
+                const emojiCount = 1 + Math.floor((spawnIntensity - 1) / 2);
+                for (let i = 0; i < emojiCount; i++) {
+                    spawnQuickPlayEmoji();
+                }
+                quickPlayState.spawnCounter = 0;
             }
 
-            // Wave progression
+            // Wave progression every 500 points
             if (quickPlayState.score > quickPlayState.wave * 500) {
                 quickPlayState.wave++;
             }
