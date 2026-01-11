@@ -578,41 +578,6 @@
             }
         }
 
-        .quick-play-selector {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 15px;
-            padding: 15px;
-            background: rgba(10,22,40,0.95);
-            border: 2px solid var(--gold);
-            border-radius: 10px;
-            z-index: 100;
-        }
-
-        .quick-play-choice {
-            font-size: 2rem;
-            cursor: pointer;
-            padding: 10px 15px;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            transition: all 0.2s;
-            background: rgba(0,191,255,0.1);
-        }
-
-        .quick-play-choice:hover {
-            border-color: var(--cyan);
-            transform: scale(1.15);
-            box-shadow: 0 0 15px rgba(0,191,255,0.5);
-        }
-
-        .quick-play-choice.selected {
-            border-color: var(--gold);
-            background: rgba(255,215,0,0.3);
-            box-shadow: 0 0 20px rgba(255,215,0,0.5);
-        }
 
         .quick-play-hud {
             display: grid;
@@ -2979,7 +2944,7 @@ body{padding-top:var(--unlock-bar-h);}
             quickPlayState.running = false;
             document.getElementById('quickPlayStartBtn').disabled = false;
             document.getElementById('quickPlayStartBtn').textContent = 'INICIAR';
-            document.getElementById('quickPlayArena').innerHTML = '<div class="quick-play-selector" id="quickPlaySelector"></div>';
+            document.getElementById('quickPlayArena').innerHTML = '';
             document.body.classList.remove('game-started');
             showScreen('menu');
         });
