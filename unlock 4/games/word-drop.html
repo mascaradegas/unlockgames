@@ -66,7 +66,15 @@
         }
 
         .screen { display: none; }
-        .screen.active { display: block; }
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
 
         /* MENU */
         .menu-screen {
@@ -91,12 +99,13 @@
 
         .aula-card {
             background: linear-gradient(180deg, rgba(20,40,80,0.95), rgba(10,22,40,0.98));
-            border: 2px solid var(--cyan);
+            border: 3px solid var(--red);
             padding: 20px;
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s;
             text-align: center;
+            box-shadow: 0 0 15px rgba(255,68,68,0.2);
         }
         .aula-card:hover {
             transform: translateY(-5px);
@@ -299,9 +308,9 @@
 
         .block-hint {
             font-size: 1rem;
-            color: var(--gold);
+            color: var(--white);
             background: rgba(10,22,40,0.95);
-            border: 2px solid var(--gold);
+            border: 2px solid var(--cyan);
             padding: 6px 10px;
             border-radius: 6px;
             max-width: 140px;
@@ -310,9 +319,42 @@
             font-family: 'Orbitron', sans-serif;
         }
 
+        .game-block.selected .block-hint {
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .current-word-box {
+            background: linear-gradient(180deg, rgba(20,40,80,0.95), rgba(10,22,40,0.98));
+            border: 2px solid var(--cyan);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .current-word-label {
+            font-size: 0.75rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .current-word-text {
+            font-size: 1.3rem;
+            color: var(--gold);
+            font-weight: 900;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+        }
+
         .options {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 8px;
             margin-bottom: 15px;
         }
@@ -322,9 +364,10 @@
             background: linear-gradient(180deg, rgba(20,40,80,0.95), rgba(10,22,40,0.98));
             border: 2px solid var(--cyan);
             color: var(--white);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.2s;
@@ -333,6 +376,12 @@
             border-color: var(--gold);
             color: var(--gold);
             box-shadow: 0 0 15px rgba(255,215,0,0.4);
+        }
+        .option-btn.keyboard-selected {
+            border-color: var(--green);
+            color: var(--green);
+            box-shadow: 0 0 20px rgba(0,255,136,0.7);
+            background: linear-gradient(180deg, rgba(0,100,50,0.6), rgba(0,50,25,0.6));
         }
         .option-btn.correct {
             border-color: var(--green);
@@ -343,6 +392,24 @@
             border-color: var(--red);
             color: var(--red);
             box-shadow: 0 0 20px rgba(255,68,68,0.7);
+        }
+
+        .keyboard-hints {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: var(--gray);
+            font-family: 'Orbitron', sans-serif;
+            padding: 4px 8px;
+            border: 1px solid rgba(136,153,170,0.3);
+            border-radius: 4px;
+            background: rgba(10,22,40,0.5);
         }
 
         .controls {
@@ -436,52 +503,326 @@
             background: linear-gradient(180deg, #FFE566, #FFD700);
             color: #000;
         }
-    
+
+        /* QUICK PLAY MODE */
+        .quick-play-arena {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(180deg, rgba(20,40,80,0.8), rgba(10,22,40,0.95));
+            border: 3px solid var(--cyan);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .quick-play-drop {
+            position: absolute;
+            font-size: 2.5rem;
+            animation: dropFall 3s linear forwards;
+            cursor: pointer;
+            filter: drop-shadow(0 0 10px rgba(0,255,136,0.5));
+            transition: filter 0.2s;
+        }
+
+        .quick-play-drop:hover {
+            filter: drop-shadow(0 0 20px rgba(0,255,136,0.8));
+            transform: scale(1.1);
+        }
+
+        .quick-play-drop.matched {
+            animation: dropMatch 0.5s ease-out forwards;
+        }
+
+        .quick-play-drop.missed {
+            animation: dropMiss 0.5s ease-out forwards;
+        }
+
+        @keyframes dropFall {
+            0% {
+                top: -50px;
+                opacity: 1;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        @keyframes dropMatch {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0) translateY(-50px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes dropMiss {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(255,68,68,0.8));
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(100px) translateY(100px);
+            }
+        }
+
+        .quick-play-selector {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(10,22,40,0.95);
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            z-index: 100;
+        }
+
+        .quick-play-choice {
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px 15px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            transition: all 0.2s;
+            background: rgba(0,191,255,0.1);
+        }
+
+        .quick-play-choice:hover {
+            border-color: var(--cyan);
+            transform: scale(1.15);
+            box-shadow: 0 0 15px rgba(0,191,255,0.5);
+        }
+
+        .quick-play-choice.selected {
+            border-color: var(--gold);
+            background: rgba(255,215,0,0.3);
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+
+        .quick-play-hud {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .quick-play-stat {
+            background: linear-gradient(180deg, rgba(20,40,80,0.95), rgba(10,22,40,0.98));
+            border: 2px solid var(--cyan);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .quick-play-stat-label {
+            font-size: 0.8rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .quick-play-stat-value {
+            font-size: 1.8rem;
+            color: var(--gold);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+        }
+
+        /* ENCOURAGEMENT & DAMAGE ANIMATIONS */
+        @keyframes encouragementPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) translateY(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2) translateY(-30px);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1) translateY(-100px);
+            }
+        }
+
+        @keyframes damagePop {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5) translateY(-100px);
+            }
+        }
+
+        @keyframes scorePop {
+            0% {
+                opacity: 1;
+                transform: scale(0.8) translateY(0);
+            }
+            50% {
+                transform: scale(1.1) translateY(-20px);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8) translateY(-80px);
+            }
+        }
+
 
 /* === UNLOCK 2026 Shared App Bar === */
-:root{--unlock-bar-h:58px;}
+:root{--unlock-bar-h:64px;}
 body{padding-top:var(--unlock-bar-h);}
+
+@keyframes glow-pulse {
+  0%, 100% { text-shadow: 0 0 10px rgba(255,215,0,0.3); }
+  50% { text-shadow: 0 0 20px rgba(255,215,0,0.6); }
+}
+@keyframes badge-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+@keyframes slide-in {
+  0% { transform: translateX(100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes badgeBounce {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.08) translateY(-3px); }
+}
+
 .unlock-appbar{
   position:fixed; top:0; left:0; right:0; height:var(--unlock-bar-h);
   display:flex; align-items:center; justify-content:space-between;
-  padding:0 14px;
-  background:rgba(10,22,40,0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding:0 16px;
+  background: linear-gradient(180deg, rgba(10,22,40,0.98) 0%, rgba(10,22,40,0.85) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 2px solid rgba(0,255,136,0.15);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,215,0,0.1);
   z-index:99999;
 }
+
 .unlock-appbar .left a{
   display:inline-flex; align-items:center; gap:8px;
   text-decoration:none; font-weight:800;
   color: var(--green, #00FF88);
   letter-spacing: .2px;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 6px;
 }
+.unlock-appbar .left a:hover {
+  color: var(--gold);
+  background: rgba(0,255,136,0.1);
+  transform: translateX(-2px);
+}
+
 .unlock-appbar .center{
   font-family:'Orbitron', system-ui, sans-serif;
   font-weight:900;
-  letter-spacing:1px;
+  letter-spacing:2px;
   color: var(--gold, #FFD700);
   font-size:14px;
-}
-.unlock-appbar .right{
-  color: var(--gray, #8899aa);
-  font-weight:700;
-  font-size:12px;
-}
-.unlock-appbar .pill{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:7px 10px;
-  border:1px solid rgba(0,255,136,0.35);
-  border-radius:999px;
-  background:rgba(17,31,61,0.7);
-}
-@media (max-width:420px){
-  .unlock-appbar{padding:0 10px;}
-  .unlock-appbar .center{display:none;}
+  animation: glow-pulse 3s ease-in-out infinite;
 }
 
-</style>
+.unlock-appbar .right{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.unlock-appbar-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gold);
+  font-size: 20px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.unlock-appbar-btn:hover {
+  background: rgba(255,215,0,0.1);
+  transform: scale(1.1);
+  animation: badge-bounce 0.6s ease;
+}
+
+.unlock-appbar-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%);
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.unlock-appbar-btn:hover::before {
+  opacity: 1;
+}
+
+.unlock-appbar .pill{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:8px 14px;
+  border: 2px solid rgba(255,215,0,0.3);
+  border-radius:12px;
+  background: linear-gradient(135deg, rgba(17,31,61,0.8) 0%, rgba(20,40,80,0.6) 100%);
+  transition: all 0.3s ease;
+  animation: slide-in 0.5s ease;
+}
+
+.unlock-appbar .pill:hover {
+  background: linear-gradient(135deg, rgba(17,31,61,1) 0%, rgba(20,40,80,0.8) 100%);
+  border-color: rgba(255,215,0,0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(255,215,0,0.2);
+}
+
+.unlock-appbar .pill span[data-unlock-streak] {
+  font-weight: bold;
+  color: var(--gold);
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@media (max-width:420px){
+  .unlock-appbar{padding:0 12px;}
+  .unlock-appbar .center{display:none; letter-spacing: 1px;}
+  :root{--unlock-bar-h:56px;}
+}
+
+    </style>
 </head>
 <body>
 
@@ -492,6 +833,9 @@ body{padding-top:var(--unlock-bar-h);}
     </div>
     <div class="center">UNLOCK 2026</div>
     <div class="right">
+      <button class="unlock-appbar-btn" id="statsBtn" title="Ver seus badges" aria-label="Ver seus badges" style="position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; font-size: 12px;">
+        <span id="badgeCounter" style="background: var(--gold); color: var(--bg); padding: 2px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🏆 0</span>
+      </button>
       <span class="pill"><span data-unlock-streak>🔥 0</span><span style="opacity:.6">•</span> 🟡 Word Drop</span>
     </div>
   </div>
@@ -504,6 +848,14 @@ body{padding-top:var(--unlock-bar-h);}
         <!-- MENU -->
         <div class="screen menu-screen active" id="menuScreen">
             <h1>🎮 WORD DROP</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; max-width: 900px; margin: 0 auto 40px; padding: 20px;">
+                <div class="aula-card" onclick="startQuickPlay()" style="cursor: pointer; border: 3px solid var(--gold); background: linear-gradient(180deg, rgba(255,215,0,0.15), rgba(255,140,0,0.1));">
+                    <div class="emoji" style="font-size: 3rem;">⚡</div>
+                    <div class="name" style="color: var(--gold); font-weight: 900;">QUICK PLAY</div>
+                    <div class="status" style="font-size: 0.75rem; margin-top: 8px; color: var(--gold);">Emojis Dropping<br>Match & Survive!</div>
+                </div>
+            </div>
+            <h2 style="text-align: center; color: var(--cyan); margin-top: 40px; margin-bottom: 20px; font-family: 'Orbitron', sans-serif; font-size: 1.2rem;">AULAS</h2>
             <div class="aulas-grid" id="aulasGrid"></div>
         </div>
 
@@ -527,7 +879,44 @@ body{padding-top:var(--unlock-bar-h);}
                     <div class="status" style="font-size: 0.75rem; margin-top: 8px;">Spawn: 1.1s<br>❤️❤️</div>
                 </div>
             </div>
-            <button class="btn btn-menu" onclick="showScreen('menu')" style="margin-top: 30px; max-width: 200px; margin-left: auto; margin-right: auto;">← VOLTAR</button>
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 30px; justify-content: center; max-width: 500px; margin-left: auto; margin-right: auto;">
+                <button class="btn btn-menu" onclick="showScreen('menu')" style="width: 100%;">← VOLTAR</button>
+            </div>
+        </div>
+
+        <!-- QUICK PLAY -->
+        <div class="screen game-screen" id="quickPlayScreen" style="display: none;">
+            <div class="game-header">
+                <h1>⚡ QUICK PLAY - EMOJI DROP</h1>
+            </div>
+
+            <div class="quick-play-hud">
+                <div class="quick-play-stat">
+                    <div class="quick-play-stat-label">Score</div>
+                    <div class="quick-play-stat-value" id="quickPlayScore">0</div>
+                </div>
+                <div class="quick-play-stat">
+                    <div class="quick-play-stat-label">Vidas</div>
+                    <div class="quick-play-stat-value" id="quickPlayLives">❤️❤️❤️</div>
+                </div>
+                <div class="quick-play-stat">
+                    <div class="quick-play-stat-label">Combo</div>
+                    <div class="quick-play-stat-value" id="quickPlayCombo">0x</div>
+                </div>
+                <div class="quick-play-stat">
+                    <div class="quick-play-stat-label">Wave</div>
+                    <div class="quick-play-stat-value" id="quickPlayWave">1</div>
+                </div>
+            </div>
+
+            <div class="quick-play-arena" id="quickPlayArena">
+                <div class="quick-play-selector" id="quickPlaySelector"></div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-start" id="quickPlayStartBtn">INICIAR</button>
+                <button class="btn btn-menu" id="quickPlayMenuBtn">MENU</button>
+            </div>
         </div>
 
         <!-- GAME -->
@@ -557,6 +946,11 @@ body{padding-top:var(--unlock-bar-h);}
 
             <div class="arena" id="gameArena"></div>
 
+            <div class="current-word-box" id="currentWordBox">
+                <span class="current-word-label">Selecione a resposta para:</span>
+                <span class="current-word-text" id="currentWordText"></span>
+            </div>
+
             <div class="options" id="gameOptions"></div>
 
             <div class="controls">
@@ -565,6 +959,11 @@ body{padding-top:var(--unlock-bar-h);}
             </div>
 
             <div class="feedback" id="gameFeedback"></div>
+
+            <div class="keyboard-hints">
+                <span class="hint">↑ ↓ ← →: Navegar opções</span>
+                <span class="hint">ESPAÇO / ENTER: Selecionar</span>
+            </div>
         </div>
     </div>
 
@@ -603,6 +1002,23 @@ body{padding-top:var(--unlock-bar-h);}
             </div>
             <button class="modal-btn modal-btn-primary" id="loseRetryBtn">TENTAR NOVAMENTE</button>
             <button class="modal-btn modal-btn-primary" id="loseMenuBtn">MENU</button>
+        </div>
+    </div>
+
+    <!-- STATS MODAL -->
+    <div class="modal" id="statsModal">
+        <div class="modal-box" style="max-width: 700px; max-height: 85vh; overflow-y: auto; width: 90%;">
+            <div class="modal-icon">🏆</div>
+            <div class="modal-title">SEUS BADGES</div>
+            <div id="badgesContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin: 20px 0; text-align: center;">
+                <!-- Badges will be populated here by JavaScript -->
+            </div>
+            <div id="noBadgesMsg" style="text-align: center; padding: 40px 20px; color: var(--gray);">
+                <p style="font-size: 3rem;">😴</p>
+                <p>Nenhum badge desbloqueado ainda!</p>
+                <p style="font-size: 0.9rem; margin-top: 10px;">Termine as aulas sem erros para desbloquear badges</p>
+            </div>
+            <button class="modal-btn modal-btn-primary" id="statsCloseBtn" style="margin-top: 20px;">FECHAR</button>
         </div>
     </div>
 
@@ -1593,13 +2009,171 @@ body{padding-top:var(--unlock-bar-h);}
         };
 
         const norm = (s) => (s || '').toString().trim().toLowerCase();
-        
+
         function shuffle(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
             return arr;
+        }
+
+        // ========== SOUND EFFECTS & ENCOURAGEMENT ==========
+        const ENCOURAGEMENT = {
+            correct: [
+                '✅ Perfeito!', '🎯 Acertou!', '⚡ Excelente!', '🔥 Sensacional!',
+                '💪 Muito bem!', '🌟 Brilhante!', '🎉 Incrível!', '🏆 Campeão!',
+                '✨ Magnífico!', '👑 Você é o melhor!', '🚀 Fantástico!', '💯 100%!'
+            ],
+            wrong: [
+                '❌ Não foi dessa vez', '🤔 Tenta novamente!', '📚 Estuda mais um pouco',
+                '💭 Quase lá!', '🎓 Aprendendo...', '⚙️ Próxima tentativa',
+                '🌱 Continue tentando!', '💡 Pense bem...', '🎯 Quase acertou!',
+                '🔄 Tenta de novo!', '📖 Vamos treinar mais!'
+            ],
+            combo: [
+                '🔥 COMBO!', '⚡ SEQUÊNCIA!', '🎯 CONECTADO!', '💥 TREMENDO!',
+                '🌪️ IMPARÁVEL!', '👊 DEVASTADOR!', '🎊 ÉPICO!', '🏅 INCOMPARÁVEL!'
+            ],
+            gameOver: [
+                '😅 Quase conseguiu!', '💪 Tente novamente!', '🔄 Próxima rodada será melhor!',
+                '📈 Você está melhorando!', '🎮 Quer tentar de novo?', '⚡ Volta mais forte!'
+            ]
+        };
+
+        function playSound(type) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+
+                switch(type) {
+                    case 'correct':
+                        osc.frequency.setValueAtTime(400, audioContext.currentTime);
+                        osc.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+                        osc.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+                        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gain.gain.setValueAtTime(0, audioContext.currentTime + 0.25);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.25);
+                        break;
+
+                    case 'wrong':
+                        osc.frequency.setValueAtTime(200, audioContext.currentTime);
+                        osc.frequency.setValueAtTime(100, audioContext.currentTime + 0.15);
+                        gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        gain.gain.setValueAtTime(0, audioContext.currentTime + 0.2);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.2);
+                        break;
+
+                    case 'combo':
+                        for (let i = 0; i < 3; i++) {
+                            setTimeout(() => {
+                                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                                const o = ctx.createOscillator();
+                                const g = ctx.createGain();
+                                o.connect(g);
+                                g.connect(ctx.destination);
+                                o.frequency.setValueAtTime(700, ctx.currentTime);
+                                g.gain.setValueAtTime(0.2, ctx.currentTime);
+                                g.gain.setValueAtTime(0, ctx.currentTime + 0.1);
+                                o.start(ctx.currentTime);
+                                o.stop(ctx.currentTime + 0.1);
+                            }, i * 100);
+                        }
+                        break;
+
+                    case 'start':
+                        osc.frequency.setValueAtTime(300, audioContext.currentTime);
+                        osc.frequency.setValueAtTime(600, audioContext.currentTime + 0.3);
+                        gain.gain.setValueAtTime(0.25, audioContext.currentTime);
+                        gain.gain.setValueAtTime(0, audioContext.currentTime + 0.35);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.35);
+                        break;
+
+                    case 'gameOver':
+                        osc.frequency.setValueAtTime(500, audioContext.currentTime);
+                        osc.frequency.setValueAtTime(300, audioContext.currentTime + 0.2);
+                        osc.frequency.setValueAtTime(150, audioContext.currentTime + 0.4);
+                        gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        gain.gain.setValueAtTime(0, audioContext.currentTime + 0.5);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.5);
+                        break;
+
+                    case 'win':
+                        osc.frequency.setValueAtTime(500, audioContext.currentTime);
+                        osc.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+                        osc.frequency.setValueAtTime(1000, audioContext.currentTime + 0.4);
+                        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gain.gain.setValueAtTime(0, audioContext.currentTime + 0.5);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.5);
+                        break;
+                }
+            } catch(e) {}
+        }
+
+        function showEncouragement(type) {
+            const messages = ENCOURAGEMENT[type] || ENCOURAGEMENT.correct;
+            const message = messages[Math.floor(Math.random() * messages.length)];
+
+            const el = document.createElement('div');
+            el.textContent = message;
+            el.style.cssText = `
+                position: fixed;
+                top: ${Math.random() * 30 + 20}%;
+                left: ${Math.random() * 60 + 20}%;
+                font-size: 1.5rem;
+                font-weight: 900;
+                pointer-events: none;
+                z-index: 5000;
+                animation: encouragementPop 1.5s ease-out forwards;
+                text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            `;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1500);
+        }
+
+        function showDamageNumber(damage, x, y) {
+            const el = document.createElement('div');
+            el.textContent = '-' + damage + '❤️';
+            el.style.cssText = `
+                position: fixed;
+                top: ${y}px;
+                left: ${x}px;
+                font-size: 1.2rem;
+                font-weight: 900;
+                color: var(--red);
+                pointer-events: none;
+                z-index: 5000;
+                animation: damagePop 1s ease-out forwards;
+            `;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
+        function showScorePopup(score, x, y) {
+            const el = document.createElement('div');
+            el.textContent = '+' + Math.floor(score);
+            el.style.cssText = `
+                position: fixed;
+                top: ${y}px;
+                left: ${x}px;
+                font-size: 1.3rem;
+                font-weight: 900;
+                color: var(--gold);
+                pointer-events: none;
+                z-index: 5000;
+                animation: scorePop 1.5s ease-out forwards;
+                text-shadow: 0 0 10px rgba(255,215,0,0.8);
+            `;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1500);
         }
 
         function showScreen(name) {
@@ -1616,6 +2190,9 @@ body{padding-top:var(--unlock-bar-h);}
             const grid = document.getElementById('aulasGrid');
             grid.innerHTML = '';
             AULAS.forEach((aula, i) => {
+                const wrapper = document.createElement('div');
+                wrapper.style.position = 'relative';
+
                 const card = document.createElement('div');
                 card.className = 'aula-card';
                 card.innerHTML = `
@@ -1626,7 +2203,65 @@ body{padding-top:var(--unlock-bar-h);}
                     currentAulaIndex = i;
                     showScreen('difficulty');
                 });
-                grid.appendChild(card);
+
+                // Add hidden study button that appears on hover
+                const studyBtn = document.createElement('button');
+                studyBtn.className = 'aula-study-btn';
+                studyBtn.textContent = '📚';
+                studyBtn.style.cssText = `
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                    background: var(--gold);
+                    color: var(--bg);
+                    border: none;
+                    font-size: 24px;
+                    cursor: pointer;
+                    opacity: 0;
+                    transform: scale(0);
+                    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    z-index: 10;
+                    box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+                `;
+                studyBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Mapear aula para o ID correto em aulas.html
+                    const aulaMapping = {
+                        1: 'isAre', 2: 'numbers', 3: 'doYouHave', 4: 'get', 5: 'goCome',
+                        6: 'goingTo', 7: 'haveHas', 8: 'haveToNeedTo', 9: 'hereThere',
+                        10: 'howMuchMany', 11: 'how', 12: 'isAreQuestions', 13: 'can',
+                        14: 'days', 15: 'directions', 16: 'doDoesdid', 17: 'letMeCanI',
+                        18: 'likeLoveHate', 19: 'lookingFor', 20: 'monthsSeasons',
+                        21: 'moodsFeelings', 22: 'numbersRealLife', 23: 'thisThat', 24: 'wantNeed'
+                    };
+                    const aulaId = aulaMapping[aula.id] || 'isAre';
+                    window.location.href = `../aulas.html?lesson=${aulaId}&returnTo=games/word-drop.html`;
+                });
+
+                studyBtn.addEventListener('mouseenter', () => {
+                    studyBtn.style.transform = 'scale(1.2)';
+                    studyBtn.style.boxShadow = '0 8px 25px rgba(255,215,0,0.6)';
+                });
+                studyBtn.addEventListener('mouseleave', () => {
+                    studyBtn.style.transform = 'scale(1)';
+                    studyBtn.style.boxShadow = '0 4px 15px rgba(255,215,0,0.3)';
+                });
+
+                wrapper.addEventListener('mouseenter', () => {
+                    studyBtn.style.opacity = '1';
+                    studyBtn.style.transform = 'scale(1)';
+                });
+                wrapper.addEventListener('mouseleave', () => {
+                    studyBtn.style.opacity = '0';
+                    studyBtn.style.transform = 'scale(0)';
+                });
+
+                wrapper.appendChild(card);
+                wrapper.appendChild(studyBtn);
+                grid.appendChild(wrapper);
             });
         }
 
@@ -1634,16 +2269,18 @@ body{padding-top:var(--unlock-bar-h);}
             difficulty = diff;
             const settings = DIFFICULTY_SETTINGS[diff];
             const aula = AULAS[currentAulaIndex];
-            
+
             gameState.deck = shuffle([...aula.words]);
             gameState.score = 0;
             gameState.lives = settings.initialLives;
             gameState.correct = 0;
+            gameState.wrongAnswers = 0; // Track wrong answers for perfect badge
             gameState.blocks = [];
             gameState.blockIdCounter = 0;
             gameState.selectedBlockId = null;
 
             document.getElementById('gameTitle').textContent = `${aula.emoji} ${aula.title}`;
+            keyboardState.selectedOptionIndex = -1; // Reset keyboard state
             updateHUD();
             showScreen('game');
         }
@@ -1672,7 +2309,7 @@ body{padding-top:var(--unlock-bar-h);}
             el.innerHTML = `
                 <div class="block-aura"></div>
                 <div class="block-box">${word.emoji}</div>
-                <div class="block-hint">${word.pt}</div>
+                <div class="block-hint">${word.pt.toUpperCase()}</div>
             `;
 
             el.addEventListener('click', () => selectBlock(id, word));
@@ -1733,6 +2370,9 @@ body{padding-top:var(--unlock-bar-h);}
             // Seleciona E gera opções (usado apenas quando passa automaticamente pro próximo)
             selectBlock(blockId, word);
             generateOptions(word);
+
+            // Atualiza a caixa de palavra atual
+            document.getElementById('currentWordText').textContent = word.pt.toUpperCase();
         }
 
         function generateOptions(word) {
@@ -1740,10 +2380,10 @@ body{padding-top:var(--unlock-bar-h);}
             const pool = [correct];
             const aula = AULAS[currentAulaIndex];
 
-            // Gera 5 erradas
+            // Gera 3 erradas (total de 4 opções)
             const shuffled = shuffle([...aula.words]);
             for (const w of shuffled) {
-                if (pool.length >= 6) break;
+                if (pool.length >= 4) break;
                 if (w.en[0] !== correct && !pool.includes(w.en[0])) {
                     pool.push(w.en[0]);
                 }
@@ -1756,10 +2396,13 @@ body{padding-top:var(--unlock-bar-h);}
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.textContent = opt;
+                btn.textContent = opt.toUpperCase();
                 btn.addEventListener('click', () => checkAnswer(opt, correct));
                 optEl.appendChild(btn);
             });
+
+            // Reset keyboard selection quando novas opções são geradas
+            keyboardState.selectedOptionIndex = -1;
         }
 
         // FUNÇÕES DE EFEITO VISUAL
@@ -1823,6 +2466,73 @@ body{padding-top:var(--unlock-bar-h);}
             }
         }
 
+        function triggerPerfectBadgeAnimation() {
+            // Cria animação de badge perfeito no centro da tela
+            const badgeEl = document.createElement('div');
+            badgeEl.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(0);
+                font-size: 4rem;
+                z-index: 9999;
+                pointer-events: none;
+                text-shadow: 0 0 20px rgba(255,215,0,0.8);
+                animation: badgePop 1s ease-out forwards;
+            `;
+            badgeEl.textContent = '🏆';
+            document.body.appendChild(badgeEl);
+
+            // Cria partículas ao redor
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: fixed;
+                    width: 12px;
+                    height: 12px;
+                    background: #FFD700;
+                    border-radius: 50%;
+                    box-shadow: 0 0 10px #FFD700;
+                    top: 50%;
+                    left: 50%;
+                    z-index: 9998;
+                    pointer-events: none;
+                `;
+                document.body.appendChild(particle);
+
+                const angle = (Math.PI * 2 * i) / 12;
+                const distance = 150;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+
+                particle.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+
+                setTimeout(() => particle.remove(), 1000);
+            }
+
+            // Adiciona CSS animation se não existir
+            if (!document.getElementById('badgePerfectStyle')) {
+                const style = document.createElement('style');
+                style.id = 'badgePerfectStyle';
+                style.textContent = `
+                    @keyframes badgePop {
+                        0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+                        50% { transform: translate(-50%, -50%) scale(1.2) rotate(10deg); opacity: 1; }
+                        100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            setTimeout(() => badgeEl.remove(), 1000);
+        }
+
         function checkAnswer(selected, correct) {
             if (!gameRunning) return;
 
@@ -1831,7 +2541,9 @@ body{padding-top:var(--unlock-bar-h);}
 
             if (isCorrect) {
                 gameState.correct++;
-                const scoreGain = Math.round(10 * settings.scoreMultiplier);
+                const baseScore = Math.round(10 * settings.scoreMultiplier);
+                const streakMultiplier = window.UNLOCK ? window.UNLOCK.getStreakMultiplier(window.UNLOCK.loadUser()) : 1;
+                const scoreGain = Math.round(baseScore * streakMultiplier);
                 gameState.score += scoreGain;
 
                 document.getElementById('gameFeedback').textContent = `✅ ${correct}!`;
@@ -1842,10 +2554,24 @@ body{padding-top:var(--unlock-bar-h);}
                 if (blockEl) {
                     // Cria explosão de partículas ANTES de remover
                     createParticleExplosion(blockEl);
-                    
+
                     blockEl.style.transform = 'scale(0)';
                     blockEl.style.opacity = '0';
                     setTimeout(() => blockEl.remove(), 200);
+
+                    // Show score popup at block location
+                    const rect = blockEl.getBoundingClientRect();
+                    showScorePopup(scoreGain, rect.left + rect.width / 2, rect.top);
+                }
+
+                // Play sound and show encouragement
+                playSound('correct');
+                showEncouragement('correct');
+
+                // Check for combo milestone
+                if (gameState.correct > 0 && gameState.correct % 3 === 0) {
+                    playSound('combo');
+                    showEncouragement('combo');
                 }
 
                 // Trigger combo aura
@@ -1868,11 +2594,20 @@ body{padding-top:var(--unlock-bar-h);}
                     selectOldestBlock(true);
                 }
             } else {
+                gameState.wrongAnswers++; // Track wrong answer
                 gameState.lives--;
                 document.getElementById('gameFeedback').textContent = `❌ Era "${correct}"`;
                 document.getElementById('gameFeedback').style.color = 'var(--red)';
+
+                // Play sound and show encouragement for wrong answer
+                playSound('wrong');
+                showEncouragement('wrong');
+
+                // Show damage number at center of screen
+                showDamageNumber(1, window.innerWidth / 2, window.innerHeight / 2);
+
                 updateHUD();
-                
+
                 // Trigger shake on wrong answer
                 triggerArenaShake();
 
@@ -1887,6 +2622,13 @@ body{padding-top:var(--unlock-bar-h);}
             gameState.lives--;
             document.getElementById('gameFeedback').textContent = `💥 ${block.word.en[0]}`;
             document.getElementById('gameFeedback').style.color = 'var(--red)';
+
+            // Play wrong sound and show damage at block location
+            playSound('wrong');
+            if (block.el) {
+                const rect = block.el.getBoundingClientRect();
+                showDamageNumber(1, rect.left + rect.width / 2, rect.top);
+            }
 
             // Trigger shake when block hits floor
             triggerArenaShake();
@@ -1942,19 +2684,273 @@ body{padding-top:var(--unlock-bar-h);}
             // Auto-seleção: só quando algum bloco entra na zona perto do chão
             selectOldestBlock(false);
 
-                        requestAnimationFrame(gameLoop);
+            if (gameRunning) {
+                requestAnimationFrame(gameLoop);
+            }
         }
 
         function endGameWin() {
+            // Play win sound and show encouragement
+            playSound('win');
+            showEncouragement('correct');
+
+            // Complete daily quest
+            if (window.UNLOCK) {
+                const user = window.UNLOCK.loadUser();
+                const aula = AULAS[currentAulaIndex];
+
+                window.UNLOCK.completeQuest(user);
+
+                // Check for perfect run (no errors)
+                let isPerfect = false;
+                if (gameState.wrongAnswers === 0) {
+                    isPerfect = true;
+                    const badgeId = `wordDrop_aula${currentAulaIndex}_perfect`;
+                    window.UNLOCK.unlockBadge(user, badgeId, {
+                        icon: '🏆',
+                        title: `${aula.emoji} Perfect Word Drop`,
+                        description: `Completou ${aula.title} sem errar nenhuma palavra!`,
+                        game: 'wordDrop',
+                        aulaIndex: currentAulaIndex
+                    });
+                }
+
+                window.UNLOCK.saveUser(user);
+                window.UNLOCK.hydrateUI(user);
+                // Atualizar contador de badges
+                setTimeout(() => updateBadgeCounter(), 100);
+            }
+
             document.getElementById('winScore').textContent = gameState.score;
             document.getElementById('winCorrect').textContent = '30/30';
-            document.getElementById('winModal').classList.add('show');
+
+            // Show perfect badge animation if earned
+            if (isPerfect) {
+                triggerPerfectBadgeAnimation();
+            }
+
+            // Delay modal to show animation
+            setTimeout(() => {
+                document.getElementById('winModal').classList.add('show');
+            }, isPerfect ? 500 : 0);
         }
 
         function endGameLose() {
+            // Play gameOver sound and show encouragement
+            playSound('gameOver');
+            showEncouragement('gameOver');
+
+            // Complete daily quest (even if lost)
+            if (window.UNLOCK) {
+                const user = window.UNLOCK.loadUser();
+                window.UNLOCK.completeQuest(user);
+                window.UNLOCK.saveUser(user);
+                window.UNLOCK.hydrateUI(user);
+            }
+
             document.getElementById('loseScore').textContent = gameState.score;
             document.getElementById('loseCorrect').textContent = gameState.correct + '/30';
             document.getElementById('loseModal').classList.add('show');
+        }
+
+        // ========== QUICK PLAY MODE ==========
+        let quickPlayState = {
+            score: 0,
+            lives: 3,
+            combo: 0,
+            wave: 1,
+            droppingEmojis: new Set(),
+            selectedEmoji: null,
+            running: false,
+            dropIdCounter: 0,
+            spawnRate: 1.2 // seconds
+        };
+
+        function startQuickPlay() {
+            // Pool all emojis from all AULAS
+            const allEmojis = [];
+            AULAS.forEach(aula => {
+                aula.words.forEach(word => {
+                    allEmojis.push(word.emoji);
+                });
+            });
+
+            quickPlayState.allEmojis = allEmojis;
+            quickPlayState.score = 0;
+            quickPlayState.lives = 3;
+            quickPlayState.combo = 0;
+            quickPlayState.wave = 1;
+            quickPlayState.running = true;
+            quickPlayState.droppingEmojis = new Set();
+
+            // Create selector with 4 random emojis
+            updateQuickPlaySelector();
+
+            // Show screen
+            showScreen('quickPlay');
+            document.body.classList.add('game-started');
+
+            // Play start sound
+            playSound('start');
+
+            // Update UI
+            updateQuickPlayHUD();
+
+            // Start game loop
+            quickPlayGameLoop();
+        }
+
+        function updateQuickPlaySelector() {
+            const selector = document.getElementById('quickPlaySelector');
+            selector.innerHTML = '';
+
+            // Pick 4 random emojis
+            const choices = [];
+            for (let i = 0; i < 4; i++) {
+                const emoji = quickPlayState.allEmojis[Math.floor(Math.random() * quickPlayState.allEmojis.length)];
+                choices.push(emoji);
+            }
+            quickPlayState.selectorEmojis = choices;
+
+            choices.forEach(emoji => {
+                const btn = document.createElement('div');
+                btn.className = 'quick-play-choice';
+                btn.textContent = emoji;
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.quick-play-choice').forEach(e => e.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    quickPlayState.selectedEmoji = emoji;
+                });
+                selector.appendChild(btn);
+            });
+
+            // Auto-select first emoji
+            if (choices.length > 0) {
+                document.querySelector('.quick-play-choice').classList.add('selected');
+                quickPlayState.selectedEmoji = choices[0];
+            }
+        }
+
+        function spawnQuickPlayEmoji() {
+            if (!quickPlayState.running) return;
+
+            const emoji = quickPlayState.allEmojis[Math.floor(Math.random() * quickPlayState.allEmojis.length)];
+            const dropId = 'qp-drop-' + (quickPlayState.dropIdCounter++);
+            const arena = document.getElementById('quickPlayArena');
+
+            const drop = document.createElement('div');
+            drop.id = dropId;
+            drop.className = 'quick-play-drop';
+            drop.textContent = emoji;
+            drop.style.left = Math.random() * 80 + 10 + '%';
+
+            drop.addEventListener('click', () => {
+                if (emoji === quickPlayState.selectedEmoji) {
+                    // MATCH!
+                    drop.classList.add('matched');
+                    quickPlayState.score += 10 * (1 + quickPlayState.combo * 0.1);
+                    quickPlayState.combo++;
+                    quickPlayState.droppingEmojis.delete(dropId);
+
+                    // Play sound and show encouragement for correct match
+                    playSound('correct');
+                    showEncouragement('correct');
+
+                    // Show score popup at drop location
+                    const rect = drop.getBoundingClientRect();
+                    showScorePopup(10 * (1 + (quickPlayState.combo - 1) * 0.1), rect.left, rect.top);
+
+                    setTimeout(() => drop.remove(), 500);
+
+                    // Spawn new selector every 3 matches
+                    if (quickPlayState.combo % 3 === 0) {
+                        updateQuickPlaySelector();
+                        playSound('combo');
+                        showEncouragement('combo');
+                    }
+                } else {
+                    // MISS!
+                    drop.classList.add('missed');
+                    quickPlayState.lives--;
+                    quickPlayState.combo = 0;
+                    quickPlayState.droppingEmojis.delete(dropId);
+
+                    // Play sound and show encouragement for miss
+                    playSound('wrong');
+                    showEncouragement('wrong');
+
+                    // Show damage number at drop location
+                    const rect = drop.getBoundingClientRect();
+                    showDamageNumber(1, rect.left, rect.top);
+
+                    setTimeout(() => drop.remove(), 500);
+
+                    if (quickPlayState.lives <= 0) {
+                        quickPlayState.running = false;
+                        endQuickPlay();
+                    }
+                }
+                updateQuickPlayHUD();
+            });
+
+            arena.appendChild(drop);
+            quickPlayState.droppingEmojis.add(dropId);
+
+            // Auto-remove if missed (emoji falls off)
+            setTimeout(() => {
+                if (document.getElementById(dropId)) {
+                    quickPlayState.lives--;
+                    quickPlayState.combo = 0;
+                    document.getElementById(dropId).remove();
+                    quickPlayState.droppingEmojis.delete(dropId);
+                    updateQuickPlayHUD();
+
+                    if (quickPlayState.lives <= 0) {
+                        quickPlayState.running = false;
+                        endQuickPlay();
+                    }
+                }
+            }, 3000);
+        }
+
+        function updateQuickPlayHUD() {
+            document.getElementById('quickPlayScore').textContent = Math.floor(quickPlayState.score);
+            document.getElementById('quickPlayLives').textContent = '❤️'.repeat(quickPlayState.lives) + '🖤'.repeat(3 - quickPlayState.lives);
+            document.getElementById('quickPlayCombo').textContent = quickPlayState.combo + 'x';
+            document.getElementById('quickPlayWave').textContent = quickPlayState.wave;
+        }
+
+        function quickPlayGameLoop() {
+            if (!quickPlayState.running) return;
+
+            // Adjust spawn rate based on score
+            quickPlayState.spawnRate = Math.max(0.6, 1.2 - quickPlayState.score / 500);
+
+            // Randomly spawn emojis
+            if (Math.random() < 0.3) {
+                spawnQuickPlayEmoji();
+            }
+
+            // Wave progression
+            if (quickPlayState.score > quickPlayState.wave * 500) {
+                quickPlayState.wave++;
+            }
+
+            requestAnimationFrame(quickPlayGameLoop);
+        }
+
+        function endQuickPlay() {
+            // Play gameOver sound and show encouragement
+            playSound('gameOver');
+            showEncouragement('gameOver');
+
+            document.body.classList.remove('game-started');
+
+            // Show end modal
+            const modal = document.getElementById('loseModal');
+            document.getElementById('loseScore').textContent = Math.floor(quickPlayState.score);
+            document.getElementById('loseCorrect').textContent = 'Wave ' + quickPlayState.wave;
+            modal.classList.add('show');
         }
 
         // EVENTOS
@@ -1963,6 +2959,9 @@ body{padding-top:var(--unlock-bar-h);}
             document.body.classList.add('game-started');
             gameRunning = true;
             spawnTimer = 0;
+
+            // Play start sound
+            playSound('start');
 
             document.getElementById('gameStartBtn').disabled = true;
             document.getElementById('gameStartBtn').textContent = 'RODANDO...';
@@ -2011,8 +3010,173 @@ body{padding-top:var(--unlock-bar-h);}
             showScreen('menu');
         });
 
+        // QUICK PLAY EVENT LISTENERS
+        document.getElementById('quickPlayStartBtn').addEventListener('click', () => {
+            document.getElementById('quickPlayStartBtn').disabled = true;
+            document.getElementById('quickPlayStartBtn').textContent = 'RODANDO...';
+            startQuickPlay();
+        });
+
+        document.getElementById('quickPlayMenuBtn').addEventListener('click', () => {
+            quickPlayState.running = false;
+            document.getElementById('quickPlayStartBtn').disabled = false;
+            document.getElementById('quickPlayStartBtn').textContent = 'INICIAR';
+            document.getElementById('quickPlayArena').innerHTML = '<div class="quick-play-selector" id="quickPlaySelector"></div>';
+            document.body.classList.remove('game-started');
+            showScreen('menu');
+        });
+
+        // KEYBOARD CONTROLS
+        let keyboardState = {
+            selectedOptionIndex: -1
+        };
+
+        function selectOptionByIndex(index) {
+            const buttons = document.querySelectorAll('.option-btn');
+            if (index < 0 || index >= buttons.length) return;
+
+            keyboardState.selectedOptionIndex = index;
+
+            // Remove highlight anterior
+            buttons.forEach(btn => btn.classList.remove('keyboard-selected'));
+
+            // Adiciona highlight ao novo
+            buttons[index].classList.add('keyboard-selected');
+        }
+
+        function confirmSelectedOption() {
+            const buttons = document.querySelectorAll('.option-btn');
+            if (keyboardState.selectedOptionIndex >= 0 && keyboardState.selectedOptionIndex < buttons.length) {
+                buttons[keyboardState.selectedOptionIndex].click();
+                keyboardState.selectedOptionIndex = -1;
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!gameRunning) return;
+
+            const buttons = document.querySelectorAll('.option-btn');
+            const cols = 2; // Grid tem 2 colunas
+            let newIndex = keyboardState.selectedOptionIndex;
+
+            // Setas para navegar em grid 2x2
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                newIndex = keyboardState.selectedOptionIndex - cols;
+                if (newIndex < 0) newIndex = (keyboardState.selectedOptionIndex + cols * 2) % buttons.length;
+                selectOptionByIndex(newIndex);
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                newIndex = keyboardState.selectedOptionIndex + cols;
+                if (newIndex >= buttons.length) newIndex = keyboardState.selectedOptionIndex % cols;
+                selectOptionByIndex(newIndex);
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                newIndex = keyboardState.selectedOptionIndex - 1;
+                if (newIndex < 0 || Math.floor(newIndex / cols) !== Math.floor(keyboardState.selectedOptionIndex / cols)) {
+                    newIndex = keyboardState.selectedOptionIndex + cols - 1;
+                }
+                selectOptionByIndex(newIndex);
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                newIndex = keyboardState.selectedOptionIndex + 1;
+                if (newIndex >= buttons.length || Math.floor(newIndex / cols) !== Math.floor(keyboardState.selectedOptionIndex / cols)) {
+                    newIndex = (keyboardState.selectedOptionIndex % cols === 0 ? keyboardState.selectedOptionIndex : Math.floor(keyboardState.selectedOptionIndex / cols) * cols);
+                    if (newIndex >= buttons.length) newIndex = (Math.floor(keyboardState.selectedOptionIndex / cols) - 1) * cols;
+                }
+                selectOptionByIndex(newIndex);
+            }
+
+            // Espaço ou Enter para confirmar
+            if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                if (keyboardState.selectedOptionIndex < 0) {
+                    // Se nenhuma opção selecionada, seleciona a primeira
+                    selectOptionByIndex(0);
+                } else {
+                    // Se já tem selecionada, confirma
+                    confirmSelectedOption();
+                }
+            }
+        });
+
+        // STATS MODAL HANDLERS
+        function updateBadgeCounter() {
+            if (!window.UNLOCK) return;
+            const user = window.UNLOCK.loadUser();
+            const badges = window.UNLOCK.getBadges(user);
+            const badgeCount = Object.keys(badges).length;
+            const counterEl = document.getElementById('badgeCounter');
+            if (counterEl) {
+                counterEl.textContent = '🏆 ' + badgeCount;
+            }
+        }
+
+        function renderBadges() {
+            const badgesContainer = document.getElementById('badgesContainer');
+            const noBadgesMsg = document.getElementById('noBadgesMsg');
+
+            if (!window.UNLOCK) {
+                noBadgesMsg.style.display = 'block';
+                badgesContainer.innerHTML = '';
+                return;
+            }
+
+            const user = window.UNLOCK.loadUser();
+            const badges = window.UNLOCK.getBadges(user);
+            const badgesList = Object.entries(badges);
+
+                // Atualizar contador
+            updateBadgeCounter();
+
+            if (badgesList.length === 0) {
+                noBadgesMsg.style.display = 'block';
+                badgesContainer.innerHTML = '';
+            } else {
+                noBadgesMsg.style.display = 'none';
+                badgesContainer.innerHTML = badgesList.map(([badgeId, badgeData], idx) => {
+                    const unlockedDate = badgeData.unlockedAt ? new Date(badgeData.unlockedAt).toLocaleDateString('pt-BR') : 'Desconhecido';
+                    return `
+                        <div style="
+                            padding: 16px;
+                            background: linear-gradient(135deg, rgba(255,215,0,0.05) 0%, rgba(255,215,0,0.02) 100%);
+                            border: 2px solid var(--gold);
+                            border-radius: 12px;
+                            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                            animation: slideUp 0.5s ease forwards;
+                            animation-delay: ${idx * 0.1}s;
+                            cursor: pointer;
+                            position: relative;
+                            overflow: hidden;
+                        "
+                        onmouseover="this.style.transform='translateY(-4px) scale(1.02)'; this.style.boxShadow='0 12px 24px rgba(255,215,0,0.3)'"
+                        onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'">
+                            <div style="position: absolute; inset: 0; background: linear-gradient(45deg, transparent 30%, rgba(255,215,0,0.1) 50%, transparent 70%); animation: shimmer 3s infinite;"></div>
+                            <div style="position: relative; z-index: 1;">
+                                <div style="font-size: 3rem; margin-bottom: 10px; animation: badgeBounce 2s ease-in-out infinite;">${badgeData.icon || '🏆'}</div>
+                                <div style="font-weight: bold; color: var(--gold); font-size: 0.95rem; margin-bottom: 6px;">${badgeData.title || 'Badge'}</div>
+                                <div style="font-size: 0.8rem; color: var(--white); margin-top: 6px; line-height: 1.3; opacity: 0.9;">${badgeData.description || ''}</div>
+                                <div style="font-size: 0.75rem; color: var(--gray); margin-top: 8px; opacity: 0.7;">📅 ${unlockedDate}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        document.getElementById('statsBtn').addEventListener('click', () => {
+            renderBadges();
+            document.getElementById('statsModal').classList.add('show');
+        });
+
+        document.getElementById('statsCloseBtn').addEventListener('click', () => {
+            document.getElementById('statsModal').classList.remove('show');
+        });
+
         // INIT
         renderMenu();
+        // Atualizar contador de badges na inicialização
+        updateBadgeCounter();
     </script>
   <script src="../assets/unlock-core.js"></script>
 </body>

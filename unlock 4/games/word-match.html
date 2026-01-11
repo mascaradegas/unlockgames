@@ -39,8 +39,8 @@ html,body{
   top:0;left:0;
   width:200%;height:200%;
   background-image:
-    linear-gradient(rgba(155,109,255,0.06) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(155,109,255,0.06) 1px,transparent 1px);
+    linear-gradient(rgba(0,191,255,0.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,191,255,0.07) 1px,transparent 1px);
   background-size:50px 50px;
   animation:gridMove 20s linear infinite;
 }
@@ -57,15 +57,16 @@ html,body{
   min-height:100vh;
   padding:20px;
 }
-.screen.active{display:flex;flex-direction:column;align-items:center}
+.screen.active{display:flex;flex-direction:column;align-items:center;animation:fadeIn 0.5s ease-out}
+@keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
 
 /* Menu */
 .menu-title{
   font-family:'Orbitron',sans-serif;
-  font-size:2.2rem;
+  font-size:3rem;
   font-weight:900;
-  color:var(--purple);
-  text-shadow:3px 3px 0 #4a2c7a, 0 0 30px rgba(155,109,255,0.6);
+  color:var(--gold);
+  text-shadow:3px 3px 0 #8B0000, 0 0 30px rgba(255,215,0,0.5);
   margin-bottom:10px;
   text-align:center;
 }
@@ -440,46 +441,138 @@ html,body{
 
 
 /* === UNLOCK 2026 Shared App Bar === */
-:root{--unlock-bar-h:58px;}
+:root{--unlock-bar-h:64px;}
 body{padding-top:var(--unlock-bar-h);}
+
+@keyframes glow-pulse {
+  0%, 100% { text-shadow: 0 0 10px rgba(255,215,0,0.3); }
+  50% { text-shadow: 0 0 20px rgba(255,215,0,0.6); }
+}
+@keyframes badge-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+@keyframes slide-in {
+  0% { transform: translateX(100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes badgeBounce {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.08) translateY(-3px); }
+}
+
 .unlock-appbar{
   position:fixed; top:0; left:0; right:0; height:var(--unlock-bar-h);
   display:flex; align-items:center; justify-content:space-between;
-  padding:0 14px;
-  background:rgba(10,22,40,0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding:0 16px;
+  background: linear-gradient(180deg, rgba(10,22,40,0.98) 0%, rgba(10,22,40,0.85) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 2px solid rgba(155,109,255,0.15);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(155,109,255,0.1);
   z-index:99999;
 }
+
 .unlock-appbar .left a{
   display:inline-flex; align-items:center; gap:8px;
   text-decoration:none; font-weight:800;
   color: var(--green, #00FF88);
   letter-spacing: .2px;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 6px;
 }
+.unlock-appbar .left a:hover {
+  color: var(--gold);
+  background: rgba(0,255,136,0.1);
+  transform: translateX(-2px);
+}
+
 .unlock-appbar .center{
   font-family:'Orbitron', system-ui, sans-serif;
   font-weight:900;
-  letter-spacing:1px;
+  letter-spacing:2px;
   color: var(--gold, #FFD700);
   font-size:14px;
+  animation: glow-pulse 3s ease-in-out infinite;
 }
+
 .unlock-appbar .right{
-  color: var(--gray, #8899aa);
-  font-weight:700;
-  font-size:12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
+
+.unlock-appbar-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gold);
+  font-size: 20px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.unlock-appbar-btn:hover {
+  background: rgba(255,215,0,0.1);
+  transform: scale(1.1);
+  animation: badge-bounce 0.6s ease;
+}
+
+.unlock-appbar-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%);
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.unlock-appbar-btn:hover::before {
+  opacity: 1;
+}
+
 .unlock-appbar .pill{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:7px 10px;
-  border:1px solid rgba(0,255,136,0.35);
-  border-radius:999px;
-  background:rgba(17,31,61,0.7);
+  display:inline-flex; align-items:center; gap:10px;
+  padding:8px 14px;
+  border: 2px solid rgba(155,109,255,0.3);
+  border-radius:12px;
+  background: linear-gradient(135deg, rgba(17,31,61,0.8) 0%, rgba(20,40,80,0.6) 100%);
+  transition: all 0.3s ease;
+  animation: slide-in 0.5s ease;
 }
+
+.unlock-appbar .pill:hover {
+  background: linear-gradient(135deg, rgba(17,31,61,1) 0%, rgba(20,40,80,0.8) 100%);
+  border-color: rgba(155,109,255,0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(155,109,255,0.2);
+}
+
+.unlock-appbar .pill span[data-unlock-streak] {
+  font-weight: bold;
+  color: var(--gold);
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
 @media (max-width:420px){
-  .unlock-appbar{padding:0 10px;}
-  .unlock-appbar .center{display:none;}
+  .unlock-appbar{padding:0 12px;}
+  .unlock-appbar .center{display:none; letter-spacing: 1px;}
+  :root{--unlock-bar-h:56px;}
 }
 
 </style>
@@ -493,6 +586,9 @@ body{padding-top:var(--unlock-bar-h);}
     </div>
     <div class="center">UNLOCK 2026</div>
     <div class="right">
+      <button class="unlock-appbar-btn" id="statsBtn" title="Ver seus badges" aria-label="Ver seus badges" style="position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; font-size: 12px;">
+        <span id="badgeCounter" style="background: var(--purple); color: var(--bg); padding: 2px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🏆 0</span>
+      </button>
       <span class="pill"><span data-unlock-streak>🔥 0</span><span style="opacity:.6">•</span> 🔵 Word Match</span>
     </div>
   </div>
@@ -505,6 +601,9 @@ body{padding-top:var(--unlock-bar-h);}
   <h1 class="menu-title">🔗 WORD MATCH</h1>
   <p class="menu-sub">Conecte português ↔ inglês</p>
   <div class="aulas" id="aulas-list"></div>
+  <a href="../study.html" style="display: block; margin-top: 30px; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto;">
+    <button style="width: 100%; background: linear-gradient(180deg, rgba(155,109,255,0.2) 0%, rgba(155,109,255,0.08) 100%); border: 2px solid rgba(155,109,255,0.6); color: #E8E8E8; font-size: 16px; padding: 20px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s;">📚 STUDY - APRENDA ANTES DE JOGAR</button>
+  </a>
 </div>
 
 <!-- Mode Select -->
@@ -574,6 +673,23 @@ body{padding-top:var(--unlock-bar-h);}
     <div class="modal-score">Score: <span id="lose-score">0</span></div>
     <button class="modal-btn primary" id="lose-retry">TENTAR DE NOVO</button>
     <button class="modal-btn secondary" id="lose-menu">MENU</button>
+  </div>
+</div>
+
+<!-- STATS MODAL -->
+<div class="modal" id="statsModal">
+  <div class="modal-box" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
+    <div class="modal-icon">🏆</div>
+    <div class="modal-title">SEUS BADGES</div>
+    <div id="badgesContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin: 20px 0; text-align: center;">
+      <!-- Badges will be populated here by JavaScript -->
+    </div>
+    <div id="noBadgesMsg" style="text-align: center; padding: 40px 20px; color: var(--gray);">
+      <p style="font-size: 3rem;">😴</p>
+      <p>Nenhum badge desbloqueado ainda!</p>
+      <p style="font-size: 0.9rem; margin-top: 10px;">Termine as aulas sem erros para desbloquear badges</p>
+    </div>
+    <button class="modal-btn primary" id="statsCloseBtn">FECHAR</button>
   </div>
 </div>
 
@@ -665,6 +781,70 @@ function triggerAura() {
   aura.classList.add('active');
 }
 
+function triggerPerfectBadgeAnimation() {
+  const badgeEl = document.createElement('div');
+  badgeEl.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 4rem;
+    z-index: 9999;
+    pointer-events: none;
+    text-shadow: 0 0 20px rgba(255,215,0,0.8);
+    animation: badgePop 1s ease-out forwards;
+  `;
+  badgeEl.textContent = '🏆';
+  document.body.appendChild(badgeEl);
+
+  for (let i = 0; i < 12; i++) {
+    const particle = document.createElement('div');
+    particle.style.cssText = `
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: #FFD700;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #FFD700;
+      top: 50%;
+      left: 50%;
+      z-index: 9998;
+      pointer-events: none;
+    `;
+    document.body.appendChild(particle);
+
+    const angle = (Math.PI * 2 * i) / 12;
+    const distance = 150;
+    const tx = Math.cos(angle) * distance;
+    const ty = Math.sin(angle) * distance;
+
+    particle.animate([
+      { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+      { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+    ], {
+      duration: 1000,
+      easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+    });
+
+    setTimeout(() => particle.remove(), 1000);
+  }
+
+  if (!document.getElementById('badgePerfectStyle')) {
+    const style = document.createElement('style');
+    style.id = 'badgePerfectStyle';
+    style.textContent = `
+      @keyframes badgePop {
+        0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+        50% { transform: translate(-50%, -50%) scale(1.2) rotate(10deg); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  setTimeout(() => badgeEl.remove(), 1000);
+}
+
 function showTimeBonus(text, isPerfect) {
   const toast = document.createElement('div');
   toast.className = 'time-bonus';
@@ -683,11 +863,71 @@ function renderMenu() {
   const container = document.getElementById('aulas-list');
   container.innerHTML = '';
   AULAS.forEach(aula => {
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+
     const div = document.createElement('div');
     div.className = 'aula';
     div.innerHTML = `<div class="aula-emoji">${aula.emoji}</div><div class="aula-name">${aula.title}</div>`;
     div.addEventListener('click', () => selectAula(aula));
-    container.appendChild(div);
+
+    // Add hidden study button that appears on hover
+    const studyBtn = document.createElement('button');
+    studyBtn.className = 'aula-study-btn';
+    studyBtn.textContent = '📚';
+    studyBtn.style.cssText = `
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 10;
+      box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+    `;
+    studyBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const aulaMapping = {
+        1: 'isAre', 2: 'numbers', 3: 'doYouHave', 4: 'get', 5: 'goCome',
+        6: 'goingTo', 7: 'haveHas', 8: 'haveToNeedTo', 9: 'hereThere',
+        10: 'howMuchMany', 11: 'how', 12: 'isAreQuestions', 13: 'can',
+        14: 'days', 15: 'directions', 16: 'doDoesdid', 17: 'letMeCanI',
+        18: 'likeLoveHate', 19: 'lookingFor', 20: 'monthsSeasons',
+        21: 'moodsFeelings', 22: 'numbersRealLife', 23: 'thisThat', 24: 'wantNeed'
+      };
+      const aulaId = aulaMapping[aula.id] || 'isAre';
+      window.location.href = `../aulas.html?lesson=${aulaId}&returnTo=games/word-match.html`;
+    });
+
+    studyBtn.addEventListener('mouseenter', () => {
+      studyBtn.style.transform = 'scale(1.2)';
+      studyBtn.style.boxShadow = '0 8px 25px rgba(255,215,0,0.6)';
+    });
+    studyBtn.addEventListener('mouseleave', () => {
+      studyBtn.style.transform = 'scale(1)';
+      studyBtn.style.boxShadow = '0 4px 15px rgba(255,215,0,0.3)';
+    });
+
+    wrapper.addEventListener('mouseenter', () => {
+      studyBtn.style.opacity = '1';
+      studyBtn.style.transform = 'scale(1)';
+    });
+    wrapper.addEventListener('mouseleave', () => {
+      studyBtn.style.opacity = '0';
+      studyBtn.style.transform = 'scale(0)';
+    });
+
+    wrapper.appendChild(div);
+    wrapper.appendChild(studyBtn);
+    container.appendChild(wrapper);
   });
 }
 
@@ -853,8 +1093,11 @@ function checkMatch() {
     
     comboCount++;
     if (comboCount % 3 === 0) triggerAura();
-    
-    score += 100;
+
+    const baseScore = 100;
+    const streakMultiplier = window.UNLOCK ? window.UNLOCK.getStreakMultiplier(window.UNLOCK.loadUser()) : 1;
+    const scoreGain = Math.round(baseScore * streakMultiplier);
+    score += scoreGain;
     matchedCount++;
     document.getElementById('game-score').textContent = score;
     updateProgress();
@@ -911,15 +1154,49 @@ function updateProgress() {
 }
 
 function endGame(won) {
-  if (timerInterval) clearInterval(timerInterval);
-  
-  if (won) {
-    document.getElementById('win-score').textContent = score;
-    document.getElementById('modal-win').classList.add('show');
-  } else {
-    document.getElementById('lose-score').textContent = score;
-    document.getElementById('modal-lose').classList.add('show');
+  // Complete daily quest
+  let isPerfect = false;
+  if (window.UNLOCK) {
+    const user = window.UNLOCK.loadUser();
+
+    window.UNLOCK.completeQuest(user);
+
+    // Check for perfect run (no errors and won)
+    if (won && roundErrors === 0) {
+      isPerfect = true;
+      const aula = currentAula;
+      const aulaIndex = AULAS.findIndex(a => a.title === aula.title);
+      const badgeId = `wordMatch_aula${aulaIndex}_perfect`;
+      window.UNLOCK.unlockBadge(user, badgeId, {
+        icon: '🏆',
+        title: `${aula.emoji} Perfect Word Match`,
+        description: `Completou ${aula.title} sem errar nenhuma correspondência!`,
+        game: 'wordMatch',
+        aulaIndex
+      });
+    }
+
+    window.UNLOCK.saveUser(user);
+    window.UNLOCK.hydrateUI(user);
   }
+
+  if (timerInterval) clearInterval(timerInterval);
+
+  // Show perfect badge animation if earned
+  if (isPerfect) {
+    triggerPerfectBadgeAnimation();
+  }
+
+  // Delay modal to show animation
+  setTimeout(() => {
+    if (won) {
+      document.getElementById('win-score').textContent = score;
+      document.getElementById('modal-win').classList.add('show');
+    } else {
+      document.getElementById('lose-score').textContent = score;
+      document.getElementById('modal-lose').classList.add('show');
+    }
+  }, isPerfect ? 500 : 0);
 }
 
 // Keyboard Controls
@@ -1010,8 +1287,83 @@ document.getElementById('lose-retry').addEventListener('click', () => {
 });
 document.getElementById('lose-menu').addEventListener('click', goToMenu);
 
+// === STATS MODAL HANDLERS ===
+function updateBadgeCounter() {
+  if (!window.UNLOCK) return;
+  const user = window.UNLOCK.loadUser();
+  const badges = window.UNLOCK.getBadges(user);
+  const badgeCount = Object.keys(badges).length;
+  const counterEl = document.getElementById('badgeCounter');
+  if (counterEl) {
+    counterEl.textContent = '🏆 ' + badgeCount;
+  }
+}
+
+function renderBadges() {
+  const badgesContainer = document.getElementById('badgesContainer');
+  const noBadgesMsg = document.getElementById('noBadgesMsg');
+
+  if (!window.UNLOCK) {
+    noBadgesMsg.style.display = 'block';
+    badgesContainer.innerHTML = '';
+    return;
+  }
+
+  const user = window.UNLOCK.loadUser();
+  const badges = window.UNLOCK.getBadges(user);
+  const badgesList = Object.entries(badges);
+
+  // Atualizar contador
+  updateBadgeCounter();
+
+  if (badgesList.length === 0) {
+    noBadgesMsg.style.display = 'block';
+    badgesContainer.innerHTML = '';
+  } else {
+    noBadgesMsg.style.display = 'none';
+    badgesContainer.innerHTML = badgesList.map(([badgeId, badgeData], idx) => {
+      const unlockedDate = badgeData.unlockedAt ? new Date(badgeData.unlockedAt).toLocaleDateString('pt-BR') : 'Desconhecido';
+      return `
+        <div style="
+          padding: 16px;
+          background: linear-gradient(135deg, rgba(155,109,255,0.05) 0%, rgba(155,109,255,0.02) 100%);
+          border: 2px solid var(--purple);
+          border-radius: 12px;
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          animation: slideUp 0.5s ease forwards;
+          animation-delay: ${idx * 0.1}s;
+          cursor: pointer;
+          position: relative;
+          overflow: hidden;
+        "
+        onmouseover="this.style.transform='translateY(-4px) scale(1.02)'; this.style.boxShadow='0 12px 24px rgba(155,109,255,0.3)'"
+        onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='none'">
+          <div style="position: absolute; inset: 0; background: linear-gradient(45deg, transparent 30%, rgba(155,109,255,0.1) 50%, transparent 70%); animation: shimmer 3s infinite;"></div>
+          <div style="position: relative; z-index: 1;">
+            <div style="font-size: 3rem; margin-bottom: 10px; animation: badgeBounce 2s ease-in-out infinite;">${badgeData.icon || '🏆'}</div>
+            <div style="font-weight: bold; color: var(--purple); font-size: 0.95rem; margin-bottom: 6px;">${badgeData.title || 'Badge'}</div>
+            <div style="font-size: 0.8rem; color: var(--white); margin-top: 6px; line-height: 1.3; opacity: 0.9;">${badgeData.description || ''}</div>
+            <div style="font-size: 0.75rem; color: var(--gray); margin-top: 8px; opacity: 0.7;">📅 ${unlockedDate}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+document.getElementById('statsBtn').addEventListener('click', () => {
+  renderBadges();
+  document.getElementById('statsModal').classList.add('show');
+});
+
+document.getElementById('statsCloseBtn').addEventListener('click', () => {
+  document.getElementById('statsModal').classList.remove('show');
+});
+
 // Init
 renderMenu();
+// Atualizar contador de badges na inicialização
+updateBadgeCounter();
 </script>
   <script src="../assets/unlock-core.js"></script>
 </body>

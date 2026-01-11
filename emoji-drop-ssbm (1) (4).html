@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMOJI DROP | UNLOCK 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a1628;--gold:#FFD700;--green:#00FF88;--red:#FF4444;--cyan:#00BFFF;--purple:#9B6DFF;--gray:#8899aa;--white:#E8E8E8;--orange:#FF8C00;
+  /* SSBM Melee additions */
+  --melee-red:#8B0000;--melee-red-light:#CC2222;--melee-gold-dark:#B8960F
+}
+html,body{overflow-x:hidden;min-height:100vh}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white)}
+
+/* SSBM Animated Grid Background */
+.bg-grid{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden;background:linear-gradient(135deg,#0a1628 0%,#1a2a4a 50%,#0a1628 100%)}
+.bg-grid::before{content:'';position:absolute;top:0;left:0;width:200%;height:200%;background-image:linear-gradient(rgba(0,191,255,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,191,255,0.07) 1px,transparent 1px);background-size:50px 50px;animation:gridMove 20s linear infinite}
+@keyframes gridMove{0%{transform:translate(0,0)}100%{transform:translate(-50px,-50px)}}
+
+/* SSBM Scanlines */
+.scanlines{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.08) 0px,rgba(0,0,0,0.08) 1px,transparent 1px,transparent 3px)}
+
+.container{max-width:480px;margin:0 auto;padding:15px;position:relative;z-index:2}
+
+/* MENU */
+.screen{display:none}.screen.active{display:block}
+.menu{text-align:center;padding:30px 0}
+.menu h1{font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;font-style:italic;color:var(--gold);margin-bottom:8px;text-shadow:3px 3px 0 var(--melee-red),5px 5px 10px rgba(0,0,0,0.8),0 0 30px rgba(255,215,0,0.5);transform:skewX(-5deg);letter-spacing:2px}
+.menu p{color:var(--gray);margin-bottom:30px}
+.menu-btn{display:flex;align-items:center;width:100%;padding:18px;margin-bottom:12px;background:linear-gradient(180deg,rgba(20,40,80,0.95),rgba(10,22,40,0.98));border:3px solid;border-image:linear-gradient(180deg,#CC4444 0%,#8B0000 50%,#550000 100%) 1;color:var(--white);cursor:pointer;transition:all 0.2s;text-align:left;clip-path:polygon(0 8px,8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px));position:relative}
+.menu-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.05) 0%,transparent 50%);pointer-events:none}
+.menu-btn:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(139,0,0,0.4),0 0 30px rgba(255,215,0,0.2)}
+.menu-btn:active{transform:translateY(0)}
+.menu-btn .icon{font-size:2rem;margin-right:15px}
+.menu-btn .title{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,0.5)}
+.menu-btn .desc{font-size:0.7rem;color:var(--gray);margin-top:2px}
+
+/* MAP */
+.map-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.map-header h2{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-style:italic;font-weight:700;color:var(--gold);text-shadow:2px 2px 0 var(--melee-red),0 0 20px rgba(255,215,0,0.4);transform:skewX(-3deg)}
+.back-btn{padding:8px 14px;background:linear-gradient(180deg,rgba(0,191,255,0.2),rgba(0,100,150,0.3));border:2px solid var(--cyan);color:var(--cyan);font-size:0.75rem;font-family:'Orbitron',sans-serif;cursor:pointer;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:all 0.2s}
+.back-btn:hover{background:var(--cyan);color:var(--bg);box-shadow:0 0 15px rgba(0,191,255,0.5)}
+
+/* SSBM Panel Style */
+.melee-panel{background:linear-gradient(180deg,rgba(20,40,80,0.95),rgba(10,22,40,0.98));border:3px solid;border-image:linear-gradient(180deg,#CC4444 0%,#8B0000 30%,#550000 70%,#8B0000 100%) 1;position:relative;clip-path:polygon(0 10px,10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px))}
+.melee-panel::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.03) 0%,transparent 40%);pointer-events:none}
+
+.progress-box{background:linear-gradient(180deg,rgba(20,40,80,0.95),rgba(10,22,40,0.98));border:3px solid;border-image:linear-gradient(180deg,#CC4444 0%,#8B0000 30%,#550000 70%,#8B0000 100%) 1;padding:14px;margin-bottom:15px;position:relative;clip-path:polygon(0 8px,8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px))}
+.progress-box::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.03) 0%,transparent 40%);pointer-events:none}
+.progress-box .label{font-size:0.7rem;color:var(--cyan);font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.progress-bar{height:8px;background:rgba(0,0,0,0.4);border-radius:4px;overflow:hidden;border:1px solid rgba(0,191,255,0.3)}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));transition:width 0.3s;box-shadow:0 0 10px rgba(0,255,136,0.5)}
+.progress-text{font-family:'Orbitron',sans-serif;font-size:0.85rem;color:var(--gold);margin-top:8px;text-shadow:0 0 10px rgba(255,215,0,0.3)}
+.level-list{max-height:60vh;overflow-y:auto;padding-right:5px}
+.level-card{display:flex;align-items:center;padding:14px;margin-bottom:10px;background:linear-gradient(180deg,rgba(20,40,80,0.9),rgba(10,22,40,0.95));border:2px solid rgba(0,191,255,0.4);cursor:pointer;transition:all 0.2s;clip-path:polygon(0 6px,6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px))}
+.level-card:hover:not(.locked){border-color:var(--gold);transform:translateX(5px);box-shadow:0 0 20px rgba(255,215,0,0.3)}
+.level-card.locked{opacity:0.4;cursor:not-allowed}
+.level-card.done{border-color:var(--green);box-shadow:0 0 10px rgba(0,255,136,0.2)}
+.level-card.current{border-color:var(--gold);box-shadow:0 0 20px rgba(255,215,0,0.4);animation:currentPulse 2s ease-in-out infinite}
+@keyframes currentPulse{0%,100%{box-shadow:0 0 15px rgba(255,215,0,0.3)}50%{box-shadow:0 0 25px rgba(255,215,0,0.6)}}
+.level-card .lv-icon{font-size:1.8rem;margin-right:12px}
+.level-card.locked .lv-icon{filter:grayscale(1)}
+.level-card .lv-info{flex:1}
+.level-card .lv-num{font-size:0.6rem;color:var(--cyan);font-family:'Orbitron',sans-serif;letter-spacing:1px}
+.level-card .lv-name{font-family:'Orbitron',sans-serif;font-size:0.95rem;font-weight:700}
+.level-card .lv-stars{font-size:0.85rem;margin-top:2px}
+.level-card .star{color:#333}.level-card .star.on{color:var(--gold);text-shadow:0 0 8px rgba(255,215,0,0.6)}
+.level-card .lv-status{font-size:0.65rem;color:var(--gray);font-family:'Orbitron',sans-serif}
+.level-card .lv-status.done{color:var(--green)}
+
+/* GAME */
+.game-header{text-align:center;margin-bottom:12px}
+.game-header h1{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-style:italic;font-weight:900;color:var(--gold);text-shadow:2px 2px 0 var(--melee-red),4px 4px 8px rgba(0,0,0,0.8),0 0 20px rgba(255,215,0,0.4);transform:skewX(-3deg)}
+.game-header p{font-size:0.7rem;color:var(--cyan);letter-spacing:1px}
+.level-prog{background:linear-gradient(180deg,rgba(20,40,80,0.95),rgba(10,22,40,0.98));padding:10px 14px;margin-bottom:8px;border:2px solid var(--melee-red-light);clip-path:polygon(0 5px,5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px))}
+.level-prog-head{display:flex;justify-content:space-between;font-size:0.7rem;margin-bottom:6px}
+.level-prog-head .title{color:var(--cyan);font-family:'Orbitron',sans-serif;letter-spacing:1px}
+.level-prog-head .count{color:var(--gold);font-family:'Orbitron',sans-serif;text-shadow:0 0 8px rgba(255,215,0,0.4)}
+.level-prog-bar{height:6px;background:rgba(0,0,0,0.4);border-radius:3px;overflow:hidden}
+.level-prog-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));transition:width 0.3s;box-shadow:0 0 8px rgba(0,255,136,0.5)}
+
+/* HUD - SSBM style */
+.hud{display:flex;justify-content:space-between;padding:10px 12px;margin-bottom:8px;background:linear-gradient(180deg,rgba(20,40,80,0.95),rgba(10,22,40,0.98));border:3px solid;border-image:linear-gradient(180deg,#CC4444 0%,#8B0000 50%,#550000 100%) 1;clip-path:polygon(0 6px,6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px))}
+.hud-item{text-align:center}
+.hud-label{font-size:0.55rem;color:var(--cyan);text-transform:uppercase;font-family:'Orbitron',sans-serif;letter-spacing:1px}
+.hud-val{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,0.5)}
+.hud-val.lives{color:var(--red);font-size:0.85rem;text-shadow:0 0 8px rgba(255,68,68,0.5)}
+.hud-val.combo{color:var(--purple);text-shadow:0 0 10px rgba(155,109,255,0.5)}
+
+/* Power-ups bar */
+.pu-bar{display:flex;gap:6px;justify-content:center;padding:8px 10px;margin-bottom:8px;background:linear-gradient(180deg,rgba(20,40,80,0.9),rgba(10,22,40,0.95));border:2px solid var(--gold);clip-path:polygon(0 4px,4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px))}
+.pu-slot{width:38px;height:38px;background:rgba(10,22,40,0.9);border:2px solid rgba(0,191,255,0.4);display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;position:relative;transition:all 0.2s;clip-path:polygon(0 4px,4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px))}
+.pu-slot:hover:not(.empty){transform:scale(1.1);border-color:var(--gold);box-shadow:0 0 15px rgba(255,215,0,0.4)}
+.pu-slot.empty{opacity:0.4;cursor:default}
+.pu-slot .key{position:absolute;top:-6px;left:50%;transform:translateX(-50%);background:var(--cyan);color:var(--bg);font-size:0.5rem;font-weight:700;width:14px;height:14px;display:flex;align-items:center;justify-content:center;clip-path:polygon(2px 0,calc(100% - 2px) 0,100% 2px,100% calc(100% - 2px),calc(100% - 2px) 100%,2px 100%,0 calc(100% - 2px),0 2px)}
+.pu-slot .cnt{position:absolute;bottom:-4px;right:-4px;background:var(--gold);color:var(--bg);font-size:0.5rem;font-weight:700;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px rgba(255,215,0,0.5)}
+.pu-slot.active{border-color:var(--green);box-shadow:0 0 12px rgba(0,255,136,0.6)}
+
+/* Arena - SSBM style */
+.arena{position:relative;width:100%;height:350px;border:3px solid;border-image:linear-gradient(180deg,#CC4444 0%,#8B0000 50%,#550000 100%) 1;background:linear-gradient(180deg,rgba(10,22,40,0.6),rgba(20,40,80,0.4));overflow:hidden;margin-bottom:8px;clip-path:polygon(0 8px,8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px))}
+.arena.shake{animation:shake 0.4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.arena.frozen{border-image:linear-gradient(180deg,#9B6DFF 0%,#6B4DBB 50%,#4B2D9B 100%) 1;box-shadow:0 0 25px rgba(155,109,255,0.5)}
+.arena.double{border-color:var(--gold);box-shadow:0 0 20px rgba(255,215,0,0.3)}
+.floor{position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--gold),var(--green))}
+.particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
+.block{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.block:hover .box{transform:scale(1.05);border-color:var(--gold)}
+.block.selected .box{border-color:var(--green)!important;box-shadow:0 0 20px rgba(0,255,136,0.5)!important;transform:scale(1.08)}
+.block.selected .hint{border-color:var(--green);background:rgba(0,255,136,0.15)}
+.block.explode{animation:explode 0.35s ease-out forwards}
+@keyframes explode{to{transform:scale(0);opacity:0}}
+.box{width:52px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:9px;background:linear-gradient(180deg,rgba(20,40,80,0.95),rgba(10,22,40,0.98));border:2px solid rgba(0,191,255,0.6);box-shadow:0 0 12px rgba(0,191,255,0.2);transition:all 0.2s}
+.box .cat{font-size:0.5rem;font-weight:700;opacity:0.9}
+.box .emoji{font-size:1.2rem}
+.box.pu{border-color:var(--gold);box-shadow:0 0 18px rgba(255,215,0,0.4);animation:glow 1s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 12px rgba(255,215,0,0.4)}50%{box-shadow:0 0 25px rgba(255,215,0,0.7)}}
+.hint{font-size:0.6rem;color:var(--white);background:rgba(10,22,40,0.85);border:1px solid rgba(0,191,255,0.4);padding:2px 5px;border-radius:4px;max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.options{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.opt-btn{
+  padding:14px 8px;
+  background:linear-gradient(180deg,rgba(20,40,80,0.95),rgba(10,22,40,0.98));
+  border:2px solid rgba(0,191,255,0.65);
+  font-family:'Orbitron',sans-serif;
+  font-size:1rem;
+  font-weight:800;
+  letter-spacing:0.04em;
+  color:var(--white);
+  cursor:pointer;
+  transition:all 0.15s ease-out;
+  clip-path:polygon(0 5px,5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px));
+  box-shadow:0 0 10px rgba(0,191,255,0.45),0 0 20px rgba(0,191,255,0.25),inset 0 0 6px rgba(0,191,255,0.18);
+}
+.opt-btn:hover{
+  border-color:var(--gold);
+  color:var(--gold);
+  box-shadow:0 0 18px rgba(255,215,0,0.6),0 0 36px rgba(255,215,0,0.35),inset 0 0 10px rgba(255,215,0,0.25);
+  transform:scale(1.06);
+}
+.opt-btn:active{
+  transform:scale(0.95);
+  box-shadow:0 0 14px rgba(0,255,136,0.7),inset 0 0 12px rgba(0,255,136,0.35);
+}
+.opt-btn.correct{
+  border-color:var(--green);
+  color:var(--green);
+  box-shadow:0 0 26px rgba(0,255,136,0.75);
+}
+.opt-btn.wrong{
+  border-color:var(--red);
+  color:var(--red);
+  box-shadow:0 0 26px rgba(255,68,68,0.75);
+}
+
+/* Control Buttons - SSBM 3D style */
+.controls{display:flex;gap:6px;margin-bottom:8px}
+.btn{flex:1;padding:12px 14px;font-size:0.8rem;font-weight:700;border:none;cursor:pointer;font-family:'Orbitron',sans-serif;transition:all 0.15s;clip-path:polygon(0 5px,5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px))}
+.btn:active{transform:scale(0.95)}
+.btn-go{background:linear-gradient(180deg,#FFE566 0%,#FFD700 20%,#B8960F 80%,#8B7000 100%);color:#000;box-shadow:0 4px 0 #5a4a00,0 6px 10px rgba(0,0,0,0.4),inset 0 2px 0 rgba(255,255,255,0.3)}
+.btn-go:hover{box-shadow:0 6px 0 #5a4a00,0 10px 20px rgba(0,0,0,0.4),0 0 20px rgba(255,215,0,0.4);transform:translateY(-2px)}
+.btn-menu{background:linear-gradient(180deg,#B080FF 0%,#9B6DFF 20%,#6B4DBB 80%,#4B2D9B 100%);color:#fff;box-shadow:0 4px 0 #3a1d7b,0 6px 10px rgba(0,0,0,0.4),inset 0 2px 0 rgba(255,255,255,0.2)}
+.btn-menu:hover{box-shadow:0 6px 0 #3a1d7b,0 10px 20px rgba(0,0,0,0.4),0 0 20px rgba(155,109,255,0.4);transform:translateY(-2px)}
+.feedback{text-align:center;font-size:0.8rem;font-weight:600;min-height:20px;color:var(--gray)}
+.popup{position:absolute;font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;pointer-events:none;animation:popUp 0.8s ease-out forwards;z-index:100}
+@keyframes popUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-35px)}}
+
+/* MODALS - SSBM Style */
+.modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:1000;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:linear-gradient(180deg,#1a2a4a 0%,#0a1628 100%);border:4px solid;border-image:linear-gradient(180deg,#FFE566 0%,#FFD700 30%,#B8960F 70%,#8B7000 100%) 1;padding:25px;text-align:center;max-width:320px;animation:modalIn 0.3s ease-out;clip-path:polygon(0 12px,12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px));position:relative}
+.modal::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.05) 0%,transparent 40%);pointer-events:none;clip-path:inherit}
+@keyframes modalIn{from{transform:scale(0.8) rotate(-2deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.modal-icon{font-size:3.5rem;margin-bottom:12px;filter:drop-shadow(0 0 10px rgba(255,215,0,0.5))}
+.modal-title{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:900;font-style:italic;color:var(--gold);margin-bottom:8px;text-shadow:2px 2px 0 var(--melee-red),0 0 20px rgba(255,215,0,0.5);transform:skewX(-3deg)}
+.modal.gameover .modal-title{color:var(--red);text-shadow:2px 2px 0 #330000,0 0 20px rgba(255,68,68,0.5)}
+.modal-sub{color:var(--cyan);margin-bottom:14px;font-size:0.9rem;font-family:'Orbitron',sans-serif;letter-spacing:1px}
+.modal-stars{font-size:2rem;margin-bottom:14px;filter:drop-shadow(0 0 8px rgba(255,215,0,0.6))}
+.modal-stats{background:rgba(0,0,0,0.4);padding:12px;margin-bottom:18px;border:2px solid var(--melee-red);clip-path:polygon(0 5px,5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px))}
+.modal-stat{display:flex;justify-content:space-between;margin-bottom:6px;font-size:0.85rem}
+.modal-stat:last-child{margin-bottom:0}
+.modal-stat-lbl{color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:0.75rem;letter-spacing:1px}
+.modal-stat-val{color:var(--gold);font-family:'Orbitron',sans-serif;font-weight:700;text-shadow:0 0 8px rgba(255,215,0,0.4)}
+.modal-btn{display:block;width:100%;padding:13px;margin-bottom:8px;border:none;font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;transition:all 0.15s;clip-path:polygon(0 5px,5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px))}
+.modal-btn:last-child{margin-bottom:0}
+.modal-btn.primary{background:linear-gradient(180deg,#FFE566 0%,#FFD700 20%,#B8960F 80%,#8B7000 100%);color:#000;box-shadow:0 4px 0 #5a4a00,0 6px 10px rgba(0,0,0,0.4)}
+.modal-btn.primary:hover{box-shadow:0 6px 0 #5a4a00,0 10px 15px rgba(0,0,0,0.4),0 0 20px rgba(255,215,0,0.4);transform:translateY(-2px)}
+.modal-btn.secondary{background:linear-gradient(180deg,rgba(0,100,150,0.4),rgba(0,60,100,0.6));border:2px solid var(--cyan);color:var(--cyan);box-shadow:0 3px 0 #003050,0 5px 8px rgba(0,0,0,0.3)}
+.modal-btn.secondary:hover{box-shadow:0 5px 0 #003050,0 8px 12px rgba(0,0,0,0.3),0 0 15px rgba(0,191,255,0.4);transform:translateY(-2px)}
+
+/* PREVIEW + LAST WORD - SSBM Style */
+.game-topbar{display:flex;justify-content:space-between;align-items:center;margin:8px 0 12px}
+.small-btn{padding:8px 12px;background:linear-gradient(180deg,rgba(20,40,80,0.95),rgba(10,22,40,0.98));border:2px solid var(--cyan);color:var(--cyan);font-size:0.7rem;cursor:pointer;font-family:'Orbitron',sans-serif;transition:all 0.15s;clip-path:polygon(5px 0,100% 0,calc(100% - 5px) 100%,0 100%)}
+.small-btn:hover{border-color:var(--gold);color:var(--gold);box-shadow:0 0 12px rgba(255,215,0,0.4);transform:translateY(-2px)}
+.last-word{margin:8px 0 10px;padding:12px 14px;background:linear-gradient(180deg,rgba(20,40,80,0.95),rgba(10,22,40,0.98));border:2px solid rgba(0,191,255,0.4);display:flex;justify-content:space-between;align-items:center;gap:10px;clip-path:polygon(0 5px,5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px));transition:all 0.3s}
+.last-word .lw-left{display:flex;flex-direction:column;gap:3px}
+.last-word .lw-title{font-size:0.55rem;color:var(--cyan);text-transform:uppercase;font-family:'Orbitron',sans-serif;letter-spacing:1px}
+.last-word .lw-main{font-size:1rem;font-weight:800;color:var(--gold);line-height:1.1;text-shadow:0 0 8px rgba(255,215,0,0.3)}
+.last-word .lw-sub{font-size:0.75rem;color:var(--white);opacity:0.9}
+.last-word .lw-aura{width:20px;height:20px;flex:0 0 auto;border:2px solid rgba(0,191,255,0.5);clip-path:polygon(3px 0,calc(100% - 3px) 0,100% 3px,100% calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,0 calc(100% - 3px),0 3px);transition:all 0.3s}
+.last-word.good{border-color:var(--green);box-shadow:0 0 20px rgba(0,255,136,0.3)}
+.last-word.good .lw-aura{border-color:var(--green);box-shadow:0 0 16px rgba(0,255,136,0.75);background:rgba(0,255,136,0.2)}
+.last-word.bad{border-color:var(--red);box-shadow:0 0 20px rgba(255,68,68,0.3)}
+.last-word.bad .lw-aura{border-color:var(--red);box-shadow:0 0 16px rgba(255,68,68,0.75);background:rgba(255,68,68,0.2)}
+
+/* Word List Modal */
+.wordlist{max-height:48vh;overflow:auto;text-align:left;border:2px solid var(--melee-red);padding:12px;background:rgba(0,0,0,0.3);clip-path:polygon(0 5px,5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px))}
+.word-item{display:flex;justify-content:space-between;gap:12px;padding:8px 6px;border-bottom:1px solid rgba(0,191,255,0.2);font-size:0.85rem}
+.word-item:last-child{border-bottom:none}
+.word-item .pt{color:var(--white)}
+.word-item .en{color:var(--cyan);font-weight:700;font-family:'Orbitron',sans-serif}
+.word-item .e{margin-right:6px}
+
+</style>
+</head>
+<body>
+<!-- SSBM Background Effects -->
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<div class="container">
+<!-- MENU -->
+<div class="screen active" id="menuScreen">
+  <div class="menu">
+    <h1>🎮 EMOJI DROP</h1>
+    <p>Traduza palavras PT → EN!</p>
+    <button class="menu-btn" id="btnQuick"><span class="icon">⚡</span><span><span class="title">QUICK PLAY</span><div class="desc">Modo arcade infinito</div></span></button>
+    <button class="menu-btn" id="btnLevels"><span class="icon">🗺️</span><span><span class="title">LEVEL MODE</span><div class="desc">15 níveis por tópico - 50 palavras cada</div></span></button>
+  </div>
+</div>
+
+<!-- MAP -->
+<div class="screen" id="mapScreen">
+  <div class="map-header"><h2>🗺️ NÍVEIS</h2><button class="back-btn" id="btnBackMenu">← MENU</button></div>
+  <div class="progress-box">
+    <div class="label">PROGRESSO TOTAL</div>
+    <div class="progress-bar"><div class="progress-fill" id="mapFill"></div></div>
+    <div class="progress-text"><span id="mapDone">0</span>/15 completos</div>
+  </div>
+  <div class="level-list" id="levelList"></div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="gameScreen">
+  <div class="game-header"><h1 id="gameTitle">🎮 EMOJI DROP</h1><p id="gameSub">🇧🇷 Traduza para 🇺🇸</p></div>
+  <div class="game-topbar">
+    <button class="small-btn" id="btnPreview">📜 WORD LIST</button>
+    <button class="small-btn" id="btnResetProgress" title="Zera só o progresso do mapa">♻️ RESET MAP</button>
+  </div>
+
+  <div class="last-word" id="lastWordBox">
+    <div class="lw-left">
+      <div class="lw-title">LAST WORD</div>
+      <div class="lw-main" id="lwPt">—</div>
+      <div class="lw-sub" id="lwEn">—</div>
+    </div>
+    <div class="lw-aura" id="lwAura"></div>
+  </div>
+
+  <div class="level-prog" id="levelProg" style="display:none">
+    <div class="level-prog-head"><span class="title" id="lpTitle">Level 1</span><span class="count"><span id="lpCount">0</span>/50</span></div>
+    <div class="level-prog-bar"><div class="level-prog-fill" id="lpFill"></div></div>
+  </div>
+
+  <div class="hud">
+    <div class="hud-item"><div class="hud-label">Score</div><div class="hud-val" id="hScore">0</div></div>
+    <div class="hud-item"><div class="hud-label">Vidas</div><div class="hud-val lives" id="hLives">❤️❤️❤️❤️❤️</div></div>
+    <div class="hud-item"><div class="hud-label">Combo</div><div class="hud-val combo" id="hCombo">0</div></div>
+    <div class="hud-item"><div class="hud-label">Multi</div><div class="hud-val" id="hMult">1x</div></div>
+  </div>
+
+  <div class="pu-bar">
+    <div class="pu-slot empty" id="pu-slow"><span class="key">1</span></div>
+    <div class="pu-slot empty" id="pu-freeze"><span class="key">2</span></div>
+    <div class="pu-slot empty" id="pu-double"><span class="key">3</span></div>
+    <div class="pu-slot empty" id="pu-bomb"><span class="key">4</span></div>
+    <div class="pu-slot empty" id="pu-life"><span class="key">5</span></div>
+  </div>
+
+  <div class="arena" id="arena"><div class="particles" id="particles"></div><div class="floor"></div></div>
+
+  <div class="options" id="options"></div>
+
+  <!-- NO TYPING: only buttons -->
+  <div class="controls">
+    <button class="btn btn-go" id="btnStart">Start</button>
+    <button class="btn btn-menu" id="btnGameMenu">Menu</button>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+</div>
+</div>
+
+<!-- WIN MODAL -->
+<div class="modal-bg" id="winModal">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <div class="modal-title">NÍVEL COMPLETO!</div>
+    <div class="modal-sub" id="winLevel">Comida</div>
+    <div class="modal-stars" id="winStars">⭐⭐⭐</div>
+    <div class="modal-stats">
+      <div class="modal-stat"><span class="modal-stat-lbl">Score</span><span class="modal-stat-val" id="winScore">0</span></div>
+      <div class="modal-stat"><span class="modal-stat-lbl">Precisão</span><span class="modal-stat-val" id="winAcc">0%</span></div>
+      <div class="modal-stat"><span class="modal-stat-lbl">Max Combo</span><span class="modal-stat-val" id="winCombo">0</span></div>
+    </div>
+    <button class="modal-btn primary" id="btnNext">PRÓXIMO →</button>
+    <button class="modal-btn secondary" id="btnWinMap">VOLTAR AO MAPA</button>
+  </div>
+</div>
+
+<!-- GAME OVER MODAL -->
+<div class="modal-bg" id="goModal">
+  <div class="modal gameover">
+    <div class="modal-icon">💀</div>
+    <div class="modal-title">GAME OVER</div>
+    <div class="modal-sub">Sem vidas!</div>
+    <div class="modal-stats">
+      <div class="modal-stat"><span class="modal-stat-lbl">Score</span><span class="modal-stat-val" id="goScore">0</span></div>
+      <div class="modal-stat"><span class="modal-stat-lbl">Palavras</span><span class="modal-stat-val" id="goWords">0/50</span></div>
+    </div>
+    <button class="modal-btn primary" id="btnRetry">TENTAR DE NOVO</button>
+    <button class="modal-btn secondary" id="btnGoMap">VOLTAR</button>
+  </div>
+
+</div>
+
+<!-- WORD LIST MODAL -->
+<div class="modal-bg" id="wordModal">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-icon">📜</div>
+    <div class="modal-title">WORD LIST</div>
+    <div class="modal-sub" id="wordModalSub">Level</div>
+    <div class="wordlist" id="wordListBox"></div>
+    <button class="modal-btn secondary" id="btnCloseWords">FECHAR</button>
+  </div>
+</div>
+
+<script>
+/* ------------------------- DATA ------------------------- */
+const LEVELS=[
+{id:1,name:"Comida",emoji:"🍽️",cats:["COMIDA"]},
+{id:2,name:"Casa",emoji:"🏠",cats:["CASA"]},
+{id:3,name:"Corpo",emoji:"💪",cats:["CORPO"]},
+{id:4,name:"Clima & Emoções",emoji:"🌤️",cats:["CLIMA","EMOÇÃO"]},
+{id:5,name:"Tempo & Dias",emoji:"📅",cats:["TEMPO","DIAS","NÚMEROS"]},
+{id:6,name:"Transporte",emoji:"🚌",cats:["TRANSPORTE"]},
+{id:7,name:"Compras",emoji:"🛒",cats:["COMPRAS","DINHEIRO"]},
+{id:8,name:"Trabalho",emoji:"💼",cats:["TRABALHO"]},
+{id:9,name:"Saúde",emoji:"🏥",cats:["SAÚDE"]},
+{id:10,name:"Construção",emoji:"🔧",cats:["OBRA"]},
+{id:11,name:"Limpeza",emoji:"🧹",cats:["LIMPEZA"]},
+{id:12,name:"Cozinha Pro",emoji:"🍳",cats:["COZINHA"]},
+{id:13,name:"Lugares",emoji:"📍",cats:["LUGARES","DIREÇÕES"]},
+{id:14,name:"Comunicação",emoji:"💬",cats:["COMUNICAÇÃO","PROBLEMAS"]},
+{id:15,name:"Gírias",emoji:"🔥",cats:["ROLÊ"]}
+];
+const WORDS_NEEDED=50;
+const WORDS = [{"cat": "COMIDA", "emoji": "💧", "pt": "água", "en": ["water"]}, {"cat": "COMIDA", "emoji": "☕", "pt": "café", "en": ["coffee"]}, {"cat": "COMIDA", "emoji": "🍵", "pt": "chá", "en": ["tea"]}, {"cat": "COMIDA", "emoji": "🧃", "pt": "suco", "en": ["juice"]}, {"cat": "COMIDA", "emoji": "🍞", "pt": "pão", "en": ["bread"]}, {"cat": "COMIDA", "emoji": "🧈", "pt": "manteiga", "en": ["butter"]}, {"cat": "COMIDA", "emoji": "🧀", "pt": "queijo", "en": ["cheese"]}, {"cat": "COMIDA", "emoji": "🥛", "pt": "leite", "en": ["milk"]}, {"cat": "COMIDA", "emoji": "🥚", "pt": "ovo", "en": ["egg"]}, {"cat": "COMIDA", "emoji": "🍚", "pt": "arroz", "en": ["rice"]}, {"cat": "COMIDA", "emoji": "🫘", "pt": "feijão", "en": ["beans"]}, {"cat": "COMIDA", "emoji": "🍝", "pt": "macarrão", "en": ["pasta"]}, {"cat": "COMIDA", "emoji": "🥩", "pt": "carne", "en": ["meat"]}, {"cat": "COMIDA", "emoji": "🍗", "pt": "frango", "en": ["chicken"]}, {"cat": "COMIDA", "emoji": "🐟", "pt": "peixe", "en": ["fish"]}, {"cat": "COMIDA", "emoji": "🥗", "pt": "salada", "en": ["salad"]}, {"cat": "COMIDA", "emoji": "🍲", "pt": "sopa", "en": ["soup"]}, {"cat": "COMIDA", "emoji": "🍕", "pt": "pizza", "en": ["pizza"]}, {"cat": "COMIDA", "emoji": "🍔", "pt": "hambúrguer", "en": ["burger"]}, {"cat": "COMIDA", "emoji": "🌭", "pt": "cachorro-quente", "en": ["hot dog"]}, {"cat": "COMIDA", "emoji": "🥔", "pt": "batata", "en": ["potato"]}, {"cat": "COMIDA", "emoji": "🍟", "pt": "batata frita", "en": ["fries", "french fries"]}, {"cat": "COMIDA", "emoji": "🍅", "pt": "tomate", "en": ["tomato"]}, {"cat": "COMIDA", "emoji": "🧅", "pt": "cebola", "en": ["onion"]}, {"cat": "COMIDA", "emoji": "🧄", "pt": "alho", "en": ["garlic"]}, {"cat": "COMIDA", "emoji": "🥬", "pt": "alface", "en": ["lettuce"]}, {"cat": "COMIDA", "emoji": "🥕", "pt": "cenoura", "en": ["carrot"]}, {"cat": "COMIDA", "emoji": "🥦", "pt": "brócolis", "en": ["broccoli"]}, {"cat": "COMIDA", "emoji": "🌽", "pt": "milho", "en": ["corn"]}, {"cat": "COMIDA", "emoji": "🍓", "pt": "morangos", "en": ["strawberry", "strawberries"]}, {"cat": "COMIDA", "emoji": "🍎", "pt": "maçã", "en": ["apple"]}, {"cat": "COMIDA", "emoji": "🍌", "pt": "banana", "en": ["banana"]}, {"cat": "COMIDA", "emoji": "🍊", "pt": "laranja", "en": ["orange"]}, {"cat": "COMIDA", "emoji": "🍇", "pt": "uva", "en": ["grape", "grapes"]}, {"cat": "COMIDA", "emoji": "🍋", "pt": "limão", "en": ["lemon"]}, {"cat": "COMIDA", "emoji": "🍍", "pt": "abacaxi", "en": ["pineapple"]}, {"cat": "COMIDA", "emoji": "🥭", "pt": "manga", "en": ["mango"]}, {"cat": "COMIDA", "emoji": "🍉", "pt": "melancia", "en": ["watermelon"]}, {"cat": "COMIDA", "emoji": "🍑", "pt": "pêssego", "en": ["peach"]}, {"cat": "COMIDA", "emoji": "🍫", "pt": "chocolate", "en": ["chocolate"]}, {"cat": "COMIDA", "emoji": "🍪", "pt": "biscoito", "en": ["cookie", "cookies"]}, {"cat": "COMIDA", "emoji": "🍰", "pt": "bolo", "en": ["cake"]}, {"cat": "COMIDA", "emoji": "🍦", "pt": "sorvete", "en": ["ice cream"]}, {"cat": "COMIDA", "emoji": "🍬", "pt": "açúcar", "en": ["sugar"]}, {"cat": "COMIDA", "emoji": "🧂", "pt": "sal", "en": ["salt"]}, {"cat": "COMIDA", "emoji": "🌶️", "pt": "pimenta", "en": ["pepper"]}, {"cat": "COMIDA", "emoji": "🫗", "pt": "óleo", "en": ["oil"]}, {"cat": "COMIDA", "emoji": "🥫", "pt": "molho", "en": ["sauce", "gravy"]}, {"cat": "COMIDA", "emoji": "🧻", "pt": "guardanapo", "en": ["napkin"]}, {"cat": "CASA", "emoji": "🚪", "pt": "porta", "en": ["door"]}, {"cat": "CASA", "emoji": "🔑", "pt": "chave", "en": ["key"]}, {"cat": "CASA", "emoji": "🪟", "pt": "janela", "en": ["window"]}, {"cat": "CASA", "emoji": "🧱", "pt": "parede", "en": ["wall"]}, {"cat": "CASA", "emoji": "🧹", "pt": "chão", "en": ["floor"]}, {"cat": "CASA", "emoji": "🏠", "pt": "teto", "en": ["ceiling"]}, {"cat": "CASA", "emoji": "🏠", "pt": "telhado", "en": ["roof"]}, {"cat": "CASA", "emoji": "🛏️", "pt": "cama", "en": ["bed"]}, {"cat": "CASA", "emoji": "🛏️", "pt": "travesseiro", "en": ["pillow"]}, {"cat": "CASA", "emoji": "🧣", "pt": "cobertor", "en": ["blanket", "comforter"]}, {"cat": "CASA", "emoji": "🛏️", "pt": "lençol", "en": ["sheet"]}, {"cat": "CASA", "emoji": "🛏️", "pt": "quarto", "en": ["bedroom"]}, {"cat": "CASA", "emoji": "🛋️", "pt": "sala", "en": ["living room"]}, {"cat": "CASA", "emoji": "🍳", "pt": "cozinha", "en": ["kitchen"]}, {"cat": "CASA", "emoji": "🚿", "pt": "banheiro", "en": ["bathroom"]}, {"cat": "CASA", "emoji": "🪜", "pt": "escada", "en": ["stairs"]}, {"cat": "CASA", "emoji": "🚪", "pt": "corredor", "en": ["hallway"]}, {"cat": "CASA", "emoji": "🛋️", "pt": "sofá", "en": ["sofa", "couch"]}, {"cat": "CASA", "emoji": "🪑", "pt": "cadeira", "en": ["chair"]}, {"cat": "CASA", "emoji": "🪑", "pt": "mesa", "en": ["table"]}, {"cat": "CASA", "emoji": "🧶", "pt": "tapete", "en": ["rug"]}, {"cat": "CASA", "emoji": "💡", "pt": "lâmpada", "en": ["lamp"]}, {"cat": "CASA", "emoji": "💡", "pt": "luz", "en": ["light"]}, {"cat": "CASA", "emoji": "🔌", "pt": "tomada", "en": ["outlet"]}, {"cat": "CASA", "emoji": "🔌", "pt": "fio", "en": ["wire", "cable"]}, {"cat": "CASA", "emoji": "🎛️", "pt": "controle remoto", "en": ["remote"]}, {"cat": "CASA", "emoji": "📺", "pt": "televisão", "en": ["TV"]}, {"cat": "CASA", "emoji": "❄️", "pt": "geladeira", "en": ["fridge", "refrigerator"]}, {"cat": "CASA", "emoji": "🔥", "pt": "fogão", "en": ["stove"]}, {"cat": "CASA", "emoji": "🍳", "pt": "forno", "en": ["oven"]}, {"cat": "CASA", "emoji": "📦", "pt": "micro-ondas", "en": ["microwave"]}, {"cat": "CASA", "emoji": "🚰", "pt": "pia", "en": ["sink"]}, {"cat": "CASA", "emoji": "🚰", "pt": "torneira", "en": ["faucet", "tap"]}, {"cat": "CASA", "emoji": "🚿", "pt": "chuveiro", "en": ["shower"]}, {"cat": "CASA", "emoji": "🚽", "pt": "vaso sanitário", "en": ["toilet"]}, {"cat": "CASA", "emoji": "🪞", "pt": "espelho", "en": ["mirror"]}, {"cat": "CASA", "emoji": "🚪", "pt": "armário", "en": ["closet"]}, {"cat": "CASA", "emoji": "🗄️", "pt": "guarda-roupa", "en": ["wardrobe"]}, {"cat": "CASA", "emoji": "🗄️", "pt": "gaveta", "en": ["drawer"]}, {"cat": "CASA", "emoji": "🗑️", "pt": "lixeira", "en": ["trash can", "bin"]}, {"cat": "CASA", "emoji": "🚗", "pt": "garagem", "en": ["garage"]}, {"cat": "CASA", "emoji": "🚧", "pt": "portão", "en": ["gate"]}, {"cat": "CASA", "emoji": "🔔", "pt": "campainha", "en": ["doorbell"]}, {"cat": "CASA", "emoji": "👋", "pt": "vizinho", "en": ["neighbor"]}, {"cat": "CASA", "emoji": "💰", "pt": "aluguel", "en": ["rent"]}, {"cat": "CASA", "emoji": "🧾", "pt": "conta", "en": ["bill", "utility bill"]}, {"cat": "CASA", "emoji": "🧰", "pt": "conserto", "en": ["repair"]}, {"cat": "CASA", "emoji": "💧", "pt": "vazamento", "en": ["leak"]}, {"cat": "CASA", "emoji": "⚠️", "pt": "tomada quebrada", "en": ["broken outlet"]}, {"cat": "CORPO", "emoji": "🧠", "pt": "cabeça", "en": ["head"]}, {"cat": "CORPO", "emoji": "🙂", "pt": "rosto", "en": ["face"]}, {"cat": "CORPO", "emoji": "💇", "pt": "cabelo", "en": ["hair"]}, {"cat": "CORPO", "emoji": "👁️", "pt": "olho", "en": ["eye"]}, {"cat": "CORPO", "emoji": "👂", "pt": "orelha", "en": ["ear"]}, {"cat": "CORPO", "emoji": "👃", "pt": "nariz", "en": ["nose"]}, {"cat": "CORPO", "emoji": "👄", "pt": "boca", "en": ["mouth"]}, {"cat": "CORPO", "emoji": "🦷", "pt": "dente", "en": ["tooth"]}, {"cat": "CORPO", "emoji": "👅", "pt": "língua", "en": ["tongue"]}, {"cat": "CORPO", "emoji": "💆", "pt": "pescoço", "en": ["neck"]}, {"cat": "CORPO", "emoji": "🤷", "pt": "ombro", "en": ["shoulder"]}, {"cat": "CORPO", "emoji": "💪", "pt": "braço", "en": ["arm"]}, {"cat": "CORPO", "emoji": "💪", "pt": "cotovelo", "en": ["elbow"]}, {"cat": "CORPO", "emoji": "🖐️", "pt": "mão", "en": ["hand"]}, {"cat": "CORPO", "emoji": "☝️", "pt": "dedo", "en": ["finger"]}, {"cat": "CORPO", "emoji": "💅", "pt": "unha", "en": ["nail"]}, {"cat": "CORPO", "emoji": "🫁", "pt": "peito", "en": ["chest"]}, {"cat": "CORPO", "emoji": "🫀", "pt": "coração", "en": ["heart"]}, {"cat": "CORPO", "emoji": "🫁", "pt": "pulmão", "en": ["lung", "lungs"]}, {"cat": "CORPO", "emoji": "🤰", "pt": "estômago", "en": ["stomach"]}, {"cat": "CORPO", "emoji": "🤰", "pt": "barriga", "en": ["belly"]}, {"cat": "CORPO", "emoji": "🔙", "pt": "costas", "en": ["back"]}, {"cat": "CORPO", "emoji": "🦵", "pt": "perna", "en": ["leg"]}, {"cat": "CORPO", "emoji": "🦵", "pt": "joelho", "en": ["knee"]}, {"cat": "CORPO", "emoji": "🦶", "pt": "tornozelo", "en": ["ankle"]}, {"cat": "CORPO", "emoji": "🦶", "pt": "pé", "en": ["foot"]}, {"cat": "CORPO", "emoji": "🦶", "pt": "calcanhar", "en": ["heel"]}, {"cat": "CORPO", "emoji": "🦶", "pt": "dedão do pé", "en": ["big toe"]}, {"cat": "CORPO", "emoji": "🧴", "pt": "pele", "en": ["skin"]}, {"cat": "CORPO", "emoji": "🦴", "pt": "osso", "en": ["bone"]}, {"cat": "CORPO", "emoji": "💪", "pt": "músculo", "en": ["muscle"]}, {"cat": "CORPO", "emoji": "🩸", "pt": "sangue", "en": ["blood"]}, {"cat": "CORPO", "emoji": "🩸", "pt": "veia", "en": ["vein"]}, {"cat": "CORPO", "emoji": "🤒", "pt": "febre", "en": ["fever"]}, {"cat": "CORPO", "emoji": "😷", "pt": "tosse", "en": ["cough"]}, {"cat": "CORPO", "emoji": "🤧", "pt": "espirro", "en": ["sneeze"]}, {"cat": "CORPO", "emoji": "🤕", "pt": "dor", "en": ["pain"]}, {"cat": "CORPO", "emoji": "🩹", "pt": "machucado", "en": ["injury"]}, {"cat": "CORPO", "emoji": "🩹", "pt": "corte", "en": ["cut"]}, {"cat": "CORPO", "emoji": "🔥", "pt": "queimadura", "en": ["burn"]}, {"cat": "CORPO", "emoji": "🦟", "pt": "coceira", "en": ["itch"]}, {"cat": "CORPO", "emoji": "🎈", "pt": "inchaço", "en": ["swelling"]}, {"cat": "CORPO", "emoji": "🤢", "pt": "náusea", "en": ["nausea"]}, {"cat": "CORPO", "emoji": "😴", "pt": "cansaço", "en": ["fatigue"]}, {"cat": "CORPO", "emoji": "😵", "pt": "tontura", "en": ["dizziness"]}, {"cat": "CORPO", "emoji": "🩺", "pt": "pressão alta", "en": ["high blood pressure"]}, {"cat": "CORPO", "emoji": "🤧", "pt": "alergia", "en": ["allergy"]}, {"cat": "CORPO", "emoji": "😮", "pt": "garganta", "en": ["throat"]}, {"cat": "CORPO", "emoji": "⌚", "pt": "pulso", "en": ["wrist"]}, {"cat": "CORPO", "emoji": "🦵", "pt": "quadril", "en": ["hip"]}, {"cat": "CLIMA", "emoji": "☀️", "pt": "sol", "en": ["sun"]}, {"cat": "CLIMA", "emoji": "🌧️", "pt": "chuva", "en": ["rain"]}, {"cat": "CLIMA", "emoji": "❄️", "pt": "neve", "en": ["snow"]}, {"cat": "CLIMA", "emoji": "💨", "pt": "vento", "en": ["wind"]}, {"cat": "CLIMA", "emoji": "☁️", "pt": "nublado", "en": ["cloudy"]}, {"cat": "CLIMA", "emoji": "☀️", "pt": "ensolarado", "en": ["sunny"]}, {"cat": "CLIMA", "emoji": "💨", "pt": "ventando", "en": ["windy"]}, {"cat": "CLIMA", "emoji": "⛈️", "pt": "tempestade", "en": ["storm"]}, {"cat": "CLIMA", "emoji": "⚡", "pt": "raio", "en": ["lightning"]}, {"cat": "CLIMA", "emoji": "🌩️", "pt": "trovão", "en": ["thunder"]}, {"cat": "CLIMA", "emoji": "🥶", "pt": "frio", "en": ["cold"]}, {"cat": "CLIMA", "emoji": "🥵", "pt": "calor", "en": ["heat"]}, {"cat": "CLIMA", "emoji": "🥵", "pt": "quente", "en": ["hot"]}, {"cat": "CLIMA", "emoji": "🧊", "pt": "gelado", "en": ["freezing"]}, {"cat": "CLIMA", "emoji": "💧", "pt": "umidade", "en": ["humidity"]}, {"cat": "CLIMA", "emoji": "🏜️", "pt": "seco", "en": ["dry"]}, {"cat": "CLIMA", "emoji": "🌫️", "pt": "neblina", "en": ["fog"]}, {"cat": "CLIMA", "emoji": "🧊", "pt": "granizo", "en": ["hail"]}, {"cat": "CLIMA", "emoji": "🌈", "pt": "arco-íris", "en": ["rainbow"]}, {"cat": "CLIMA", "emoji": "🌡️", "pt": "temperatura", "en": ["temperature"]}, {"cat": "CLIMA", "emoji": "📡", "pt": "previsão", "en": ["forecast"]}, {"cat": "CLIMA", "emoji": "🌀", "pt": "furacão", "en": ["hurricane"]}, {"cat": "CLIMA", "emoji": "🌪️", "pt": "tornado", "en": ["tornado"]}, {"cat": "CLIMA", "emoji": "🥶", "pt": "frente fria", "en": ["cold front"]}, {"cat": "CLIMA", "emoji": "🥵", "pt": "onda de calor", "en": ["heat wave"]}, {"cat": "EMOÇÃO", "emoji": "😊", "pt": "feliz", "en": ["happy"]}, {"cat": "EMOÇÃO", "emoji": "😢", "pt": "triste", "en": ["sad"]}, {"cat": "EMOÇÃO", "emoji": "😴", "pt": "cansado", "en": ["tired"]}, {"cat": "EMOÇÃO", "emoji": "😡", "pt": "com raiva", "en": ["angry", "mad"]}, {"cat": "EMOÇÃO", "emoji": "😨", "pt": "com medo", "en": ["scared"]}, {"cat": "EMOÇÃO", "emoji": "😌", "pt": "calmo", "en": ["calm"]}, {"cat": "EMOÇÃO", "emoji": "😰", "pt": "preocupado", "en": ["worried"]}, {"cat": "EMOÇÃO", "emoji": "😫", "pt": "estressado", "en": ["stressed"]}, {"cat": "EMOÇÃO", "emoji": "😤", "pt": "frustrado", "en": ["frustrated"]}, {"cat": "EMOÇÃO", "emoji": "🤩", "pt": "animado", "en": ["excited"]}, {"cat": "EMOÇÃO", "emoji": "😓", "pt": "nervoso", "en": ["nervous"]}, {"cat": "EMOÇÃO", "emoji": "🥱", "pt": "entediado", "en": ["bored"]}, {"cat": "EMOÇÃO", "emoji": "🤢", "pt": "enjoado", "en": ["sick", "nauseous"]}, {"cat": "EMOÇÃO", "emoji": "😪", "pt": "com sono", "en": ["sleepy"]}, {"cat": "EMOÇÃO", "emoji": "😵‍💫", "pt": "confuso", "en": ["confused"]}, {"cat": "EMOÇÃO", "emoji": "😮", "pt": "surpreso", "en": ["surprised"]}, {"cat": "EMOÇÃO", "emoji": "😳", "pt": "com vergonha", "en": ["embarrassed"]}, {"cat": "EMOÇÃO", "emoji": "😤", "pt": "orgulhoso", "en": ["proud"]}, {"cat": "EMOÇÃO", "emoji": "🙏", "pt": "grato", "en": ["grateful"]}, {"cat": "EMOÇÃO", "emoji": "😋", "pt": "com fome", "en": ["hungry"]}, {"cat": "EMOÇÃO", "emoji": "🥤", "pt": "com sede", "en": ["thirsty"]}, {"cat": "EMOÇÃO", "emoji": "😮‍💨", "pt": "aliviado", "en": ["relieved"]}, {"cat": "EMOÇÃO", "emoji": "😬", "pt": "ansioso", "en": ["anxious"]}, {"cat": "EMOÇÃO", "emoji": "😕", "pt": "chateado", "en": ["upset"]}, {"cat": "EMOÇÃO", "emoji": "😞", "pt": "deprimido", "en": ["depressed"]}, {"cat": "TEMPO", "emoji": "⏰", "pt": "agora", "en": ["now"]}, {"cat": "TEMPO", "emoji": "📅", "pt": "hoje", "en": ["today"]}, {"cat": "TEMPO", "emoji": "☀️", "pt": "amanhã", "en": ["tomorrow"]}, {"cat": "TEMPO", "emoji": "⏪", "pt": "ontem", "en": ["yesterday"]}, {"cat": "TEMPO", "emoji": "🌅", "pt": "cedo", "en": ["early"]}, {"cat": "TEMPO", "emoji": "🌙", "pt": "tarde (horário)", "en": ["late"]}, {"cat": "TEMPO", "emoji": "⏩", "pt": "depois", "en": ["later"]}, {"cat": "TEMPO", "emoji": "⏮️", "pt": "antes", "en": ["before"]}, {"cat": "TEMPO", "emoji": "♾️", "pt": "sempre", "en": ["always"]}, {"cat": "TEMPO", "emoji": "🚫", "pt": "nunca", "en": ["never"]}, {"cat": "TEMPO", "emoji": "🔁", "pt": "às vezes", "en": ["sometimes"]}, {"cat": "TEMPO", "emoji": "⚡", "pt": "logo", "en": ["soon"]}, {"cat": "TEMPO", "emoji": "✅", "pt": "já", "en": ["already"]}, {"cat": "TEMPO", "emoji": "⏳", "pt": "ainda", "en": ["still"]}, {"cat": "TEMPO", "emoji": "🤏", "pt": "quase", "en": ["almost"]}, {"cat": "TEMPO", "emoji": "🔄", "pt": "de novo", "en": ["again"]}, {"cat": "TEMPO", "emoji": "🗓️", "pt": "semana", "en": ["week"]}, {"cat": "TEMPO", "emoji": "🗓️", "pt": "mês", "en": ["month"]}, {"cat": "TEMPO", "emoji": "🗓️", "pt": "ano", "en": ["year"]}, {"cat": "TEMPO", "emoji": "🎉", "pt": "fim de semana", "en": ["weekend"]}, {"cat": "DIAS", "emoji": "🗓️", "pt": "segunda", "en": ["monday"]}, {"cat": "DIAS", "emoji": "🗓️", "pt": "terça", "en": ["tuesday"]}, {"cat": "DIAS", "emoji": "🗓️", "pt": "quarta", "en": ["wednesday"]}, {"cat": "DIAS", "emoji": "🗓️", "pt": "quinta", "en": ["thursday"]}, {"cat": "DIAS", "emoji": "🗓️", "pt": "sexta", "en": ["friday"]}, {"cat": "DIAS", "emoji": "🗓️", "pt": "sábado", "en": ["saturday"]}, {"cat": "DIAS", "emoji": "🗓️", "pt": "domingo", "en": ["sunday"]}, {"cat": "DIAS", "emoji": "📅", "pt": "dia", "en": ["day"]}, {"cat": "DIAS", "emoji": "🌙", "pt": "noite", "en": ["night"]}, {"cat": "DIAS", "emoji": "🌅", "pt": "manhã", "en": ["morning"]}, {"cat": "DIAS", "emoji": "🌆", "pt": "tarde", "en": ["afternoon"]}, {"cat": "DIAS", "emoji": "🌃", "pt": "madrugada", "en": ["late night"]}, {"cat": "DIAS", "emoji": "🕛", "pt": "meio-dia", "en": ["noon"]}, {"cat": "DIAS", "emoji": "🌙", "pt": "meia-noite", "en": ["midnight"]}, {"cat": "DIAS", "emoji": "🎊", "pt": "feriado", "en": ["holiday"]}, {"cat": "NÚMEROS", "emoji": "0️⃣", "pt": "zero", "en": ["zero"]}, {"cat": "NÚMEROS", "emoji": "1️⃣", "pt": "um", "en": ["one"]}, {"cat": "NÚMEROS", "emoji": "2️⃣", "pt": "dois", "en": ["two"]}, {"cat": "NÚMEROS", "emoji": "3️⃣", "pt": "três", "en": ["three"]}, {"cat": "NÚMEROS", "emoji": "4️⃣", "pt": "quatro", "en": ["four"]}, {"cat": "NÚMEROS", "emoji": "5️⃣", "pt": "cinco", "en": ["five"]}, {"cat": "NÚMEROS", "emoji": "6️⃣", "pt": "seis", "en": ["six"]}, {"cat": "NÚMEROS", "emoji": "7️⃣", "pt": "sete", "en": ["seven"]}, {"cat": "NÚMEROS", "emoji": "8️⃣", "pt": "oito", "en": ["eight"]}, {"cat": "NÚMEROS", "emoji": "9️⃣", "pt": "nove", "en": ["nine"]}, {"cat": "NÚMEROS", "emoji": "🔟", "pt": "dez", "en": ["ten"]}, {"cat": "NÚMEROS", "emoji": "2️⃣0️⃣", "pt": "vinte", "en": ["twenty"]}, {"cat": "NÚMEROS", "emoji": "3️⃣0️⃣", "pt": "trinta", "en": ["thirty"]}, {"cat": "NÚMEROS", "emoji": "💯", "pt": "cem", "en": ["hundred"]}, {"cat": "NÚMEROS", "emoji": "➗", "pt": "metade", "en": ["half"]}, {"cat": "TRANSPORTE", "emoji": "🚌", "pt": "ônibus", "en": ["bus"]}, {"cat": "TRANSPORTE", "emoji": "🚏", "pt": "ponto de ônibus", "en": ["bus stop"]}, {"cat": "TRANSPORTE", "emoji": "🚇", "pt": "metrô", "en": ["subway", "metro"]}, {"cat": "TRANSPORTE", "emoji": "🚆", "pt": "trem", "en": ["train"]}, {"cat": "TRANSPORTE", "emoji": "🚗", "pt": "carro", "en": ["car"]}, {"cat": "TRANSPORTE", "emoji": "🚗", "pt": "uber", "en": ["uber"]}, {"cat": "TRANSPORTE", "emoji": "🚕", "pt": "táxi", "en": ["taxi", "cab"]}, {"cat": "TRANSPORTE", "emoji": "🚲", "pt": "bicicleta", "en": ["bike", "bicycle"]}, {"cat": "TRANSPORTE", "emoji": "🚶", "pt": "a pé", "en": ["on foot", "walking"]}, {"cat": "TRANSPORTE", "emoji": "✈️", "pt": "avião", "en": ["plane", "airplane"]}, {"cat": "TRANSPORTE", "emoji": "🛫", "pt": "aeroporto", "en": ["airport"]}, {"cat": "TRANSPORTE", "emoji": "🚪", "pt": "portão (embarque)", "en": ["gate"]}, {"cat": "TRANSPORTE", "emoji": "🧳", "pt": "bagagem", "en": ["luggage"]}, {"cat": "TRANSPORTE", "emoji": "🧳", "pt": "mala", "en": ["suitcase"]}, {"cat": "TRANSPORTE", "emoji": "🎫", "pt": "passagem", "en": ["ticket"]}, {"cat": "TRANSPORTE", "emoji": "💳", "pt": "cartão de transporte", "en": ["transit card"]}, {"cat": "TRANSPORTE", "emoji": "🅿️", "pt": "estacionamento", "en": ["parking"]}, {"cat": "TRANSPORTE", "emoji": "🅿️", "pt": "vaga", "en": ["spot"]}, {"cat": "TRANSPORTE", "emoji": "🚦", "pt": "sinal", "en": ["traffic light"]}, {"cat": "TRANSPORTE", "emoji": "🪧", "pt": "placa", "en": ["sign"]}, {"cat": "TRANSPORTE", "emoji": "🛣️", "pt": "faixa", "en": ["lane"]}, {"cat": "TRANSPORTE", "emoji": "🛣️", "pt": "rodovia", "en": ["highway"]}, {"cat": "TRANSPORTE", "emoji": "🚪", "pt": "saída", "en": ["exit"]}, {"cat": "TRANSPORTE", "emoji": "🚪", "pt": "entrada", "en": ["entrance"]}, {"cat": "TRANSPORTE", "emoji": "📐", "pt": "esquina", "en": ["corner"]}, {"cat": "TRANSPORTE", "emoji": "➕", "pt": "cruzamento", "en": ["intersection"]}, {"cat": "TRANSPORTE", "emoji": "🚦", "pt": "semáforo", "en": ["traffic light"]}, {"cat": "TRANSPORTE", "emoji": "🚗", "pt": "engarrafamento", "en": ["traffic jam"]}, {"cat": "TRANSPORTE", "emoji": "🚗", "pt": "carona", "en": ["ride"]}, {"cat": "TRANSPORTE", "emoji": "🧑‍✈️", "pt": "motorista", "en": ["driver"]}, {"cat": "TRANSPORTE", "emoji": "🧍", "pt": "passageiro", "en": ["passenger"]}, {"cat": "TRANSPORTE", "emoji": "🛞", "pt": "volante", "en": ["steering wheel"]}, {"cat": "TRANSPORTE", "emoji": "🛑", "pt": "freio", "en": ["brake"]}, {"cat": "TRANSPORTE", "emoji": "⚡", "pt": "acelerar", "en": ["speed up"]}, {"cat": "TRANSPORTE", "emoji": "🐢", "pt": "devagar", "en": ["slow down"]}, {"cat": "TRANSPORTE", "emoji": "🏎️", "pt": "rápido", "en": ["fast"]}, {"cat": "TRANSPORTE", "emoji": "🗺️", "pt": "mapa", "en": ["map"]}, {"cat": "TRANSPORTE", "emoji": "🛰️", "pt": "GPS", "en": ["GPS"]}, {"cat": "TRANSPORTE", "emoji": "🏠", "pt": "endereço", "en": ["address"]}, {"cat": "TRANSPORTE", "emoji": "🧭", "pt": "direção", "en": ["direction"]}, {"cat": "TRANSPORTE", "emoji": "↩️", "pt": "virar", "en": ["turn", "turning"]}, {"cat": "TRANSPORTE", "emoji": "⬆️", "pt": "reto", "en": ["straight", "go straight"]}, {"cat": "TRANSPORTE", "emoji": "⬅️", "pt": "esquerda", "en": ["left"]}, {"cat": "TRANSPORTE", "emoji": "➡️", "pt": "direita", "en": ["right"]}, {"cat": "TRANSPORTE", "emoji": "🛑", "pt": "parada", "en": ["stop"]}, {"cat": "TRANSPORTE", "emoji": "🚉", "pt": "estação", "en": ["station"]}, {"cat": "TRANSPORTE", "emoji": "🚉", "pt": "plataforma", "en": ["platform"]}, {"cat": "TRANSPORTE", "emoji": "🕒", "pt": "horário", "en": ["schedule"]}, {"cat": "TRANSPORTE", "emoji": "⏳", "pt": "atraso", "en": ["delay"]}, {"cat": "TRANSPORTE", "emoji": "❌", "pt": "cancelado", "en": ["cancelled"]}, {"cat": "TRANSPORTE", "emoji": "🛫", "pt": "embarcar", "en": ["board"]}, {"cat": "TRANSPORTE", "emoji": "🛬", "pt": "desembarcar", "en": ["get off"]}, {"cat": "COMPRAS", "emoji": "🔄", "pt": "trocar", "en": ["exchange"]}, {"cat": "COMPRAS", "emoji": "↩️", "pt": "devolver", "en": ["return"]}, {"cat": "COMPRAS", "emoji": "🧾", "pt": "recibo", "en": ["receipt"]}, {"cat": "COMPRAS", "emoji": "🏷️", "pt": "desconto", "en": ["discount", "sale"]}, {"cat": "COMPRAS", "emoji": "💲", "pt": "preço", "en": ["price"]}, {"cat": "COMPRAS", "emoji": "👍", "pt": "barato", "en": ["cheap"]}, {"cat": "COMPRAS", "emoji": "👎", "pt": "caro", "en": ["expensive"]}, {"cat": "COMPRAS", "emoji": "📏", "pt": "tamanho", "en": ["size"]}, {"cat": "COMPRAS", "emoji": "🛒", "pt": "carrinho", "en": ["cart"]}, {"cat": "COMPRAS", "emoji": "🧺", "pt": "cesta", "en": ["basket"]}, {"cat": "COMPRAS", "emoji": "💳", "pt": "caixa", "en": ["checkout"]}, {"cat": "COMPRAS", "emoji": "🚶‍➡️", "pt": "fila", "en": ["line"]}, {"cat": "COMPRAS", "emoji": "🚪", "pt": "provador", "en": ["fitting room"]}, {"cat": "COMPRAS", "emoji": "🧾", "pt": "nota fiscal", "en": ["invoice"]}, {"cat": "COMPRAS", "emoji": "🛡️", "pt": "garantia", "en": ["warranty"]}, {"cat": "COMPRAS", "emoji": "📦", "pt": "produto", "en": ["product"]}, {"cat": "COMPRAS", "emoji": "™️", "pt": "marca", "en": ["brand"]}, {"cat": "COMPRAS", "emoji": "🔥", "pt": "promoção", "en": ["deal"]}, {"cat": "COMPRAS", "emoji": "🛍️", "pt": "comprar", "en": ["buy"]}, {"cat": "COMPRAS", "emoji": "💳", "pt": "pagar", "en": ["pay"]}, {"cat": "COMPRAS", "emoji": "💳", "pt": "cartão", "en": ["card"]}, {"cat": "COMPRAS", "emoji": "💵", "pt": "dinheiro", "en": ["cash"]}, {"cat": "COMPRAS", "emoji": "🏪", "pt": "loja", "en": ["store"]}, {"cat": "COMPRAS", "emoji": "🌐", "pt": "online", "en": ["online"]}, {"cat": "COMPRAS", "emoji": "📦", "pt": "entrega", "en": ["delivery"]}, {"cat": "DINHEIRO", "emoji": "🪙", "pt": "troco", "en": ["change"]}, {"cat": "DINHEIRO", "emoji": "💵", "pt": "gorjeta", "en": ["tip"]}, {"cat": "DINHEIRO", "emoji": "🧾", "pt": "conta", "en": ["bill", "check"]}, {"cat": "DINHEIRO", "emoji": "💸", "pt": "taxa", "en": ["fee"]}, {"cat": "DINHEIRO", "emoji": "💳", "pt": "débito", "en": ["debit"]}, {"cat": "DINHEIRO", "emoji": "💳", "pt": "crédito", "en": ["credit"]}, {"cat": "DINHEIRO", "emoji": "💰", "pt": "salário", "en": ["salary", "wage"]}, {"cat": "DINHEIRO", "emoji": "🐖", "pt": "poupança", "en": ["savings"]}, {"cat": "DINHEIRO", "emoji": "🏦", "pt": "depósito", "en": ["deposit"]}, {"cat": "DINHEIRO", "emoji": "🏧", "pt": "saque", "en": ["withdrawal"]}, {"cat": "DINHEIRO", "emoji": "🏧", "pt": "caixa eletrônico", "en": ["ATM"]}, {"cat": "DINHEIRO", "emoji": "⚖️", "pt": "saldo", "en": ["balance"]}, {"cat": "DINHEIRO", "emoji": "💵", "pt": "dinheiro", "en": ["money", "cash"]}, {"cat": "DINHEIRO", "emoji": "🪙", "pt": "moeda", "en": ["coin"]}, {"cat": "DINHEIRO", "emoji": "💵", "pt": "nota", "en": ["bill (money)"]}, {"cat": "DINHEIRO", "emoji": "💳", "pt": "pagamento", "en": ["payment"]}, {"cat": "DINHEIRO", "emoji": "🧾", "pt": "parcelado", "en": ["installments"]}, {"cat": "DINHEIRO", "emoji": "📈", "pt": "juros", "en": ["interest"]}, {"cat": "DINHEIRO", "emoji": "🧨", "pt": "dívida", "en": ["debt"]}, {"cat": "DINHEIRO", "emoji": "🏦", "pt": "emprestimo", "en": ["loan"]}, {"cat": "DINHEIRO", "emoji": "🧮", "pt": "orçamento", "en": ["budget"]}, {"cat": "DINHEIRO", "emoji": "👍", "pt": "barato", "en": ["cheap"]}, {"cat": "DINHEIRO", "emoji": "👎", "pt": "caro", "en": ["expensive"]}, {"cat": "DINHEIRO", "emoji": "🔁", "pt": "reembolso", "en": ["refund"]}, {"cat": "DINHEIRO", "emoji": "⚠️", "pt": "cobrança", "en": ["charge"]}, {"cat": "TRABALHO", "emoji": "💼", "pt": "emprego", "en": ["job"]}, {"cat": "TRABALHO", "emoji": "🧰", "pt": "trabalho", "en": ["work"]}, {"cat": "TRABALHO", "emoji": "👔", "pt": "chefe", "en": ["boss"]}, {"cat": "TRABALHO", "emoji": "👥", "pt": "colega", "en": ["coworker"]}, {"cat": "TRABALHO", "emoji": "🤝", "pt": "reunião", "en": ["meeting"]}, {"cat": "TRABALHO", "emoji": "🎤", "pt": "entrevista", "en": ["interview"]}, {"cat": "TRABALHO", "emoji": "📝", "pt": "contrato", "en": ["contract"]}, {"cat": "TRABALHO", "emoji": "🏢", "pt": "escritório", "en": ["office"]}, {"cat": "TRABALHO", "emoji": "🥼", "pt": "uniforme", "en": ["uniform"]}, {"cat": "TRABALHO", "emoji": "🔄", "pt": "turno", "en": ["shift"]}, {"cat": "TRABALHO", "emoji": "🏖️", "pt": "folga", "en": ["day off"]}, {"cat": "TRABALHO", "emoji": "⏰", "pt": "hora extra", "en": ["overtime"]}, {"cat": "TRABALHO", "emoji": "⏰", "pt": "atrasado", "en": ["late"]}, {"cat": "TRABALHO", "emoji": "✅", "pt": "pontual", "en": ["on time"]}, {"cat": "TRABALHO", "emoji": "🎓", "pt": "treinamento", "en": ["training"]}, {"cat": "TRABALHO", "emoji": "💰", "pt": "salário", "en": ["salary", "wage"]}, {"cat": "TRABALHO", "emoji": "💵", "pt": "pagamento", "en": ["paycheck"]}, {"cat": "TRABALHO", "emoji": "🚫", "pt": "demissão", "en": ["fired"]}, {"cat": "TRABALHO", "emoji": "✋", "pt": "pedir demissão", "en": ["quit"]}, {"cat": "TRABALHO", "emoji": "📢", "pt": "vaga", "en": ["opening"]}, {"cat": "TRABALHO", "emoji": "📄", "pt": "currículo", "en": ["resume", "CV"]}, {"cat": "TRABALHO", "emoji": "🧾", "pt": "aplicação", "en": ["application"]}, {"cat": "TRABALHO", "emoji": "🕒", "pt": "horário", "en": ["schedule"]}, {"cat": "TRABALHO", "emoji": "☕", "pt": "intervalo", "en": ["break"]}, {"cat": "TRABALHO", "emoji": "🥪", "pt": "almoço", "en": ["lunch"]}, {"cat": "TRABALHO", "emoji": "🧑‍💼", "pt": "supervisor", "en": ["supervisor"]}, {"cat": "TRABALHO", "emoji": "🧑", "pt": "cliente", "en": ["customer"]}, {"cat": "TRABALHO", "emoji": "🛠️", "pt": "serviço", "en": ["service"]}, {"cat": "TRABALHO", "emoji": "✅", "pt": "tarefa", "en": ["task"]}, {"cat": "TRABALHO", "emoji": "📋", "pt": "lista", "en": ["checklist"]}, {"cat": "TRABALHO", "emoji": "🎯", "pt": "meta", "en": ["goal"]}, {"cat": "TRABALHO", "emoji": "🏃", "pt": "pressa", "en": ["rush"]}, {"cat": "TRABALHO", "emoji": "🆘", "pt": "ajuda", "en": ["help"]}, {"cat": "TRABALHO", "emoji": "❌", "pt": "erro", "en": ["mistake"]}, {"cat": "TRABALHO", "emoji": "🛠️", "pt": "consertar", "en": ["fix"]}, {"cat": "TRABALHO", "emoji": "🏁", "pt": "terminar", "en": ["finish"]}, {"cat": "TRABALHO", "emoji": "▶️", "pt": "começar", "en": ["start"]}, {"cat": "TRABALHO", "emoji": "✍️", "pt": "assinar", "en": ["sign"]}, {"cat": "TRABALHO", "emoji": "🛎️", "pt": "recepção", "en": ["front desk"]}, {"cat": "TRABALHO", "emoji": "📞", "pt": "plantão", "en": ["on call"]}, {"cat": "TRABALHO", "emoji": "💬", "pt": "conversa", "en": ["talk"]}, {"cat": "TRABALHO", "emoji": "🧠", "pt": "explicar", "en": ["explain"]}, {"cat": "TRABALHO", "emoji": "❓", "pt": "perguntar", "en": ["ask"]}, {"cat": "TRABALHO", "emoji": "✅", "pt": "responder", "en": ["answer"]}, {"cat": "TRABALHO", "emoji": "📚", "pt": "aprender", "en": ["learn"]}, {"cat": "TRABALHO", "emoji": "👨‍🏫", "pt": "ensinar", "en": ["teach"]}, {"cat": "TRABALHO", "emoji": "📈", "pt": "promoção", "en": ["promotion"]}, {"cat": "TRABALHO", "emoji": "📈", "pt": "aumento", "en": ["raise"]}, {"cat": "TRABALHO", "emoji": "💰", "pt": "comissão", "en": ["commission"]}, {"cat": "TRABALHO", "emoji": "🧼", "pt": "uniforme sujo", "en": ["dirty uniform"]}, {"cat": "SAÚDE", "emoji": "🤕", "pt": "dor", "en": ["pain"]}, {"cat": "SAÚDE", "emoji": "🤒", "pt": "febre", "en": ["fever"]}, {"cat": "SAÚDE", "emoji": "👨‍⚕️", "pt": "médico", "en": ["doctor"]}, {"cat": "SAÚDE", "emoji": "👩‍⚕️", "pt": "enfermeiro", "en": ["nurse"]}, {"cat": "SAÚDE", "emoji": "💊", "pt": "farmácia", "en": ["pharmacy"]}, {"cat": "SAÚDE", "emoji": "💊", "pt": "remédio", "en": ["medicine", "medication"]}, {"cat": "SAÚDE", "emoji": "💉", "pt": "vacina", "en": ["vaccine", "shot"]}, {"cat": "SAÚDE", "emoji": "🚨", "pt": "emergência", "en": ["emergency"]}, {"cat": "SAÚDE", "emoji": "🏥", "pt": "hospital", "en": ["hospital"]}, {"cat": "SAÚDE", "emoji": "🩺", "pt": "consulta", "en": ["appointment"]}, {"cat": "SAÚDE", "emoji": "🧾", "pt": "seguro saúde", "en": ["health insurance"]}, {"cat": "SAÚDE", "emoji": "💳", "pt": "cartão do seguro", "en": ["insurance card"]}, {"cat": "SAÚDE", "emoji": "📄", "pt": "receita", "en": ["prescription"]}, {"cat": "SAÚDE", "emoji": "🩺", "pt": "pressão", "en": ["blood pressure"]}, {"cat": "SAÚDE", "emoji": "🩹", "pt": "curativo", "en": ["bandage"]}, {"cat": "SAÚDE", "emoji": "🩹", "pt": "corte", "en": ["cut"]}, {"cat": "SAÚDE", "emoji": "🩸", "pt": "sangramento", "en": ["bleeding"]}, {"cat": "SAÚDE", "emoji": "🦴", "pt": "fratura", "en": ["fracture"]}, {"cat": "SAÚDE", "emoji": "🦶", "pt": "entorse", "en": ["sprain"]}, {"cat": "SAÚDE", "emoji": "🔥", "pt": "inflamação", "en": ["inflammation"]}, {"cat": "SAÚDE", "emoji": "🦠", "pt": "infecção", "en": ["infection"]}, {"cat": "SAÚDE", "emoji": "🦠", "pt": "vírus", "en": ["virus"]}, {"cat": "SAÚDE", "emoji": "🦠", "pt": "bactéria", "en": ["bacteria"]}, {"cat": "SAÚDE", "emoji": "🤧", "pt": "alergia", "en": ["allergy"]}, {"cat": "SAÚDE", "emoji": "😮‍💨", "pt": "asma", "en": ["asthma"]}, {"cat": "SAÚDE", "emoji": "😷", "pt": "tosse", "en": ["cough"]}, {"cat": "SAÚDE", "emoji": "🤒", "pt": "gripe", "en": ["flu"]}, {"cat": "SAÚDE", "emoji": "🤧", "pt": "resfriado", "en": ["cold (illness)"]}, {"cat": "SAÚDE", "emoji": "🤕", "pt": "dor de cabeça", "en": ["headache"]}, {"cat": "SAÚDE", "emoji": "🤢", "pt": "dor de barriga", "en": ["stomachache"]}, {"cat": "SAÚDE", "emoji": "🤢", "pt": "náusea", "en": ["nausea"]}, {"cat": "SAÚDE", "emoji": "🤮", "pt": "vômito", "en": ["vomit"]}, {"cat": "SAÚDE", "emoji": "🚽", "pt": "diarreia", "en": ["diarrhea"]}, {"cat": "SAÚDE", "emoji": "😵", "pt": "tontura", "en": ["dizziness"]}, {"cat": "SAÚDE", "emoji": "💫", "pt": "desmaio", "en": ["faint"]}, {"cat": "SAÚDE", "emoji": "😮‍💨", "pt": "alívio", "en": ["relief"]}, {"cat": "SAÚDE", "emoji": "🧾", "pt": "sintoma", "en": ["symptom"]}, {"cat": "SAÚDE", "emoji": "🔎", "pt": "diagnóstico", "en": ["diagnosis"]}, {"cat": "SAÚDE", "emoji": "🧪", "pt": "exame", "en": ["test"]}, {"cat": "SAÚDE", "emoji": "🩻", "pt": "raio-x", "en": ["x-ray"]}, {"cat": "SAÚDE", "emoji": "🩻", "pt": "ultrassom", "en": ["ultrasound"]}, {"cat": "SAÚDE", "emoji": "🩺", "pt": "cirurgia", "en": ["surgery"]}, {"cat": "SAÚDE", "emoji": "🪡", "pt": "ponto", "en": ["stitches", "stitch"]}, {"cat": "SAÚDE", "emoji": "🦴", "pt": "gesso", "en": ["cast"]}, {"cat": "SAÚDE", "emoji": "🏃", "pt": "fisioterapia", "en": ["physical therapy"]}, {"cat": "SAÚDE", "emoji": "❤️‍🩹", "pt": "dor no peito", "en": ["chest pain"]}, {"cat": "SAÚDE", "emoji": "😮‍💨", "pt": "falta de ar", "en": ["shortness of breath"]}, {"cat": "SAÚDE", "emoji": "🚑", "pt": "ambulância", "en": ["ambulance"]}, {"cat": "SAÚDE", "emoji": "👶", "pt": "pediatria", "en": ["pediatrics"]}, {"cat": "SAÚDE", "emoji": "🦷", "pt": "dentista", "en": ["dentist"]}, {"cat": "OBRA", "emoji": "🔨", "pt": "martelo", "en": ["hammer"]}, {"cat": "OBRA", "emoji": "📍", "pt": "prego", "en": ["nail"]}, {"cat": "OBRA", "emoji": "🔩", "pt": "parafuso", "en": ["screw"]}, {"cat": "OBRA", "emoji": "🔧", "pt": "furadeira", "en": ["drill"]}, {"cat": "OBRA", "emoji": "🪛", "pt": "chave de fenda", "en": ["screwdriver"]}, {"cat": "OBRA", "emoji": "🔧", "pt": "chave inglesa", "en": ["wrench"]}, {"cat": "OBRA", "emoji": "🗜️", "pt": "alicate", "en": ["pliers"]}, {"cat": "OBRA", "emoji": "🪚", "pt": "serra", "en": ["saw"]}, {"cat": "OBRA", "emoji": "📐", "pt": "nível", "en": ["level"]}, {"cat": "OBRA", "emoji": "📏", "pt": "trena", "en": ["tape measure"]}, {"cat": "OBRA", "emoji": "🪜", "pt": "escada", "en": ["ladder"]}, {"cat": "OBRA", "emoji": "⛑️", "pt": "capacete", "en": ["helmet", "hard hat"]}, {"cat": "OBRA", "emoji": "🧤", "pt": "luvas", "en": ["gloves"]}, {"cat": "OBRA", "emoji": "🥽", "pt": "óculos", "en": ["safety glasses"]}, {"cat": "OBRA", "emoji": "🧱", "pt": "tijolo", "en": ["brick"]}, {"cat": "OBRA", "emoji": "🏗️", "pt": "cimento", "en": ["cement"]}, {"cat": "OBRA", "emoji": "🏖️", "pt": "areia", "en": ["sand"]}, {"cat": "OBRA", "emoji": "🪨", "pt": "brita", "en": ["gravel"]}, {"cat": "OBRA", "emoji": "🏗️", "pt": "concreto", "en": ["concrete"]}, {"cat": "OBRA", "emoji": "🪵", "pt": "madeira", "en": ["wood"]}, {"cat": "OBRA", "emoji": "🪵", "pt": "tábua", "en": ["board"]}, {"cat": "OBRA", "emoji": "📍", "pt": "pregos", "en": ["nails"]}, {"cat": "OBRA", "emoji": "🪛", "pt": "parafusadeira", "en": ["power screwdriver"]}, {"cat": "OBRA", "emoji": "🧻", "pt": "fita", "en": ["tape"]}, {"cat": "OBRA", "emoji": "⚡", "pt": "fita isolante", "en": ["electrical tape"]}, {"cat": "OBRA", "emoji": "🔌", "pt": "fio", "en": ["wire"]}, {"cat": "OBRA", "emoji": "📦", "pt": "canaleta", "en": ["cable duct"]}, {"cat": "OBRA", "emoji": "🔌", "pt": "tomada", "en": ["outlet"]}, {"cat": "OBRA", "emoji": "🔘", "pt": "interruptor", "en": ["switch"]}, {"cat": "OBRA", "emoji": "💡", "pt": "lâmpada", "en": ["light bulb"]}, {"cat": "OBRA", "emoji": "🧪", "pt": "tubo", "en": ["pipe"]}, {"cat": "OBRA", "emoji": "🚰", "pt": "cano", "en": ["pipe"]}, {"cat": "OBRA", "emoji": "💧", "pt": "vazamento", "en": ["leak"]}, {"cat": "OBRA", "emoji": "🧰", "pt": "válvula", "en": ["valve"]}, {"cat": "OBRA", "emoji": "🕳️", "pt": "ralo", "en": ["drain"]}, {"cat": "OBRA", "emoji": "🎨", "pt": "tinta", "en": ["paint"]}, {"cat": "OBRA", "emoji": "🖌️", "pt": "pincel", "en": ["brush"]}, {"cat": "OBRA", "emoji": "🧻", "pt": "rolo", "en": ["roller"]}, {"cat": "OBRA", "emoji": "🧱", "pt": "massa corrida", "en": ["spackle"]}, {"cat": "OBRA", "emoji": "🧽", "pt": "lixa", "en": ["sandpaper"]}, {"cat": "OBRA", "emoji": "🧱", "pt": "reboco", "en": ["plaster"]}, {"cat": "OBRA", "emoji": "🧱", "pt": "azulejo", "en": ["tile"]}, {"cat": "OBRA", "emoji": "🧱", "pt": "rejunte", "en": ["grout"]}, {"cat": "OBRA", "emoji": "🧱", "pt": "piso", "en": ["flooring"]}, {"cat": "OBRA", "emoji": "🏠", "pt": "telha", "en": ["tile (roof)"]}, {"cat": "OBRA", "emoji": "🏠", "pt": "telhado", "en": ["roof"]}, {"cat": "OBRA", "emoji": "🌧️", "pt": "calha", "en": ["gutter"]}, {"cat": "OBRA", "emoji": "🚪", "pt": "porta", "en": ["door"]}, {"cat": "OBRA", "emoji": "🪟", "pt": "janela", "en": ["window"]}, {"cat": "OBRA", "emoji": "🛠️", "pt": "consertar", "en": ["fix"]}, {"cat": "OBRA", "emoji": "💔", "pt": "quebrado", "en": ["broken"]}, {"cat": "LIMPEZA", "emoji": "🧹", "pt": "vassoura", "en": ["broom"]}, {"cat": "LIMPEZA", "emoji": "🧹", "pt": "rodo", "en": ["squeegee"]}, {"cat": "LIMPEZA", "emoji": "🧹", "pt": "esfregão", "en": ["mop"]}, {"cat": "LIMPEZA", "emoji": "🪣", "pt": "balde", "en": ["bucket"]}, {"cat": "LIMPEZA", "emoji": "🧽", "pt": "pano", "en": ["cloth", "rag"]}, {"cat": "LIMPEZA", "emoji": "🧽", "pt": "esponja", "en": ["sponge"]}, {"cat": "LIMPEZA", "emoji": "🧼", "pt": "sabão", "en": ["soap"]}, {"cat": "LIMPEZA", "emoji": "🧴", "pt": "detergente", "en": ["dish soap"]}, {"cat": "LIMPEZA", "emoji": "🧴", "pt": "desinfetante", "en": ["disinfectant"]}, {"cat": "LIMPEZA", "emoji": "🧴", "pt": "limpador", "en": ["cleaner"]}, {"cat": "LIMPEZA", "emoji": "🧴", "pt": "água sanitária", "en": ["bleach"]}, {"cat": "LIMPEZA", "emoji": "🧹", "pt": "aspirador", "en": ["vacuum"]}, {"cat": "LIMPEZA", "emoji": "🗑️", "pt": "lixo", "en": ["trash", "garbage"]}, {"cat": "LIMPEZA", "emoji": "🗑️", "pt": "lixeira", "en": ["trash can"]}, {"cat": "LIMPEZA", "emoji": "🗑️", "pt": "saco de lixo", "en": ["trash bag"]}, {"cat": "LIMPEZA", "emoji": "🧤", "pt": "luvas", "en": ["gloves"]}, {"cat": "LIMPEZA", "emoji": "😷", "pt": "máscara", "en": ["mask"]}, {"cat": "LIMPEZA", "emoji": "🧻", "pt": "papel toalha", "en": ["paper towel"]}, {"cat": "LIMPEZA", "emoji": "🧻", "pt": "guardanapo", "en": ["napkin"]}, {"cat": "LIMPEZA", "emoji": "💦", "pt": "spray", "en": ["spray"]}, {"cat": "LIMPEZA", "emoji": "👃", "pt": "cheiro", "en": ["smell"]}, {"cat": "LIMPEZA", "emoji": "🤢", "pt": "fedor", "en": ["stink"]}, {"cat": "LIMPEZA", "emoji": "🌫️", "pt": "poeira", "en": ["dust"]}, {"cat": "LIMPEZA", "emoji": "🟤", "pt": "mancha", "en": ["stain"]}, {"cat": "LIMPEZA", "emoji": "🛢️", "pt": "gordura", "en": ["grease"]}, {"cat": "LIMPEZA", "emoji": "🦠", "pt": "mofo", "en": ["mold"]}, {"cat": "LIMPEZA", "emoji": "🦠", "pt": "bolor", "en": ["mildew"]}, {"cat": "LIMPEZA", "emoji": "✨", "pt": "limpar", "en": ["clean"]}, {"cat": "LIMPEZA", "emoji": "🧼", "pt": "lavar", "en": ["wash"]}, {"cat": "LIMPEZA", "emoji": "🚿", "pt": "enxaguar", "en": ["rinse"]}, {"cat": "LIMPEZA", "emoji": "🌬️", "pt": "secar", "en": ["dry"]}, {"cat": "LIMPEZA", "emoji": "💪", "pt": "esfregar", "en": ["scrub"]}, {"cat": "LIMPEZA", "emoji": "🧹", "pt": "varrer", "en": ["sweep"]}, {"cat": "LIMPEZA", "emoji": "🧽", "pt": "passar pano", "en": ["wipe"]}, {"cat": "LIMPEZA", "emoji": "🗑️", "pt": "tirar lixo", "en": ["take out trash"]}, {"cat": "LIMPEZA", "emoji": "🚿", "pt": "banheiro", "en": ["bathroom"]}, {"cat": "LIMPEZA", "emoji": "🚽", "pt": "privada", "en": ["toilet"]}, {"cat": "LIMPEZA", "emoji": "🚰", "pt": "pia", "en": ["sink"]}, {"cat": "LIMPEZA", "emoji": "🚿", "pt": "chuveiro", "en": ["shower"]}, {"cat": "LIMPEZA", "emoji": "🪞", "pt": "espelho", "en": ["mirror"]}, {"cat": "LIMPEZA", "emoji": "🪟", "pt": "vidro", "en": ["glass"]}, {"cat": "LIMPEZA", "emoji": "🧹", "pt": "chão", "en": ["floor"]}, {"cat": "LIMPEZA", "emoji": "🧶", "pt": "tapete", "en": ["carpet"]}, {"cat": "LIMPEZA", "emoji": "🛏️", "pt": "cama", "en": ["bed"]}, {"cat": "LIMPEZA", "emoji": "🛏️", "pt": "lençol", "en": ["sheet"]}, {"cat": "LIMPEZA", "emoji": "🧺", "pt": "lavanderia", "en": ["laundry"]}, {"cat": "LIMPEZA", "emoji": "👕", "pt": "roupa", "en": ["clothes"]}, {"cat": "LIMPEZA", "emoji": "🧺", "pt": "máquina de lavar", "en": ["washing machine"]}, {"cat": "LIMPEZA", "emoji": "🔥", "pt": "secadora", "en": ["dryer"]}, {"cat": "LIMPEZA", "emoji": "🧴", "pt": "amaciante", "en": ["fabric softener"]}, {"cat": "LIMPEZA", "emoji": "🧴", "pt": "sabão em pó", "en": ["laundry detergent"]}, {"cat": "COZINHA", "emoji": "🔥", "pt": "forno", "en": ["oven"]}, {"cat": "COZINHA", "emoji": "🔥", "pt": "fogão", "en": ["stove"]}, {"cat": "COZINHA", "emoji": "📦", "pt": "micro-ondas", "en": ["microwave"]}, {"cat": "COZINHA", "emoji": "❄️", "pt": "geladeira", "en": ["fridge", "refrigerator"]}, {"cat": "COZINHA", "emoji": "🧊", "pt": "freezer", "en": ["freezer"]}, {"cat": "COZINHA", "emoji": "🚰", "pt": "pia", "en": ["sink"]}, {"cat": "COZINHA", "emoji": "🚰", "pt": "torneira", "en": ["faucet", "tap"]}, {"cat": "COZINHA", "emoji": "🔪", "pt": "faca", "en": ["knife"]}, {"cat": "COZINHA", "emoji": "🥄", "pt": "colher", "en": ["spoon"]}, {"cat": "COZINHA", "emoji": "🍴", "pt": "garfo", "en": ["fork"]}, {"cat": "COZINHA", "emoji": "🍽️", "pt": "prato", "en": ["plate", "dish"]}, {"cat": "COZINHA", "emoji": "🥣", "pt": "tigela", "en": ["bowl"]}, {"cat": "COZINHA", "emoji": "🥤", "pt": "copo", "en": ["cup", "glass"]}, {"cat": "COZINHA", "emoji": "☕", "pt": "caneca", "en": ["mug"]}, {"cat": "COZINHA", "emoji": "🥘", "pt": "panela", "en": ["pot"]}, {"cat": "COZINHA", "emoji": "🍳", "pt": "frigideira", "en": ["pan", "frying pan"]}, {"cat": "COZINHA", "emoji": "🫙", "pt": "tampa", "en": ["lid"]}, {"cat": "COZINHA", "emoji": "🥄", "pt": "espátula", "en": ["spatula"]}, {"cat": "COZINHA", "emoji": "🪵", "pt": "tábua de cortar", "en": ["cutting board"]}, {"cat": "COZINHA", "emoji": "🧺", "pt": "peneira", "en": ["strainer"]}, {"cat": "COZINHA", "emoji": "🧀", "pt": "ralador", "en": ["grater"]}, {"cat": "COZINHA", "emoji": "🧰", "pt": "abridor", "en": ["opener"]}, {"cat": "COZINHA", "emoji": "🍷", "pt": "saca-rolhas", "en": ["corkscrew"]}, {"cat": "COZINHA", "emoji": "🫗", "pt": "filtro", "en": ["filter"]}, {"cat": "COZINHA", "emoji": "🌀", "pt": "liquidificador", "en": ["blender"]}, {"cat": "COZINHA", "emoji": "🌀", "pt": "batedeira", "en": ["mixer"]}, {"cat": "COZINHA", "emoji": "🍋", "pt": "microplane", "en": ["zester"]}, {"cat": "COZINHA", "emoji": "📏", "pt": "medir", "en": ["measure"]}, {"cat": "COZINHA", "emoji": "🌀", "pt": "misturar", "en": ["mix"]}, {"cat": "COZINHA", "emoji": "✂️", "pt": "cortar", "en": ["cut"]}, {"cat": "COZINHA", "emoji": "🔪", "pt": "picar", "en": ["chop"]}, {"cat": "COZINHA", "emoji": "🍳", "pt": "fritar", "en": ["fry"]}, {"cat": "COZINHA", "emoji": "🔥", "pt": "assar", "en": ["bake"]}, {"cat": "COZINHA", "emoji": "🍳", "pt": "cozinhar", "en": ["cook"]}, {"cat": "COZINHA", "emoji": "♨️", "pt": "ferver", "en": ["boil"]}, {"cat": "COZINHA", "emoji": "🧂", "pt": "temperar", "en": ["season"]}, {"cat": "COZINHA", "emoji": "🧂", "pt": "sal", "en": ["salt"]}, {"cat": "COZINHA", "emoji": "🌶️", "pt": "pimenta", "en": ["pepper"]}, {"cat": "COZINHA", "emoji": "🍬", "pt": "açúcar", "en": ["sugar"]}, {"cat": "COZINHA", "emoji": "🫗", "pt": "óleo", "en": ["oil"]}, {"cat": "COZINHA", "emoji": "🍶", "pt": "vinagre", "en": ["vinegar"]}, {"cat": "COZINHA", "emoji": "🥫", "pt": "molho", "en": ["sauce"]}, {"cat": "COZINHA", "emoji": "🍾", "pt": "garrafa", "en": ["bottle"]}, {"cat": "COZINHA", "emoji": "🥫", "pt": "lata", "en": ["can"]}, {"cat": "COZINHA", "emoji": "📦", "pt": "tupperware", "en": ["container"]}, {"cat": "COZINHA", "emoji": "🧻", "pt": "guardanapo", "en": ["napkin"]}, {"cat": "COZINHA", "emoji": "🧻", "pt": "papel alumínio", "en": ["aluminum foil"]}, {"cat": "COZINHA", "emoji": "🧻", "pt": "filme plástico", "en": ["plastic wrap"]}, {"cat": "COZINHA", "emoji": "🔥", "pt": "fogo baixo", "en": ["low heat"]}, {"cat": "COZINHA", "emoji": "🔥", "pt": "fogo alto", "en": ["high heat"]}, {"cat": "COZINHA", "emoji": "🥩", "pt": "cru", "en": ["raw"]}, {"cat": "COZINHA", "emoji": "🥩", "pt": "bem passado", "en": ["well-done"]}, {"cat": "LUGARES", "emoji": "🏦", "pt": "banco", "en": ["bank"]}, {"cat": "LUGARES", "emoji": "🏫", "pt": "escola", "en": ["school"]}, {"cat": "LUGARES", "emoji": "⛪", "pt": "igreja", "en": ["church"]}, {"cat": "LUGARES", "emoji": "🏠", "pt": "casa", "en": ["home", "house"]}, {"cat": "LUGARES", "emoji": "🏪", "pt": "loja", "en": ["store", "shop"]}, {"cat": "LUGARES", "emoji": "✈️", "pt": "aeroporto", "en": ["airport"]}, {"cat": "LUGARES", "emoji": "📮", "pt": "correio", "en": ["post office"]}, {"cat": "LUGARES", "emoji": "⛽", "pt": "posto", "en": ["gas station"]}, {"cat": "LUGARES", "emoji": "🛒", "pt": "mercado", "en": ["supermarket", "grocery store"]}, {"cat": "LUGARES", "emoji": "🏨", "pt": "hotel", "en": ["hotel"]}, {"cat": "LUGARES", "emoji": "💊", "pt": "farmácia", "en": ["pharmacy"]}, {"cat": "LUGARES", "emoji": "🏥", "pt": "hospital", "en": ["hospital"]}, {"cat": "LUGARES", "emoji": "🚓", "pt": "delegacia", "en": ["police station"]}, {"cat": "LUGARES", "emoji": "🍽️", "pt": "restaurante", "en": ["restaurant"]}, {"cat": "LUGARES", "emoji": "🍻", "pt": "bar", "en": ["bar"]}, {"cat": "LUGARES", "emoji": "🏋️", "pt": "academia", "en": ["gym"]}, {"cat": "LUGARES", "emoji": "🏖️", "pt": "praia", "en": ["beach"]}, {"cat": "LUGARES", "emoji": "🏞️", "pt": "parque", "en": ["park"]}, {"cat": "LUGARES", "emoji": "🏬", "pt": "shopping", "en": ["mall"]}, {"cat": "LUGARES", "emoji": "📚", "pt": "biblioteca", "en": ["library"]}, {"cat": "LUGARES", "emoji": "🚌", "pt": "ônibus (terminal)", "en": ["bus terminal"]}, {"cat": "LUGARES", "emoji": "🚉", "pt": "estação", "en": ["station"]}, {"cat": "LUGARES", "emoji": "🚻", "pt": "banheiro", "en": ["bathroom", "restroom"]}, {"cat": "LUGARES", "emoji": "🚪", "pt": "entrada", "en": ["entrance"]}, {"cat": "LUGARES", "emoji": "🚪", "pt": "saída", "en": ["exit"]}, {"cat": "DIREÇÕES", "emoji": "⬅️", "pt": "esquerda", "en": ["left"]}, {"cat": "DIREÇÕES", "emoji": "➡️", "pt": "direita", "en": ["right"]}, {"cat": "DIREÇÕES", "emoji": "⬆️", "pt": "reto", "en": ["straight", "go straight"]}, {"cat": "DIREÇÕES", "emoji": "↩️", "pt": "voltar", "en": ["go back"]}, {"cat": "DIREÇÕES", "emoji": "↪️", "pt": "virar", "en": ["turn"]}, {"cat": "DIREÇÕES", "emoji": "📍", "pt": "perto", "en": ["near", "close"]}, {"cat": "DIREÇÕES", "emoji": "🗺️", "pt": "longe", "en": ["far"]}, {"cat": "DIREÇÕES", "emoji": "👇", "pt": "aqui", "en": ["here"]}, {"cat": "DIREÇÕES", "emoji": "👉", "pt": "lá", "en": ["there"]}, {"cat": "DIREÇÕES", "emoji": "⬆️", "pt": "em cima", "en": ["up", "above"]}, {"cat": "DIREÇÕES", "emoji": "⬇️", "pt": "embaixo", "en": ["down", "below"]}, {"cat": "DIREÇÕES", "emoji": "👉", "pt": "na frente", "en": ["in front"]}, {"cat": "DIREÇÕES", "emoji": "↩️", "pt": "atrás", "en": ["behind"]}, {"cat": "DIREÇÕES", "emoji": "📍", "pt": "ao lado", "en": ["next to"]}, {"cat": "DIREÇÕES", "emoji": "↔️", "pt": "entre", "en": ["between"]}, {"cat": "DIREÇÕES", "emoji": "📐", "pt": "esquina", "en": ["corner"]}, {"cat": "DIREÇÕES", "emoji": "➕", "pt": "cruzamento", "en": ["intersection"]}, {"cat": "DIREÇÕES", "emoji": "➡️", "pt": "siga", "en": ["follow"]}, {"cat": "DIREÇÕES", "emoji": "🛑", "pt": "pare", "en": ["stop"]}, {"cat": "DIREÇÕES", "emoji": "🚪", "pt": "entrada", "en": ["entrance"]}, {"cat": "DIREÇÕES", "emoji": "🚪", "pt": "saída", "en": ["exit"]}, {"cat": "DIREÇÕES", "emoji": "🥇", "pt": "primeira", "en": ["first"]}, {"cat": "DIREÇÕES", "emoji": "🥈", "pt": "segunda", "en": ["second"]}, {"cat": "DIREÇÕES", "emoji": "🥉", "pt": "terceira", "en": ["third"]}, {"cat": "DIREÇÕES", "emoji": "🧱", "pt": "quarteirão", "en": ["block"]}, {"cat": "COMUNICAÇÃO", "emoji": "✅", "pt": "sim", "en": ["yes"]}, {"cat": "COMUNICAÇÃO", "emoji": "❌", "pt": "não", "en": ["no"]}, {"cat": "COMUNICAÇÃO", "emoji": "🤔", "pt": "talvez", "en": ["maybe"]}, {"cat": "COMUNICAÇÃO", "emoji": "🙏", "pt": "por favor", "en": ["please"]}, {"cat": "COMUNICAÇÃO", "emoji": "🙏", "pt": "obrigado", "en": ["thanks", "thank you"]}, {"cat": "COMUNICAÇÃO", "emoji": "👌", "pt": "de nada", "en": ["you're welcome", "no problem"]}, {"cat": "COMUNICAÇÃO", "emoji": "😔", "pt": "desculpa", "en": ["sorry"]}, {"cat": "COMUNICAÇÃO", "emoji": "👋", "pt": "oi", "en": ["hi", "hello"]}, {"cat": "COMUNICAÇÃO", "emoji": "👋", "pt": "tchau", "en": ["bye", "goodbye"]}, {"cat": "COMUNICAÇÃO", "emoji": "🌅", "pt": "bom dia", "en": ["good morning"]}, {"cat": "COMUNICAÇÃO", "emoji": "🌆", "pt": "boa tarde", "en": ["good afternoon"]}, {"cat": "COMUNICAÇÃO", "emoji": "🌙", "pt": "boa noite", "en": ["good night"]}, {"cat": "COMUNICAÇÃO", "emoji": "🆘", "pt": "me ajuda", "en": ["help me"]}, {"cat": "COMUNICAÇÃO", "emoji": "🆘", "pt": "ajuda", "en": ["help"]}, {"cat": "COMUNICAÇÃO", "emoji": "🔁", "pt": "repete", "en": ["repeat"]}, {"cat": "COMUNICAÇÃO", "emoji": "🔄", "pt": "de novo", "en": ["again"]}, {"cat": "COMUNICAÇÃO", "emoji": "🐢", "pt": "devagar", "en": ["slowly"]}, {"cat": "COMUNICAÇÃO", "emoji": "⚡", "pt": "mais rápido", "en": ["faster"]}, {"cat": "COMUNICAÇÃO", "emoji": "👍", "pt": "eu entendi", "en": ["i got it", "i understand"]}, {"cat": "COMUNICAÇÃO", "emoji": "🤷", "pt": "não entendi", "en": ["i don't understand"]}, {"cat": "COMUNICAÇÃO", "emoji": "🗣️", "pt": "como fala isso?", "en": ["how do you say this?"]}, {"cat": "COMUNICAÇÃO", "emoji": "❓", "pt": "o que significa?", "en": ["what does it mean?"]}, {"cat": "COMUNICAÇÃO", "emoji": "✍️", "pt": "pode escrever?", "en": ["can you write it?"]}, {"cat": "COMUNICAÇÃO", "emoji": "👀", "pt": "pode mostrar?", "en": ["can you show me?"]}, {"cat": "COMUNICAÇÃO", "emoji": "📍", "pt": "onde fica?", "en": ["where is it?"]}, {"cat": "COMUNICAÇÃO", "emoji": "💲", "pt": "quanto custa?", "en": ["how much is it?"]}, {"cat": "COMUNICAÇÃO", "emoji": "🪪", "pt": "qual seu nome?", "en": ["what's your name?"]}, {"cat": "COMUNICAÇÃO", "emoji": "🤝", "pt": "prazer", "en": ["nice to meet you"]}, {"cat": "COMUNICAÇÃO", "emoji": "⏳", "pt": "um momento", "en": ["one moment"]}, {"cat": "COMUNICAÇÃO", "emoji": "✋", "pt": "espera aí", "en": ["hold on"]}, {"cat": "PROBLEMAS", "emoji": "❌", "pt": "não funciona", "en": ["it doesn't work"]}, {"cat": "PROBLEMAS", "emoji": "💔", "pt": "quebrado", "en": ["broken"]}, {"cat": "PROBLEMAS", "emoji": "🔍", "pt": "perdido", "en": ["lost"]}, {"cat": "PROBLEMAS", "emoji": "🆘", "pt": "preciso de ajuda", "en": ["i need help"]}, {"cat": "PROBLEMAS", "emoji": "⚠️", "pt": "tem um problema", "en": ["there's a problem", "there is a problem"]}, {"cat": "PROBLEMAS", "emoji": "😕", "pt": "não sei", "en": ["i don't know"]}, {"cat": "PROBLEMAS", "emoji": "❌", "pt": "tá errado", "en": ["it's wrong"]}, {"cat": "PROBLEMAS", "emoji": "💧", "pt": "tá vazando", "en": ["it's leaking"]}, {"cat": "PROBLEMAS", "emoji": "⏳", "pt": "tá acabando", "en": ["it's running out"]}, {"cat": "PROBLEMAS", "emoji": "🚫", "pt": "acabou", "en": ["it's out"]}, {"cat": "PROBLEMAS", "emoji": "📶", "pt": "sem internet", "en": ["no internet"]}, {"cat": "PROBLEMAS", "emoji": "📵", "pt": "sem sinal", "en": ["no signal"]}, {"cat": "PROBLEMAS", "emoji": "💳", "pt": "cartão recusado", "en": ["card declined"]}, {"cat": "PROBLEMAS", "emoji": "🪙", "pt": "não tenho troco", "en": ["i don't have change"]}, {"cat": "PROBLEMAS", "emoji": "👎", "pt": "tá caro", "en": ["it's expensive"]}, {"cat": "PROBLEMAS", "emoji": "☠️", "pt": "tá perigoso", "en": ["it's dangerous"]}, {"cat": "PROBLEMAS", "emoji": "🚓", "pt": "chame a polícia", "en": ["call the police"]}, {"cat": "PROBLEMAS", "emoji": "🚑", "pt": "chame a ambulância", "en": ["call an ambulance"]}, {"cat": "PROBLEMAS", "emoji": "🤕", "pt": "eu me machuquei", "en": ["i got hurt"]}, {"cat": "PROBLEMAS", "emoji": "⏰", "pt": "tô atrasado", "en": ["i'm late"]}, {"cat": "ROLÊ", "emoji": "😎", "pt": "tô de boa", "en": ["i'm good", "i'm fine"]}, {"cat": "ROLÊ", "emoji": "😌", "pt": "tô suave", "en": ["i'm chill", "i'm good"]}, {"cat": "ROLÊ", "emoji": "😅", "pt": "foi mal", "en": ["my bad", "sorry"]}, {"cat": "ROLÊ", "emoji": "💯", "pt": "sem caô", "en": ["no cap", "for real"]}, {"cat": "ROLÊ", "emoji": "😲", "pt": "é sério?", "en": ["for real?", "seriously?"]}, {"cat": "ROLÊ", "emoji": "👋", "pt": "qual é a boa?", "en": ["what's up", "what's good"]}, {"cat": "ROLÊ", "emoji": "💭", "pt": "tá ligado", "en": ["you know", "you know what i mean"]}, {"cat": "ROLÊ", "emoji": "🤝", "pt": "firmeza", "en": ["alright", "cool", "bet"]}, {"cat": "ROLÊ", "emoji": "👊", "pt": "valeu", "en": ["thanks", "appreciate it"]}, {"cat": "ROLÊ", "emoji": "👌", "pt": "de boa", "en": ["no problem", "it's cool"]}, {"cat": "ROLÊ", "emoji": "🔥", "pt": "show", "en": ["cool", "awesome"]}, {"cat": "ROLÊ", "emoji": "💪", "pt": "top", "en": ["great", "awesome"]}, {"cat": "ROLÊ", "emoji": "😂", "pt": "zoeira", "en": ["joking", "kidding"]}, {"cat": "ROLÊ", "emoji": "🤙", "pt": "bora", "en": ["let's go", "let's roll"]}, {"cat": "ROLÊ", "emoji": "✅", "pt": "fechou", "en": ["deal", "sounds good"]}, {"cat": "ROLÊ", "emoji": "🕒", "pt": "demorou", "en": ["sure", "okay"]}, {"cat": "ROLÊ", "emoji": "🤜🤛", "pt": "tamo junto", "en": ["we got this", "i got you"]}, {"cat": "ROLÊ", "emoji": "🧑", "pt": "mano", "en": ["bro", "dude"]}, {"cat": "ROLÊ", "emoji": "🧓", "pt": "véi", "en": ["dude", "man"]}, {"cat": "ROLÊ", "emoji": "🤷", "pt": "tipo assim", "en": ["like", "kinda"]}, {"cat": "ROLÊ", "emoji": "😮", "pt": "caraca", "en": ["dang", "wow"]}, {"cat": "ROLÊ", "emoji": "🤐", "pt": "pqp", "en": ["no way", "damn"]}, {"cat": "ROLÊ", "emoji": "💀", "pt": "tô ferrado", "en": ["i'm screwed", "i'm toast"]}, {"cat": "ROLÊ", "emoji": "💀", "pt": "tô lascado", "en": ["i'm done", "i'm doomed"]}, {"cat": "ROLÊ", "emoji": "💰", "pt": "tô rico", "en": ["i'm rich"]}, {"cat": "ROLÊ", "emoji": "💸", "pt": "tô liso", "en": ["i'm broke"]}, {"cat": "ROLÊ", "emoji": "🏠", "pt": "bora pra casa", "en": ["let's go home"]}, {"cat": "ROLÊ", "emoji": "🏃", "pt": "partiu", "en": ["let's go", "we're out"]}, {"cat": "ROLÊ", "emoji": "📍", "pt": "cola aqui", "en": ["come here", "pull up"]}, {"cat": "ROLÊ", "emoji": "📲", "pt": "me chama", "en": ["hit me up", "text me"]}, {"cat": "ROLÊ", "emoji": "💬", "pt": "manda msg", "en": ["text me", "message me"]}, {"cat": "ROLÊ", "emoji": "🕺", "pt": "segue o baile", "en": ["keep it moving"]}, {"cat": "ROLÊ", "emoji": "💥", "pt": "deu ruim", "en": ["it went bad", "we're screwed"]}, {"cat": "ROLÊ", "emoji": "✅", "pt": "deu bom", "en": ["it worked out", "we're good"]}, {"cat": "ROLÊ", "emoji": "👌", "pt": "tá ok", "en": ["it's fine", "it's okay"]}, {"cat": "ROLÊ", "emoji": "🛡️", "pt": "tá safe", "en": ["we're good", "it's safe"]}, {"cat": "ROLÊ", "emoji": "😮‍💨", "pt": "tá pesado", "en": ["that's intense", "that's rough"]}, {"cat": "ROLÊ", "emoji": "🛸", "pt": "tá suave na nave", "en": ["all good", "chill"]}, {"cat": "ROLÊ", "emoji": "😎", "pt": "tá de boa demais", "en": ["too chill", "too easy"]}, {"cat": "ROLÊ", "emoji": "🫡", "pt": "na moral", "en": ["seriously", "for real"]}, {"cat": "ROLÊ", "emoji": "😂", "pt": "na zoeira", "en": ["just kidding", "for fun"]}, {"cat": "ROLÊ", "emoji": "🍻", "pt": "só pela resenha", "en": ["just for the vibes"]}, {"cat": "ROLÊ", "emoji": "🍻", "pt": "resenha", "en": ["vibes", "hangout"]}, {"cat": "ROLÊ", "emoji": "🎉", "pt": "rolê", "en": ["hangout", "plans"]}, {"cat": "ROLÊ", "emoji": "📱", "pt": "chama no zap", "en": ["text me on whatsapp", "message me"]}, {"cat": "ROLÊ", "emoji": "👍", "pt": "boto fé", "en": ["i believe you", "for sure"]}, {"cat": "ROLÊ", "emoji": "🙅", "pt": "nada a ver", "en": ["no way", "doesn't make sense"]}, {"cat": "ROLÊ", "emoji": "🧠", "pt": "viaja não", "en": ["don't be crazy", "stop tripping"]}, {"cat": "ROLÊ", "emoji": "😤", "pt": "tô bolado", "en": ["i'm upset", "i'm pissed"]}, {"cat": "ROLÊ", "emoji": "🏃", "pt": "tô na correria", "en": ["i'm busy", "i'm hustling"]}, {"cat": "ROLÊ", "emoji": "😌", "pt": "tô na moral", "en": ["i'm chill", "i'm good"]}, {"cat": "ROLÊ", "emoji": "😌", "pt": "tá tranquilo", "en": ["it's chill", "it's fine"]}, {"cat": "COMIDA", "emoji": "🥣", "pt": "iogurte", "en": ["yogurt"]}, {"cat": "CASA", "emoji": "🌀", "pt": "ventilador", "en": ["fan"]}];
+
+const POWERUPS=[
+  {emoji:"⏱️",type:"slow",dur:8000},
+  {emoji:"❤️",type:"life",dur:0},
+  {emoji:"💣",type:"bomb",dur:0},
+  {emoji:"⭐",type:"double",dur:10000},
+  {emoji:"🧊",type:"freeze",dur:4000}
+];
+
+/* ------------------------- STATE ------------------------- */
+let mode=null,curLevel=null,running=false,score=0,lives=5,combo=0,maxCombo=0,correct=0,attempts=0;
+let optIndex=0;
+let blocks=[],blockId=0,selId=null,targetId=null,opts=[],pu={slow:0,freeze:0,double:0,bomb:0,life:0};
+let currentTargetWord=null;
+let slowOn=false,freezeOn=false,doubleOn=false,deck=[],raf=null,lastT=0,spawnInt=null;
+let progress=JSON.parse(localStorage.getItem('edProgress')||'{"done":[],"stars":{}}');
+
+/* ------------------------- DOM ------------------------- */
+const $=id=>document.getElementById(id);
+const menuScr=$('menuScreen'),mapScr=$('mapScreen'),gameScr=$('gameScreen');
+const arena=$('arena'),particles=$('particles'),optionsEl=$('options'),feedback=$('feedback');
+
+/* ------------------------- AUDIO ------------------------- */
+let actx=null;
+const initAudio=()=>{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); };
+const playSound=t=>{
+  if(!actx) return;
+  const o=actx.createOscillator(),g=actx.createGain();
+  o.connect(g); g.connect(actx.destination);
+  g.gain.setValueAtTime(0.14,actx.currentTime);
+  if(t==='ok'){o.frequency.setValueAtTime(523,actx.currentTime);o.frequency.setValueAtTime(659,actx.currentTime+0.1);o.start();o.stop(actx.currentTime+0.2);}
+  else if(t==='no'){o.frequency.setValueAtTime(200,actx.currentTime);o.start();o.stop(actx.currentTime+0.15);}
+  else if(t==='pu'){o.frequency.setValueAtTime(440,actx.currentTime);o.frequency.setValueAtTime(880,actx.currentTime+0.1);o.start();o.stop(actx.currentTime+0.2);}
+  else if(t==='win'){o.frequency.setValueAtTime(523,actx.currentTime);o.frequency.setValueAtTime(784,actx.currentTime+0.2);o.frequency.setValueAtTime(1047,actx.currentTime+0.4);o.start();o.stop(actx.currentTime+0.6);}
+};
+const speak=txt=>{
+  if(!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(txt);
+  u.lang='en-US'; u.rate=0.9;
+  setTimeout(()=>speechSynthesis.speak(u),120);
+};
+
+const setLastWord=(w, ok)=>{
+  if(!w) return;
+  lwPt.textContent = `${w.emoji||''} ${w.pt}`;
+  lwEn.textContent = `→ ${w.en && w.en[0] ? w.en[0] : ''}`;
+  lastWordBox.classList.remove('good','bad');
+  lastWordBox.classList.add(ok ? 'good' : 'bad');
+};
+
+const getLevelWordList=()=>{
+  if(mode==='level' && curLevel){
+    // pega palavras únicas do(s) cat(s) do level
+    const arr = WORDS.filter(x=>curLevel.cats.includes(x.cat));
+    const seen=new Set();
+    const uniq=[];
+    for(const w of arr){
+      const key = (w.cat+'|'+w.pt).toLowerCase();
+      if(seen.has(key)) continue;
+      seen.add(key);
+      uniq.push(w);
+      if(uniq.length>=WORDS_NEEDED) break;
+    }
+    // se faltar, completa repetindo (mas mantendo uniq por pt)
+    let i=0;
+    while(uniq.length<WORDS_NEEDED && arr.length){
+      const w=arr[i%arr.length];
+      const key=(w.cat+'|'+w.pt).toLowerCase();
+      if(!seen.has(key)){
+        seen.add(key); uniq.push(w);
+      }
+      i++;
+      if(i>arr.length*3) break;
+    }
+    return uniq;
+  }
+  // quick: mostra 50 aleatórias
+  return shuffle([...WORDS]).slice(0,50);
+};
+
+const openWordList=()=>{
+  const list=getLevelWordList();
+  const title = (mode==='level' && curLevel) ? `${curLevel.emoji} ${curLevel.name} — ${WORDS_NEEDED} palavras` : `⚡ QUICK PLAY — 50 palavras`;
+  wordModalSub.textContent = title;
+
+  wordListBox.innerHTML = list.map(w=>`
+    <div class="word-item">
+      <div class="pt"><span class="e">${w.emoji||'🟦'}</span>${w.pt}</div>
+      <div class="en">${(w.en && w.en[0]) ? w.en[0] : ''}</div>
+    </div>
+  `).join('');
+
+  wordModal.classList.add('show');
+};
+
+const closeWordList=()=>wordModal.classList.remove('show');
+
+/* ------------------------- SCREENS ------------------------- */
+const showScr=s=>{ [menuScr,mapScr,gameScr].forEach(x=>x.classList.remove('active')); s.classList.add('active'); };
+
+/* ------------------------- MAP ------------------------- */
+const renderMap=()=>{
+  const list=$('levelList'); list.innerHTML='';
+  $('mapDone').textContent=progress.done.length;
+  $('mapFill').style.width=(progress.done.length/LEVELS.length*100)+'%';
+  LEVELS.forEach(lv=>{
+    const done=progress.done.includes(lv.id);
+    const unlocked=lv.id===1 || progress.done.includes(lv.id-1);
+    const stars=progress.stars[lv.id]||0;
+    const card=document.createElement('div');
+    card.className='level-card'+(done?' done':unlocked?' current':' locked');
+    card.innerHTML=`
+      <span class="lv-icon">${lv.emoji}</span>
+      <div class="lv-info">
+        <div class="lv-num">LEVEL ${lv.id}</div>
+        <div class="lv-name">${lv.name}</div>
+        <div class="lv-stars">
+          <span class="star${stars>=1?' on':''}">⭐</span>
+          <span class="star${stars>=2?' on':''}">⭐</span>
+          <span class="star${stars>=3?' on':''}">⭐</span>
+        </div>
+      </div>
+      <div class="lv-status${done?' done':''}">${done?'✅':unlocked?'▶️':'🔒'}</div>`;
+    if(unlocked) card.onclick=()=>startLevel(lv.id);
+    list.appendChild(card);
+  });
+};
+
+/* ------------------------- HELPERS ------------------------- */
+const shuffle=a=>{ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const norm=s=>(s||'').toString().trim().toLowerCase().replace(/[“”"]/g,'').replace(/[’]/g,"'").replace(/\s+/g,' ');
+
+/* ------------------------- START ------------------------- */
+const startLevel=id=>{
+  mode='level';
+  curLevel=LEVELS.find(l=>l.id===id);
+  deck=shuffle(WORDS.filter(w=>curLevel.cats.includes(w.cat)));
+  while(deck.length<WORDS_NEEDED+30) deck=deck.concat(shuffle(WORDS.filter(w=>curLevel.cats.includes(w.cat))));
+  $('gameTitle').textContent=`${curLevel.emoji} ${curLevel.name}`;
+  $('gameSub').textContent=`Level ${curLevel.id} - 50 palavras`;
+  $('levelProg').style.display='block';
+  $('lpTitle').textContent=`Level ${curLevel.id}`;
+  showScr(gameScr); reset();
+};
+const startQuick=()=>{
+  mode='quick'; curLevel=null;
+  deck=shuffle([...WORDS]);
+  $('gameTitle').textContent='⚡ QUICK PLAY';
+  $('gameSub').textContent='Modo infinito!';
+  $('levelProg').style.display='none';
+  showScr(gameScr); reset();
+};
+
+/* ------------------------- RESET ------------------------- */
+const reset=()=>{
+  stop();
+  slowOn=freezeOn=doubleOn=false;
+  arena.classList.remove('frozen','double','shake');
+  pu={slow:0,freeze:0,double:0,bomb:0,life:0};
+  updatePU();
+  selId=targetId=null;
+  blocks.forEach(b=>b.el.remove()); blocks=[];
+  particles.innerHTML='';
+  score=0; lives=5; combo=maxCombo=correct=attempts=0;
+  updateHUD();
+  updateOpts(true);
+  feedback.style.color='var(--gray)';
+  feedback.textContent='🇧🇷→🇺🇸 Aperte Start e clique na opção certa!';
+};
+
+/* ------------------------- HUD ------------------------- */
+const updateHUD=()=>{
+  $('hScore').textContent=score;
+  $('hLives').textContent='❤️'.repeat(Math.max(0,lives));
+  $('hCombo').textContent=combo;
+  const m=1+(combo>=3?0.5:0)+(combo>=5?0.5:0)+(combo>=10?1:0);
+  $('hMult').textContent=(doubleOn?m*2:m)+'x';
+  if(mode==='level'){
+    $('lpCount').textContent=correct;
+    $('lpFill').style.width=(correct/WORDS_NEEDED*100)+'%';
+  }
+};
+const updatePU=()=>{
+  const types=['slow','freeze','double','bomb','life'];
+  const emojis={slow:'⏱️',freeze:'🧊',double:'⭐',bomb:'💣',life:'❤️'};
+  types.forEach((t,i)=>{
+    const slot=$('pu-'+t),cnt=pu[t];
+    if(cnt>0){
+      slot.classList.remove('empty');
+      slot.innerHTML=`<span class="key">${i+1}</span>${emojis[t]}<span class="cnt">${cnt}</span>`;
+    } else {
+      slot.classList.add('empty');
+      slot.innerHTML=`<span class="key">${i+1}</span>`;
+    }
+    slot.classList.toggle('active',(t==='slow'&&slowOn)||(t==='freeze'&&freezeOn)||(t==='double'&&doubleOn));
+  });
+};
+
+/* ------------------------- BLOCKS ------------------------- */
+const drawWord=()=>{ if(deck.length===0) deck=shuffle([...WORDS]); return deck.shift(); };
+
+const createBlock=()=>{
+  const id=blockId++;
+  const isPU=Math.random()<0.12;
+  const el=document.createElement('div');
+  el.className='block';
+  const boxW=52;
+  const hintW=110; // max hint width
+  const blockW=Math.max(boxW,hintW);
+  const padding=8;
+  const arenaW=arena.offsetWidth;
+  
+  // Calculate lanes to prevent overlap
+  const numLanes=Math.floor(arenaW/(blockW+padding));
+  const laneW=arenaW/numLanes;
+  
+  // Find which lanes are occupied by existing blocks near the top
+  const occupiedLanes=new Set();
+  blocks.forEach(b=>{
+    if(b.y<120){ // only check blocks near spawn area
+      const bLane=Math.floor(b.x/laneW);
+      occupiedLanes.add(bLane);
+    }
+  });
+  
+  // Find available lanes
+  let availableLanes=[];
+  for(let i=0;i<numLanes;i++){
+    if(!occupiedLanes.has(i)) availableLanes.push(i);
+  }
+  
+  // If all lanes occupied, pick random one
+  if(availableLanes.length===0){
+    availableLanes=Array.from({length:numLanes},(_,i)=>i);
+  }
+  
+  // Pick random available lane
+  const lane=availableLanes[Math.floor(Math.random()*availableLanes.length)];
+  const x=lane*laneW + (laneW-boxW)/2;
+  const y=-80;
+  let data;
+
+  if(isPU){
+    const p=POWERUPS[Math.floor(Math.random()*POWERUPS.length)];
+    el.innerHTML=`<div class="box pu"><span class="emoji">${p.emoji}</span></div><div class="hint">COLETE!</div>`;
+    data={id,el,type:'pu',pu:p,x,y,spd:1};
+    el.onclick=e=>{ e.stopPropagation(); if(!running) return; collectPU(p); rmBlock(data,true); };
+  } else {
+    const w=drawWord();
+    el.innerHTML=`<div class="box"><span class="cat">${w.cat}</span><span class="emoji">${w.emoji}</span></div><div class="hint">${w.pt}</div>`;
+    data={id,el,type:'word',word:w,x,y,spd:1};
+    el.onclick=e=>{ e.stopPropagation(); if(!running) return; selectBlock(data.id); };
+  }
+
+  el.style.left=x+'px';
+  el.style.top=y+'px';
+  arena.appendChild(el);
+  blocks.push(data);
+  updateOpts();
+  return data;
+};
+
+const selectBlock=id=>{
+  blocks.forEach(b=>b.el.classList.remove('selected'));
+  selId=id;
+  const b=blocks.find(x=>x.id===id);
+  if(b){ b.el.classList.add('selected'); updateOpts(true); }
+};
+
+const rmBlock=(d,ok)=>{
+  if(ok) d.el.classList.add('explode');
+  if(d.id===selId) selId=null;
+  setTimeout(()=>{ if(d.el && d.el.parentNode) d.el.remove(); }, ok?350:0);
+  blocks=blocks.filter(b=>b.id!==d.id);
+  updateOpts(true);
+};
+
+/* ------------------------- OPTIONS ------------------------- */
+const updateOpts=(force=false)=>{
+  const wbs=blocks.filter(b=>b.type==='word');
+  if(wbs.length===0){
+    optionsEl.innerHTML='';
+    selId=targetId=null;
+    return;
+  }
+
+  // Choose selected OR lowest (closest to floor)
+  let tgt=selId ? wbs.find(b=>b.id===selId) : null;
+  if(!tgt){
+    tgt=wbs.reduce((a,b)=>a.y>b.y?a:b,wbs[0]);
+    selId=tgt.id;
+    blocks.forEach(b=>b.el.classList.remove('selected'));
+    tgt.el.classList.add('selected');
+  }
+
+  currentTargetWord = tgt.word;
+
+  if(tgt.id===targetId && !force && opts.length===6) return;
+  targetId=tgt.id;
+
+  optionsEl.innerHTML='';
+  const correctSet=new Set(tgt.word.en.map(norm));
+
+  // Pool: correct answer (first translation) + 5 wrongs
+  const pool=[tgt.word.en[0]];
+  const all=shuffle([...WORDS]);
+
+  for(const w of all){
+    if(pool.length>=6) break;
+    const cand=w.en[0];
+    if(!cand) continue;
+    if(correctSet.has(norm(cand))) continue;
+    if(pool.some(x=>norm(x)===norm(cand))) continue;
+    pool.push(cand);
+  }
+  opts=shuffle(pool);
+
+  const hint=document.createElement('div');
+  hint.style.cssText='grid-column:span 3;text-align:center;margin-bottom:3px;';
+  hint.innerHTML=`
+    <div style="font-size:0.55rem;color:var(--cyan);">🇧🇷 TRADUZA 🇺🇸</div>
+    <div style="font-size:1.1rem;font-weight:700;color:var(--gold);">"${tgt.word.pt}"</div>
+  `;
+  optionsEl.appendChild(hint);
+
+  opts.forEach((o,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn'+(i===optIndex?' selected':'');
+    btn.textContent=o;
+    btn.onclick=()=>handleAns(o);
+    optionsEl.appendChild(btn);
+  });
+};
+
+/* ------------------------- ANSWER ------------------------- */
+const handleAns=ans=>{
+  if(!running) return;
+  initAudio();
+  const pick=norm(ans);
+
+  // Must match CURRENT target only (no accidental match on other blocks)
+  const tgt=blocks.find(b=>b.id===targetId && b.type==='word');
+  if(!tgt) return;
+
+  attempts++;
+  const ok=tgt.word.en.some(e=>norm(e)===pick);
+
+  if(ok){
+    correct++;
+    combo++; if(combo>maxCombo) maxCombo=combo;
+    const m=1+(combo>=3?0.5:0)+(combo>=5?0.5:0)+(combo>=10?1:0);
+    const pts=Math.round(10*(doubleOn?m*2:m));
+    score+=pts;
+    playSound('ok');
+    speak(tgt.word.en[0]);
+    mkParticles(tgt.x+26,tgt.y+26,'var(--green)',8);
+    mkPopup(tgt.x+26,tgt.y,'+'+pts,'var(--green)');
+    feedback.style.color='var(--green)';
+    feedback.textContent=`✅ ${tgt.word.pt} = "${tgt.word.en[0]}" +${pts}`;
+    setLastWord(tgt.word, true);
+    rmBlock(tgt,true);
+    updateHUD();
+    if(mode==='level' && correct>=WORDS_NEEDED) levelWin();
+  } else {
+    playSound('no');
+    combo=0;
+    feedback.style.color='var(--orange)';
+    feedback.textContent='❌ Errado. Tenta de novo.';
+    if(tgt) setLastWord(tgt.word, false);
+    updateHUD();
+  }
+};
+
+/* ------------------------- FLOOR HIT ------------------------- */
+const hitFloor=b=>{
+  if(b.type==='pu'){
+    feedback.style.color='var(--gray)';
+    feedback.textContent=b.pu.emoji+' perdido!';
+    rmBlock(b,false);
+    return;
+  }
+  lives--;
+  combo=0;
+  attempts++;
+  updateHUD();
+  playSound('no');
+  arena.classList.add('shake');
+  setTimeout(()=>arena.classList.remove('shake'),400);
+
+  feedback.style.color='var(--red)';
+  feedback.textContent=`💥 ${b.word.pt} = "${b.word.en[0]}"`;
+  setLastWord(b.word, false);
+  mkParticles(b.x+26,b.y+26,'var(--red)',6);
+  rmBlock(b,false);
+
+  if(lives<=0) gameOver();
+};
+
+/* ------------------------- POWERUPS ------------------------- */
+const collectPU=p=>{
+  if(pu[p.type]<3){
+    pu[p.type]++;
+    playSound('pu');
+    feedback.style.color='var(--gold)';
+    feedback.textContent=p.emoji+' coletado!';
+    updatePU();
+  } else {
+    feedback.style.color='var(--gray)';
+    feedback.textContent=p.emoji+' cheio!';
+  }
+};
+
+const usePU=t=>{
+  if(!running || pu[t]<=0) return;
+  if(t==='slow' && slowOn) return;
+  if(t==='freeze' && freezeOn) return;
+  if(t==='double' && doubleOn) return;
+
+  pu[t]--;
+  const dur=POWERUPS.find(p=>p.type===t)?.dur||0;
+  playSound('pu');
+
+  if(t==='slow'){
+    slowOn=true; feedback.textContent='⏱️ SLOW!';
+    setTimeout(()=>{ slowOn=false; updatePU(); }, dur);
+  }
+  if(t==='freeze'){
+    freezeOn=true; arena.classList.add('frozen'); feedback.textContent='🧊 FREEZE!';
+    setTimeout(()=>{ freezeOn=false; arena.classList.remove('frozen'); updatePU(); }, dur);
+  }
+  if(t==='double'){
+    doubleOn=true; arena.classList.add('double'); feedback.textContent='⭐ 2X PTS!';
+    setTimeout(()=>{ doubleOn=false; arena.classList.remove('double'); updatePU(); }, dur);
+  }
+  if(t==='bomb'){
+    feedback.textContent='💣 BOOM!';
+    blocks.filter(b=>b.type==='word').forEach(b=>{ mkParticles(b.x+26,b.y+26,'var(--orange)',4); b.el.remove(); });
+    blocks=blocks.filter(b=>b.type==='pu');
+    arena.classList.add('shake'); setTimeout(()=>arena.classList.remove('shake'),400);
+    updateOpts(true);
+  }
+  if(t==='life'){
+    lives=Math.min(5,lives+1);
+    feedback.textContent='❤️ +1 VIDA!';
+    updateHUD();
+  }
+  updatePU();
+};
+
+/* ------------------------- FX ------------------------- */
+const mkParticles=(x,y,c,n)=>{
+  for(let i=0;i<n;i++){
+    const p=document.createElement('div');
+    p.style.cssText=`position:absolute;left:${x}px;top:${y}px;width:${4+Math.random()*4}px;height:${4+Math.random()*4}px;background:${c};border-radius:50%;pointer-events:none;opacity:1;transition:all 0.4s ease-out;`;
+    const a=Math.random()*Math.PI*2,d=15+Math.random()*30;
+    setTimeout(()=>{ p.style.transform=`translate(${Math.cos(a)*d}px,${Math.sin(a)*d}px)`; p.style.opacity='0'; },10);
+    particles.appendChild(p);
+    setTimeout(()=>p.remove(),450);
+  }
+};
+const mkPopup=(x,y,txt,c)=>{
+  const p=document.createElement('div');
+  p.className='popup';
+  p.textContent=txt;
+  p.style.left=x+'px';
+  p.style.top=y+'px';
+  p.style.color=c;
+  arena.appendChild(p);
+  setTimeout(()=>p.remove(),800);
+};
+
+/* ------------------------- LOOP ------------------------- */
+const getSpd=()=>{
+  let s=0.45 + (mode==='level' ? (correct/WORDS_NEEDED)*0.30 : 0);
+  if(slowOn) s*=0.35;
+  if(freezeOn) s=0;
+  return s;
+};
+
+const update=t=>{
+  if(!running) return;
+  const dt=Math.min(32,(t-lastT)||16);
+  lastT=t;
+
+  const boxH=52;
+  const floorY=arena.offsetHeight - (boxH + 8); // just above floor line
+  const spd=getSpd();
+
+  for(let i=blocks.length-1;i>=0;i--){
+    const b=blocks[i];
+    b.y += spd*(b.spd||1)*(dt/16);
+    b.el.style.top=b.y+'px';
+    if(b.y>=floorY) hitFloor(b);
+  }
+  if(running) raf=requestAnimationFrame(update);
+};
+
+const startSpawn=()=>{
+  // Preload 3 blocks with more vertical spacing
+  for(let i=0;i<3;i++){
+    const b=createBlock();
+    b.y=-80-i*100; // More vertical spacing between initial blocks
+    b.el.style.top=b.y+'px';
+  }
+  const interval=()=> (mode==='level'
+    ? Math.max(2200, 3800 - correct*20) // Slightly slower spawn
+    : 3200
+  );
+  spawnInt=setInterval(()=>{
+    if(!running) return;
+    if(blocks.filter(b=>b.type==='word').length<7) createBlock();
+  }, interval());
+};
+
+const start=()=>{
+  if(running) return;
+  initAudio();
+  running=true;
+  $('btnStart').textContent='Running';
+  $('btnStart').disabled=true;
+  updateHUD();
+  startSpawn();
+  lastT=performance.now();
+  raf=requestAnimationFrame(update);
+};
+
+const stop=()=>{
+  running=false;
+  $('btnStart').textContent='Start';
+  $('btnStart').disabled=false;
+  if(spawnInt){ clearInterval(spawnInt); spawnInt=null; }
+  if(raf){ cancelAnimationFrame(raf); raf=null; }
+};
+
+/* ------------------------- WIN/LOSE ------------------------- */
+const levelWin=()=>{
+  stop();
+  playSound('win');
+  const acc=attempts>0 ? Math.round(correct/attempts*100) : 100;
+  let stars=1;
+  if(acc>=70 && lives>=3) stars=2;
+  if(acc>=85 && lives>=4) stars=3;
+
+  if(!progress.done.includes(curLevel.id)) progress.done.push(curLevel.id);
+  progress.stars[curLevel.id]=Math.max(progress.stars[curLevel.id]||0, stars);
+  localStorage.setItem('edProgress',JSON.stringify(progress));
+
+  $('winLevel').textContent=curLevel.emoji+' '+curLevel.name;
+  $('winStars').textContent='⭐'.repeat(stars)+'☆'.repeat(3-stars);
+  $('winScore').textContent=score;
+  $('winAcc').textContent=acc+'%';
+  $('winCombo').textContent=maxCombo;
+
+  $('btnNext').style.display=LEVELS.find(l=>l.id===curLevel.id+1)?'block':'none';
+  $('winModal').classList.add('show');
+};
+
+const gameOver=()=>{
+  stop();
+  playSound('no');
+  $('goScore').textContent=score;
+  $('goWords').textContent=correct+'/'+(mode==='level'?WORDS_NEEDED:'∞');
+  $('goModal').classList.add('show');
+};
+
+/* ------------------------- EVENTS ------------------------- */
+$('btnQuick').onclick=startQuick;
+$('btnLevels').onclick=()=>{ renderMap(); showScr(mapScr); };
+$('btnBackMenu').onclick=()=>showScr(menuScr);
+$('btnStart').onclick=start;
+$('btnGameMenu').onclick=()=>{ stop(); showScr(menuScr); };
+
+$('btnPreview').onclick=openWordList;
+$('btnCloseWords').onclick=closeWordList;
+wordModal.onclick=e=>{ if(e.target===wordModal) closeWordList(); };
+
+$('btnResetProgress').onclick=()=>{
+  progress={done:[],stars:{}};
+  localStorage.setItem('edProgress',JSON.stringify(progress));
+  feedback.style.color='var(--orange)';
+  feedback.textContent='♻️ Progresso do mapa resetado!';
+};
+
+document.onkeydown=e=>{
+  if(!running) return;
+  const m={'1':'slow','2':'freeze','3':'double','4':'bomb','5':'life'};
+  if(m[e.key]){ e.preventDefault(); usePU(m[e.key]); }
+};
+['slow','freeze','double','bomb','life'].forEach(t=> $('pu-'+t).onclick=()=>usePU(t) );
+
+$('btnNext').onclick=()=>{
+  $('winModal').classList.remove('show');
+  const nx=LEVELS.find(l=>l.id===curLevel.id+1);
+  if(nx) startLevel(nx.id);
+};
+$('btnWinMap').onclick=()=>{
+  $('winModal').classList.remove('show');
+  renderMap(); showScr(mapScr);
+};
+$('btnRetry').onclick=()=>{
+  $('goModal').classList.remove('show');
+  if(mode==='level') startLevel(curLevel.id);
+  else startQuick();
+};
+$('btnGoMap').onclick=()=>{
+  $('goModal').classList.remove('show');
+  if(mode==='level'){ renderMap(); showScr(mapScr); }
+  else showScr(menuScr);
+};
+
+/* ------------------------- INIT ------------------------- */
+if('speechSynthesis' in window) speechSynthesis.getVoices();
+</script>
+</body>
+</html>

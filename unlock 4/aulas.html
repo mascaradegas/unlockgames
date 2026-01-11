@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AULAS | UNLOCK 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --blue-bg: #0a1628; --gold: #FFD700; --green: #00FF88; --orange: #FF8C00; --purple: #9B6DFF; --red: #FF4444; --cyan: #00BFFF; --white: #E8E8E8; --gray: #8899aa; }
+        body { font-family: 'Inter', sans-serif; background: var(--blue-bg); min-height: 100vh; color: var(--white); }
+        .bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 50%, #0a1628 100%); z-index: 0; }
+        .bg::before { content: ''; position: absolute; top: 0; left: 0; width: 200%; height: 200%; background-image: linear-gradient(rgba(0, 191, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 191, 255, 0.05) 1px, transparent 1px); background-size: 60px 60px; animation: gridMove 30s linear infinite; }
+        @keyframes gridMove { 0% { transform: translate(0, 0); } 100% { transform: translate(-60px, -60px); } }
+        #gridView { position: relative; z-index: 2; min-height: 100vh; padding: 20px; }
+        .grid-header { text-align: center; padding: 40px 20px; }
+        .grid-header h1 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: var(--gold); text-shadow: 0 0 30px rgba(255, 215, 0, 0.5); margin-bottom: 10px; }
+        .grid-header p { color: var(--gray); font-size: 1.1rem; }
+        .aulas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .aula-card { background: linear-gradient(180deg, rgba(20, 40, 80, 0.9) 0%, rgba(10, 22, 40, 0.95) 100%); border: 2px solid var(--cyan); border-radius: 15px; padding: 20px 12px; cursor: pointer; transition: all 0.3s ease; text-align: center; }
+        .aula-card:hover { transform: translateY(-8px) scale(1.02); border-color: var(--gold); box-shadow: 0 15px 40px rgba(255, 215, 0, 0.2); }
+        .aula-card .emoji { font-size: 2.2rem; margin-bottom: 8px; display: block; }
+        .aula-card .title { font-family: 'Orbitron', sans-serif; font-size: 0.7rem; color: var(--gold); font-weight: 700; margin-bottom: 4px; }
+        .aula-card .desc { font-size: 0.65rem; color: var(--gray); }
+        #lessonView { display: none; position: relative; z-index: 2; }
+        .lesson-view-active { display: block !important; }
+        .progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, var(--gold), var(--green)); z-index: 1000; transition: width 0.3s; width: 0%; }
+        .back-btn { position: fixed; top: 20px; left: 20px; z-index: 100; background: rgba(0,0,0,0.5); border: 2px solid var(--gold); color: var(--gold); padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; }
+        .back-btn:hover { background: var(--gold); color: #000; }
+        .lesson-title-bar { position: fixed; top: 20px; right: 20px; z-index: 100; background: rgba(0,0,0,0.5); border: 2px solid var(--cyan); color: var(--cyan); padding: 10px 20px; border-radius: 25px; font-family: 'Orbitron', sans-serif; font-size: 0.85rem; font-weight: 700; }
+        .slides-container { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .slide { display: none; width: 100%; max-width: 750px; animation: fadeIn 0.3s ease; }
+        .slide.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: linear-gradient(180deg, rgba(20, 40, 80, 0.95) 0%, rgba(10, 22, 40, 0.98) 100%); border: 3px solid var(--gold); border-radius: 20px; padding: 45px 40px; }
+        .card.green { border-color: var(--green); } .card.orange { border-color: var(--orange); } .card.purple { border-color: var(--purple); } .card.red { border-color: var(--red); } .card.cyan { border-color: var(--cyan); }
+        .slide-title { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900; color: var(--gold); text-align: center; margin-bottom: 15px; }
+        .slide-subtitle { font-size: 1.1rem; color: var(--gray); text-align: center; margin-bottom: 25px; }
+        .text { font-size: 1.35rem; line-height: 1.9; } .text.center { text-align: center; } .text strong { color: var(--gold); }
+        .keyword { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; font-weight: 900; text-align: center; margin: 15px 0; text-shadow: 0 0 40px currentColor; color: var(--cyan); }
+        .emoji-big { font-size: 4rem; text-align: center; margin-bottom: 15px; }
+        .translation { font-size: 1.3rem; color: var(--gray); text-align: center; margin-top: 10px; }
+        .example-big { font-size: 1.4rem; text-align: center; margin: 15px 0; padding: 15px; background: rgba(30, 50, 80, 0.5); border-radius: 10px; }
+        .response { background: rgba(0, 255, 136, 0.1); border: 1px solid var(--green); }
+        .error-row { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; font-size: 1.2rem; flex-wrap: wrap; }
+        .error-wrong { color: var(--red); text-decoration: line-through; } .error-right { color: var(--green); font-weight: 600; }
+        .hl-cyan { color: var(--cyan); font-weight: 700; } .hl-green { color: var(--green); font-weight: 700; } .hl-orange { color: var(--orange); font-weight: 700; } .hl-purple { color: var(--purple); font-weight: 700; } .hl-red { color: var(--red); font-weight: 700; }
+        .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 20px; z-index: 100; }
+        .nav-btn { width: 60px; height: 60px; background: linear-gradient(180deg, var(--gold), #B8960F); border: none; border-radius: 50%; font-size: 1.5rem; color: #000; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .nav-btn:hover { transform: scale(1.1); } .nav-btn:active { transform: scale(0.95); }
+        .nav-counter { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: var(--gold); background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 25px; border: 2px solid var(--gold); }
+        /* INTERACTIVE SLIDES STYLES */
+        .quiz-option { display: inline-block; margin: 10px; padding: 12px 20px; border: 2px solid var(--cyan); border-radius: 8px; cursor: pointer; background: rgba(0,191,255,0.1); color: var(--cyan); font-weight: 600; transition: all 0.3s; user-select: none; }
+        .quiz-option:hover { background: rgba(0,191,255,0.2); transform: scale(1.05); }
+        .quiz-option.selected { background: var(--cyan); color: #000; }
+        .quiz-option.correct { background: var(--green); border-color: var(--green); color: #000; }
+        .quiz-option.incorrect { background: var(--red); border-color: var(--red); color: #fff; }
+        .quiz-feedback { margin-top: 20px; padding: 15px; border-radius: 8px; font-size: 1.1rem; text-align: center; display: none; }
+        .quiz-feedback.show { display: block; animation: slideIn 0.3s ease; }
+        .quiz-feedback.correct { background: rgba(0,255,136,0.2); border: 2px solid var(--green); color: var(--green); }
+        .quiz-feedback.incorrect { background: rgba(255,68,68,0.2); border: 2px solid var(--red); color: var(--red); }
+        .fill-input { font-size: 1.2rem; padding: 12px 15px; border: 2px solid var(--gold); border-radius: 8px; background: rgba(255,215,0,0.1); color: var(--white); text-align: center; width: 80%; max-width: 400px; }
+        .fill-input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 15px rgba(0,255,136,0.5); }
+        .fill-input.correct { border-color: var(--green); background: rgba(0,255,136,0.2); }
+        .fill-input.incorrect { border-color: var(--red); background: rgba(255,68,68,0.2); }
+        .fill-submit { margin-top: 15px; padding: 10px 25px; background: var(--gold); border: none; border-radius: 6px; color: #000; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+        .fill-submit:hover { transform: scale(1.05); }
+        .fill-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .mc-choice { display: block; width: 100%; margin: 12px 0; padding: 15px; border: 2px solid var(--cyan); border-radius: 8px; background: rgba(0,191,255,0.1); color: var(--white); text-align: left; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+        .mc-choice:hover { background: rgba(0,191,255,0.2); transform: translateX(10px); }
+        .mc-choice.selected { background: var(--cyan); color: #000; border-color: var(--gold); }
+        .mc-choice.correct { background: var(--green); color: #000; border-color: var(--green); }
+        .mc-choice.incorrect { background: var(--red); color: #fff; border-color: var(--red); }
+        .mc-explanation { margin-top: 10px; padding: 10px 15px; border-left: 3px solid var(--gold); background: rgba(255,215,0,0.1); color: var(--gray); font-size: 0.95rem; display: none; }
+        .mc-explanation.show { display: block; }
+        .timer-bar { width: 100%; height: 8px; background: rgba(255,215,0,0.2); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .timer-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--green)); width: 100%; transition: width linear; }
+        .timer-text { font-size: 1.2rem; color: var(--gold); font-weight: 700; text-align: center; margin-bottom: 10px; }
+        .timer-text.warning { color: var(--orange); }
+        .timer-text.danger { color: var(--red); }
+        @keyframes slideIn { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
+        /* CELEBRATION & ENGAGEMENT ANIMATIONS */
+        @keyframes celebrate { 0% { transform: scale(1) rotate(0deg); opacity: 1; } 50% { transform: scale(1.2) rotate(5deg); } 100% { transform: scale(1) rotate(0deg) translateY(-20px); opacity: 0; } }
+        @keyframes confetti-pop { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx, 100px), var(--ty, -200px)) scale(0); opacity: 0; } }
+        @keyframes streak-bounce { 0%, 100% { transform: scale(1); } 25% { transform: scale(1.15); } 50% { transform: scale(1.25); } 75% { transform: scale(1.15); } }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 10px var(--glow-color, var(--green)); } 50% { box-shadow: 0 0 30px var(--glow-color, var(--green)); } }
+        .celebration-emoji { position: fixed; pointer-events: none; font-size: 3rem; animation: celebrate 1s ease-out forwards; z-index: 10000; }
+        .confetti { position: fixed; pointer-events: none; width: 8px; height: 8px; border-radius: 50%; z-index: 9999; animation: confetti-pop 2s ease-out forwards; }
+        .streak-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(0,255,136,0.95), rgba(0,191,255,0.95)); color: #000; padding: 30px 50px; border-radius: 15px; font-size: 2rem; font-weight: 900; z-index: 10001; text-shadow: 0 2px 10px rgba(0,0,0,0.3); animation: pulse-scale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 40px rgba(0,255,136,0.6); }
+        @keyframes pulse-scale { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+        .quiz-option.correct { animation: pulse-glow 1s ease-in-out infinite; --glow-color: var(--green); }
+        .fill-input.correct { animation: pulse-glow 0.8s ease-in-out 2; --glow-color: var(--green); }
+        .mc-choice.correct { animation: pulse-glow 1s ease-in-out infinite; --glow-color: var(--green); }
+        .streak-counter { --glow-color: var(--gold); }
+        .auto-next-indicator { position: fixed; bottom: 100px; right: 20px; background: rgba(0,255,136,0.2); border: 2px solid var(--green); border-radius: 25px; padding: 12px 20px; color: var(--green); font-size: 0.9rem; font-weight: 600; animation: slide-in 0.5s ease; z-index: 100; }
+        .motivational-badge { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, rgba(255,215,0,0.95), rgba(255,140,0,0.95)); color: #000; padding: 15px 25px; border-radius: 25px; font-weight: 700; font-size: 1.1rem; z-index: 10002; animation: slide-down 0.6s ease-out; box-shadow: 0 8px 25px rgba(255,215,0,0.4); }
+        .end-game-btn { transition: all 0.3s ease !important; }
+        .end-game-btn:hover { transform: translateY(-8px) scale(1.05) !important; box-shadow: 0 15px 40px rgba(0,255,136,0.3) !important; border-width: 3px !important; }
+        @keyframes slide-down { 0% { opacity: 0; transform: translateX(-50%) translateY(-30px); } 100% { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        @keyframes red-aura-pulse { 0% { box-shadow: 0 0 0 0 rgba(255,68,68,0.8), inset 0 0 20px rgba(255,68,68,0.4); } 50% { box-shadow: 0 0 0 30px rgba(255,68,68,0), inset 0 0 40px rgba(255,68,68,0.6); } 100% { box-shadow: 0 0 0 60px rgba(255,68,68,0), inset 0 0 20px rgba(255,68,68,0.4); } }
+        @keyframes card-deny-shake { 0%, 100% { transform: scale(1) rotate(0deg); } 10% { transform: scale(1.05) rotate(-2deg); } 20% { transform: scale(1.08) rotate(2deg); } 30% { transform: scale(1.05) rotate(-2deg); } 40% { transform: scale(1.1) rotate(0deg); } 60% { transform: scale(1.05) rotate(0deg); } 100% { transform: scale(1) rotate(0deg); } }
+        @keyframes screen-shake { 0%, 100% { transform: translate(0, 0); } 10% { transform: translate(-5px, -5px); } 20% { transform: translate(5px, 5px); } 30% { transform: translate(-5px, 5px); } 40% { transform: translate(5px, -5px); } 50% { transform: translate(0, 0); } }
+        @keyframes red-screen-flash { 0% { background: rgba(255,68,68,0); } 10% { background: rgba(255,68,68,0.4); } 50% { background: rgba(255,68,68,0.2); } 100% { background: rgba(255,68,68,0); } }
+        .quiz-locked-warning { pointer-events: none; }
+        .red-deny-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10010; animation: red-screen-flash 0.6s ease-out; }
+        .red-aura-effect { position: fixed; pointer-events: none; z-index: 10009; animation: red-aura-pulse 0.8s ease-out; border-radius: 50%; }
+        /* APPBAR STYLES */
+        .unlock-appbar { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: linear-gradient(180deg, rgba(10,22,40,0.98) 0%, rgba(10,22,40,0.85) 100%); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 2px solid rgba(0,255,136,0.15); box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,215,0,0.1); z-index: 99999; }
+        .unlock-appbar .left a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 800; color: var(--green); letter-spacing: 0.2px; transition: all 0.3s ease; padding: 8px 12px; border-radius: 6px; }
+        .unlock-appbar .left a:hover { color: var(--gold); background: rgba(0,255,136,0.1); transform: translateX(-2px); }
+        .unlock-appbar .center { font-family: 'Orbitron', system-ui, sans-serif; font-weight: 900; letter-spacing: 2px; color: var(--gold); font-size: 14px; animation: glow-pulse 3s ease-in-out infinite; }
+        .unlock-appbar .right { display: flex; align-items: center; gap: 12px; }
+        .unlock-appbar-btn { background: none; border: none; cursor: pointer; color: var(--gold); font-size: 20px; padding: 8px 12px; border-radius: 8px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; position: relative; }
+        .unlock-appbar-btn:hover { background: rgba(255,215,0,0.1); transform: scale(1.1); animation: badge-bounce 0.6s ease; }
+        .unlock-appbar-btn::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%); border-radius: 8px; opacity: 0; transition: opacity 0.3s; }
+        .unlock-appbar-btn:hover::before { opacity: 1; }
+        .unlock-appbar .pill { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border: 2px solid rgba(255,215,0,0.3); border-radius: 12px; background: linear-gradient(135deg, rgba(17,31,61,0.8) 0%, rgba(20,40,80,0.6) 100%); transition: all 0.3s ease; animation: slide-in 0.5s ease; }
+        .unlock-appbar .pill:hover { background: linear-gradient(135deg, rgba(17,31,61,1) 0%, rgba(20,40,80,0.8) 100%); border-color: rgba(255,215,0,0.6); transform: translateY(-2px); box-shadow: 0 8px 16px rgba(255,215,0,0.2); }
+        .unlock-appbar .pill span[data-unlock-streak] { font-weight: bold; color: var(--gold); animation: glow-pulse 2s ease-in-out infinite; }
+        @keyframes glow-pulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+        @keyframes badge-bounce { 0%, 100% { transform: scale(1.1); } 50% { transform: scale(1.15); } }
+        @keyframes slide-in { 0% { opacity: 0; transform: translateX(20px); } 100% { opacity: 1; transform: translateX(0); } }
+        #gridView { padding-top: 80px; }
+        #lessonView { padding-top: 80px; }
+        @media (max-width: 600px) { .grid-header h1 { font-size: 1.8rem; } .aulas-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; } .aula-card { padding: 15px 8px; } .aula-card .emoji { font-size: 1.8rem; } .aula-card .title { font-size: 0.6rem; } .card { padding: 30px 25px; } .slide-title { font-size: 1.6rem; } .text { font-size: 1.15rem; } .keyword { font-size: 1.8rem; } .emoji-big { font-size: 3rem; } .nav-btn { width: 55px; height: 55px; } .back-btn { padding: 8px 15px; font-size: 0.8rem; } .lesson-title-bar { font-size: 0.75rem; padding: 8px 15px; } .unlock-appbar { height: 56px; padding: 0 12px; } .unlock-appbar .center { display: none; } }
+    </style>
+</head>
+<body>
+    <!-- UNLOCK 2026 shared top bar -->
+    <div class="unlock-appbar">
+        <div class="left">
+            <a id="backLink" href="./index.html" aria-label="Back to menu">⬅ <span id="backText">Menu</span></a>
+        </div>
+        <div class="center">UNLOCK 2026</div>
+        <div class="right">
+            <button class="unlock-appbar-btn" id="statsBtn" title="Ver seus badges" aria-label="Ver seus badges" style="position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; font-size: 12px;">
+                <span id="badgeCounter" style="background: var(--gold); color: var(--bg); padding: 2px 8px; border-radius: 12px; font-weight: bold; font-size: 11px;">🏆 0</span>
+            </button>
+            <span class="pill"><span data-unlock-streak>🔥 0</span><span style="opacity:.6">•</span> 📚 Aulas</span>
+        </div>
+    </div>
+
+    <div class="bg"></div>
+    <div id="gridView">
+        <div class="grid-header"><h1>📚 AULAS</h1><p>Escolha uma aula para estudar</p></div>
+        <div class="aulas-grid">
+            <div class="aula-card" onclick="openLesson('what')"><span class="emoji">❓🤔</span><div class="title">WHAT</div><div class="desc">Perguntar "o que"</div></div>
+            <div class="aula-card" onclick="openLesson('where')"><span class="emoji">📍❓</span><div class="title">WHERE</div><div class="desc">Perguntar lugar</div></div>
+            <div class="aula-card" onclick="openLesson('when')"><span class="emoji">🕐❓</span><div class="title">WHEN</div><div class="desc">Perguntar tempo</div></div>
+            <div class="aula-card" onclick="openLesson('who')"><span class="emoji">👥❓</span><div class="title">WHO</div><div class="desc">Perguntar pessoas</div></div>
+            <div class="aula-card" onclick="openLesson('which')"><span class="emoji">🔵🔴</span><div class="title">WHICH</div><div class="desc">Escolher opções</div></div>
+            <div class="aula-card" onclick="openLesson('whyBecause')"><span class="emoji">❓💬</span><div class="title">WHY/BECAUSE</div><div class="desc">Motivo</div></div>
+            <div class="aula-card" onclick="openLesson('how')"><span class="emoji">🤷❓</span><div class="title">HOW</div><div class="desc">Perguntar "como"</div></div>
+            <div class="aula-card" onclick="openLesson('howMuchMany')"><span class="emoji">💰🔢</span><div class="title">HOW MUCH/MANY</div><div class="desc">Preço e qtd</div></div>
+            <div class="aula-card" onclick="openLesson('whatKindType')"><span class="emoji">🗂️❓</span><div class="title">WHAT KIND/TYPE</div><div class="desc">Tipos</div></div>
+            <div class="aula-card" onclick="openLesson('isAre')"><span class="emoji">🔵🟢</span><div class="title">IS / ARE</div><div class="desc">Como algo está</div></div>
+            <div class="aula-card" onclick="openLesson('thereIsAre')"><span class="emoji">📍✅</span><div class="title">THERE IS/ARE</div><div class="desc">Tem algo</div></div>
+            <div class="aula-card" onclick="openLesson('thisThat')"><span class="emoji">👆👉</span><div class="title">THIS / THAT</div><div class="desc">Perto ou longe</div></div>
+            <div class="aula-card" onclick="openLesson('hereThere')"><span class="emoji">📍🗺️</span><div class="title">HERE / THERE</div><div class="desc">Aqui ou ali</div></div>
+            <div class="aula-card" onclick="openLesson('wouldShouldCould')"><span class="emoji">🎩💬</span><div class="title">WOULD/SHOULD/COULD</div><div class="desc">Falar educado</div></div>
+            <div class="aula-card" onclick="openLesson('wantNeed')"><span class="emoji">🙏💭</span><div class="title">WANT / NEED</div><div class="desc">Querer/precisar</div></div>
+            <div class="aula-card" onclick="openLesson('haveToNeedTo')"><span class="emoji">⚠️✅</span><div class="title">HAVE TO/NEED TO</div><div class="desc">Ter que fazer</div></div>
+            <div class="aula-card" onclick="openLesson('letMeCanI')"><span class="emoji">🙋✋</span><div class="title">LET ME / CAN I</div><div class="desc">Pedir pra fazer</div></div>
+            <div class="aula-card" onclick="openLesson('lookingFor')"><span class="emoji">🔍👀</span><div class="title">I'M LOOKING FOR</div><div class="desc">Procurando</div></div>
+            <div class="aula-card" onclick="openLesson('likeLoveHate')"><span class="emoji">👍❤️👎</span><div class="title">LIKE/LOVE/HATE</div><div class="desc">Gostar ou não</div></div>
+            <div class="aula-card" onclick="openLesson('moodsFeelings')"><span class="emoji">😊😢</span><div class="title">MOODS & FEELINGS</div><div class="desc">Como você tá</div></div>
+            <div class="aula-card" onclick="openLesson('weather')"><span class="emoji">☀️🌧️</span><div class="title">WEATHER</div><div class="desc">Clima</div></div>
+            <div class="aula-card" onclick="openLesson('monthsSeasons')"><span class="emoji">📅🌦️</span><div class="title">MONTHS & SEASONS</div><div class="desc">Meses e estações</div></div>
+            <div class="aula-card" onclick="openLesson('days')"><span class="emoji">📅</span><div class="title">DAYS OF THE WEEK</div><div class="desc">Dias da semana</div></div>
+            <div class="aula-card" onclick="openLesson('numbers')"><span class="emoji">🔢</span><div class="title">NUMBERS</div><div class="desc">Números</div></div>
+            <div class="aula-card" onclick="openLesson('can')"><span class="emoji">💪🔓</span><div class="title">CAN</div><div class="desc">Poder/saber</div></div>
+            <div class="aula-card" onclick="openLesson('doDoesdid')"><span class="emoji">🔵🔴🟡</span><div class="title">DO/DOES/DID</div><div class="desc">Fazer perguntas</div></div>
+            <div class="aula-card" onclick="openLesson('haveHas')"><span class="emoji">✋📦</span><div class="title">HAVE / HAS</div><div class="desc">Ter algo</div></div>
+            <div class="aula-card" onclick="openLesson('doYouHave')"><span class="emoji">🤲❓</span><div class="title">DO YOU HAVE?</div><div class="desc">Perguntar se tem</div></div>
+            <div class="aula-card" onclick="openLesson('goingTo')"><span class="emoji">🎯➡️</span><div class="title">I'M GOING TO</div><div class="desc">Planos futuros</div></div>
+            <div class="aula-card" onclick="openLesson('goCome')"><span class="emoji">🚶➡️⬅️</span><div class="title">GO / COME</div><div class="desc">Ir e vir</div></div>
+            <div class="aula-card" onclick="openLesson('get')"><span class="emoji">🤲✨</span><div class="title">GET</div><div class="desc">Pegar/conseguir</div></div>
+            <div class="aula-card" onclick="openLesson('directions')"><span class="emoji">🧭</span><div class="title">DIRECTIONS</div><div class="desc">Direções</div></div>
+            <div class="aula-card" onclick="openLesson('orderingFood')"><span class="emoji">🍔🍟</span><div class="title">ORDERING FOOD</div><div class="desc">Pedindo comida</div></div>
+        </div>
+    </div>
+    <div id="lessonView">
+        <div class="progress-bar" id="progress"></div>
+        <button class="back-btn" onclick="backToGrid()">← Voltar</button>
+        <div class="lesson-title-bar" id="lessonTitleBar">AULA</div>
+        <div class="slides-container" id="slidesContainer"></div>
+        <div class="nav">
+            <div class="nav-btn" id="prev" onclick="prevSlide()">←</div>
+            <div class="nav-counter"><span id="current">1</span> / <span id="total">1</span></div>
+            <div class="nav-btn" id="next" onclick="nextSlide()">→</div>
+        </div>
+    </div>
+    <script>
+const lessonsData = {
+    what: { title: "WHAT", slides: [
+        { type: 'title', emoji: '❓🤔', title: 'WHAT', subtitle: 'Perguntar "o que"' },
+        { type: 'text', text: 'Você não entendeu o que a pessoa disse.<br><br>Quer perguntar <strong>"o que?"</strong>' },
+        { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">WHAT</span> é a palavra.', keyword: '"o que" / "qual"' },
+        { type: 'example', cardClass: 'cyan', emoji: '🔑', question: '<span class="hl-cyan">What</span> is this?', questionTr: 'O que é isso?', answer: "It's a key.", answerTr: 'É uma chave.' },
+        { type: 'example', cardClass: 'cyan', emoji: '💭', question: '<span class="hl-cyan">What</span> do you want?', questionTr: 'O que você quer?', answer: 'I want water.', answerTr: 'Quero água.' },
+        { type: 'example', cardClass: 'cyan', emoji: '⏰', question: '<span class="hl-cyan">What</span> time is it?', questionTr: 'Que horas são?', answer: "It's 3 o'clock.", answerTr: 'São 3 horas.' },
+        { type: 'text', text: '<span class="hl-cyan">WHAT</span> = o que / qual<br><br>A pergunta mais <strong>versátil</strong>.' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Qual palavra significa "o que"?', options: ['where', 'what', 'when'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete a pergunta:', sentence: '_____ is this?', correctWord: 'What' },
+        { type: 'end' }
+    ]},
+    where: { title: "WHERE", slides: [
+        { type: 'title', emoji: '📍❓', title: 'WHERE', subtitle: 'Perguntar sobre lugar' },
+        { type: 'text', text: 'Você tá perdido.<br>Quer saber <strong>onde fica o banheiro</strong>.<br><br>Mas trava.' },
+        { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">WHERE</span> é pra perguntar sobre <strong>lugar</strong>.', keyword: '"onde"' },
+        { type: 'example', cardClass: 'cyan', emoji: '🚻', question: '<span class="hl-cyan">Where</span> is the bathroom?', questionTr: 'Onde é o banheiro?', answer: "It's over there.", answerTr: 'É ali.' },
+        { type: 'example', cardClass: 'cyan', emoji: '🏠', question: '<span class="hl-cyan">Where</span> do you live?', questionTr: 'Onde você mora?', answer: 'I live in Boston.', answerTr: 'Moro em Boston.' },
+        { type: 'text', text: '<span class="hl-cyan">WHERE</span> = onde<br><br>Sempre sobre <strong>lugar</strong>.' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Para saber onde fica algo:', options: ['What is...?', 'Where is...?', 'When is...?'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: '_____ do you live?', correctWord: 'Where' },
+        { type: 'end' }
+    ]},
+    when: { title: "WHEN", slides: [
+        { type: 'title', emoji: '🕐❓', title: 'WHEN', subtitle: 'Perguntar sobre tempo' },
+        { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">WHEN</span> é pra perguntar sobre <strong>tempo</strong>.', keyword: '"quando"' },
+        { type: 'example', cardClass: 'cyan', emoji: '📅', question: '<span class="hl-cyan">When</span> is the meeting?', questionTr: 'Quando é a reunião?', answer: 'At 3 PM.', answerTr: 'Às 3 da tarde.' },
+        { type: 'example', cardClass: 'cyan', emoji: '🎂', question: '<span class="hl-cyan">When</span> is your birthday?', questionTr: 'Quando é seu aniversário?', answer: 'In July.', answerTr: 'Em julho.' },
+        { type: 'text', text: '<span class="hl-cyan">WHEN</span> = quando<br><br>Sempre sobre <strong>tempo</strong>.' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Para perguntar "quando":', options: ['where', 'what', 'when'], correct: 2 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: '_____ is the meeting?', correctWord: 'When' },
+        { type: 'end' }
+    ]},
+    who: { title: "WHO", slides: [
+        { type: 'title', emoji: '👥❓', title: 'WHO', subtitle: 'Perguntar sobre pessoas' },
+        { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">WHO</span> é pra perguntar sobre <strong>pessoas</strong>.', keyword: '"quem"' },
+        { type: 'example', cardClass: 'cyan', emoji: '👤', question: '<span class="hl-cyan">Who</span> is that?', questionTr: 'Quem é aquele?', answer: "That's my brother.", answerTr: 'É meu irmão.' },
+        { type: 'example', cardClass: 'cyan', emoji: '📞', question: '<span class="hl-cyan">Who</span> called me?', questionTr: 'Quem me ligou?', answer: 'Maria called.', answerTr: 'Maria ligou.' },
+        { type: 'text', text: '<span class="hl-cyan">WHO</span> = quem<br><br>Só pra <strong>pessoas</strong>.' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Para perguntar sobre pessoas:', options: ['who', 'where', 'what'], correct: 0 },
+        { type: 'multiple-choice', cardClass: 'green', question: 'Qual está correto?', options: [{ text: 'Who is that?', explanation: 'Correto! Use "who" para pessoas.' }, { text: 'What is that?', explanation: 'Incorreto. Use "who" para pessoas.' }], correct: 0 },
+        { type: 'end' }
+    ]},
+    which: { title: "WHICH", slides: [
+        { type: 'title', emoji: '🔵🔴', title: 'WHICH', subtitle: 'Escolher entre opções' },
+        { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">WHICH</span> é a palavra pra escolher.', keyword: '"qual" (entre opções)' },
+        { type: 'example', cardClass: 'cyan', emoji: '🍕', question: '<span class="hl-cyan">Which</span> one: pizza or pasta?', questionTr: 'Qual: pizza ou macarrão?', answer: "I'll take the pizza.", answerTr: 'Vou querer a pizza.' },
+        { type: 'example', cardClass: 'cyan', emoji: '👕', question: '<span class="hl-cyan">Which</span> size do you need?', questionTr: 'Qual tamanho você precisa?', answer: 'Medium, please.', answerTr: 'Médio, por favor.' },
+        { type: 'text', text: '<span class="hl-cyan">WHICH</span> → 2 ou 3 opções<br><br><span class="hl-orange">WHAT</span> → infinitas opções' },
+        { type: 'quiz', cardClass: 'cyan', question: '"Which" use com:', options: ['infinitas opções', '2 ou 3 opções', 'uma pessoa'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: '_____ one: pizza or pasta?', correctWord: 'Which' },
+        { type: 'end' }
+    ]},
+    whyBecause: { title: "WHY / BECAUSE", slides: [
+        { type: 'title', emoji: '❓💬', title: 'WHY / BECAUSE', subtitle: 'Perguntar e responder o motivo' },
+        { type: 'text', text: '<span class="hl-cyan">WHY</span> é pra perguntar o motivo.<br><br><span class="hl-green">BECAUSE</span> é pra responder.' },
+        { type: 'example', cardClass: 'cyan', emoji: '⏰', question: '<span class="hl-cyan">Why</span> are you late?', questionTr: 'Por que você tá atrasado?', answer: '<span class="hl-green">Because</span> there was traffic.', answerTr: 'Porque tinha trânsito.' },
+        { type: 'example', cardClass: 'cyan', emoji: '🤒', question: "<span class='hl-cyan'>Why</span> didn't you come?", questionTr: 'Por que você não veio?', answer: '<span class="hl-green">Because</span> I was sick.', answerTr: 'Porque eu tava doente.' },
+        { type: 'text', text: '<span class="hl-cyan">WHY</span> pergunta.<br><br><span class="hl-green">BECAUSE</span> responde.' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Qual pede o motivo?', options: ['because', 'why', 'how'], correct: 1 },
+        { type: 'multiple-choice', cardClass: 'green', question: 'Qual frase está correta?', options: [{ text: 'Why you are late?', explanation: 'Incorreto. "Why are you late?"' }, { text: 'Why are you late?', explanation: 'Correto!' }], correct: 1 },
+        { type: 'end' }
+    ]},
+    how: { title: "HOW", slides: [
+        { type: 'title', emoji: '🤷❓', title: 'HOW', subtitle: 'Perguntar "como"' },
+        { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">HOW</span> é pra perguntar <strong>"como"</strong>.', keyword: '"como"' },
+        { type: 'example', cardClass: 'cyan', emoji: '👋', question: '<span class="hl-cyan">How</span> are you?', questionTr: 'Como você tá?', answer: "I'm good.", answerTr: 'Tô bem.' },
+        { type: 'example', cardClass: 'cyan', emoji: '🗺️', question: '<span class="hl-cyan">How</span> do I get there?', questionTr: 'Como eu chego lá?', answer: 'Turn left.', answerTr: 'Vira à esquerda.' },
+        { type: 'example', cardClass: 'cyan', emoji: '🌅', question: '<span class="hl-cyan">How</span> was your day?', questionTr: 'Como foi seu dia?', answer: 'It was great.', answerTr: 'Foi ótimo.' },
+        { type: 'text', text: '<span class="hl-cyan">HOW</span> = como<br><br>Jeito de <strong>fazer algo</strong>.' },
+        { type: 'quiz', cardClass: 'cyan', question: '"How are you?" significa:', options: ['Onde?', 'Como?', 'Quando?'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: '_____ do I get there?', correctWord: 'How' },
+        { type: 'end' }
+    ]},
+    howMuchMany: { title: "HOW MUCH / HOW MANY", slides: [
+        { type: 'title', emoji: '💰🔢', title: 'HOW MUCH / HOW MANY', subtitle: 'Preço e quantidade' },
+        { type: 'single-example', cardClass: 'cyan', text: '<span class="hl-cyan">How much</span> is this?', translation: 'Quanto é isso?' },
+        { type: 'single-example', cardClass: 'cyan', text: '<span class="hl-cyan">How much</span> water do you need?', translation: 'Quanta água você precisa?' },
+        { type: 'single-example', cardClass: 'green', text: '<span class="hl-green">How many</span> people are here?', translation: 'Quantas pessoas tão aqui?' },
+        { type: 'text', text: 'Dá pra contar? → <span class="hl-green">HOW MANY</span><br><br>Não dá pra contar? → <span class="hl-cyan">HOW MUCH</span>' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Dá pra contar? Use:', options: ['how much', 'how many', 'how'], correct: 1 },
+        { type: 'multiple-choice', cardClass: 'green', question: 'Qual está correto?', options: [{ text: 'How much people?', explanation: 'Incorreto. "How many people"' }, { text: 'How many people?', explanation: 'Correto!' }], correct: 1 },
+        { type: 'end' }
+    ]},
+    whatKindType: { title: "WHAT KIND / TYPE", slides: [
+        { type: 'title', emoji: '🗂️❓', title: 'WHAT KIND / WHAT TYPE', subtitle: 'Tipos e categorias' },
+        { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">WHAT KIND</span> e <span class="hl-cyan">WHAT TYPE</span> significam:', keyword: '"que tipo de"' },
+        { type: 'example', cardClass: 'cyan', emoji: '🍕', question: '<span class="hl-cyan">What kind of</span> food do you like?', questionTr: 'Que tipo de comida você gosta?', answer: 'I like Italian food.', answerTr: 'Gosto de comida italiana.' },
+        { type: 'example', cardClass: 'cyan', emoji: '🎵', question: '<span class="hl-cyan">What type of</span> music do you listen to?', questionTr: 'Que tipo de música você escuta?', answer: 'I listen to rock.', answerTr: 'Escuto rock.' },
+        { type: 'text', text: '<span class="hl-cyan">WHAT KIND</span> e <span class="hl-cyan">WHAT TYPE</span>.<br><br>Mesma coisa. Usa qualquer um.' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Qual significa "que tipo"?', options: ['what', 'what kind of', 'which'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: '_____ music do you like?', correctWord: 'What kind of' },
+        { type: 'end' }
+    ]},
+    isAre: { title: "IS / ARE", slides: [
+        { type: 'title', emoji: '🔵🟢', title: 'IS / ARE', subtitle: 'Falar como algo está' },
+        { type: 'text', text: 'Quando você quer falar <strong>como algo está agora</strong>,<br>você usa <span class="hl-cyan">IS</span> ou <span class="hl-green">ARE</span>.' },
+        { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">IS</span> é pra <strong>uma pessoa ou coisa só</strong>.', examples: ['He <span class="hl-cyan">is</span> tired. (Ele tá cansado.)', 'The store <span class="hl-cyan">is</span> closed. (A loja tá fechada.)'] },
+        { type: 'rule', cardClass: 'green', text: '<span class="hl-green">ARE</span> é pra <strong>mais de um</strong>, ou pra <strong>YOU</strong>.', examples: ['You <span class="hl-green">are</span> late. (Você tá atrasado.)', 'They <span class="hl-green">are</span> here. (Eles tão aqui.)'] },
+        { type: 'text', text: '<span class="hl-cyan">IS</span> pro singular.<br><br><span class="hl-green">ARE</span> pro plural e <strong>YOU</strong>.' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Choose the correct option: _____ you ready?', options: ['is', 'are', 'am'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete the sentence:', sentence: 'He _____ happy', correctWord: 'is' },
+        { type: 'multiple-choice', cardClass: 'green', question: 'Which sentence is correct?', options: [
+            { text: 'She are tired', explanation: 'Incorrect. "are" is for plural or YOU. Use "is" for singular.' },
+            { text: 'She is tired', explanation: 'Correct! "is" is used for singular (she).' },
+            { text: 'She am tired', explanation: 'Incorrect. "am" is only for I. Use "is" for she.' }
+        ], correct: 1 },
+        { type: 'end' }
+    ]},
+    thereIsAre: { title: "THERE IS / ARE", slides: [
+        { type: 'title', emoji: '📍✅', title: 'THERE IS / THERE ARE', subtitle: 'Falar que tem algo' },
+        { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">THERE IS</span> é pra <strong>uma coisa só</strong>.', examples: ['<span class="hl-cyan">There is</span> a bathroom here. (Tem um banheiro aqui.)'] },
+        { type: 'rule', cardClass: 'green', text: '<span class="hl-green">THERE ARE</span> é pra <strong>mais de uma coisa</strong>.', examples: ['<span class="hl-green">There are</span> two chairs. (Tem duas cadeiras.)'] },
+        { type: 'text', text: 'Uma coisa? → <span class="hl-cyan">THERE IS</span><br><br>Mais de uma? → <span class="hl-green">THERE ARE</span>' },
+        { type: 'error', text: '❌ Erro comum:', errors: [{ wrong: 'Is have a bathroom?', right: 'Is there a bathroom?' }] },
+        { type: 'quiz', cardClass: 'cyan', question: 'Uma coisa? Use:', options: ['there are', 'there is', 'they are'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: '_____ a bathroom here.', correctWord: 'There is' },
+        { type: 'end' }
+    ]},
+    thisThat: { title: "THIS / THAT", slides: [
+        { type: 'title', emoji: '👆👉', title: 'THIS / THAT', subtitle: 'Apontar perto ou longe' },
+        { type: 'rule', cardClass: 'cyan', text: 'Quando algo tá <strong>perto de você</strong>,<br>você usa <span class="hl-cyan">THIS</span>.', examples: ['<span class="hl-cyan">This</span> is good. (Isso aqui é bom.)'] },
+        { type: 'rule', cardClass: 'orange', text: 'Quando algo tá <strong>longe</strong>,<br>você usa <span class="hl-orange">THAT</span>.', examples: ['<span class="hl-orange">That</span> is expensive. (Aquilo é caro.)'] },
+        { type: 'text', text: '<span class="hl-cyan">THIS</span> → perto<br><br><span class="hl-orange">THAT</span> → longe' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Algo perto de você?', options: ['that', 'this', 'these'], correct: 1 },
+        { type: 'multiple-choice', cardClass: 'green', question: 'Qual está correto?', options: [{ text: 'This is far away.', explanation: 'Incorreto. "This" é perto.' }, { text: 'That is far away.', explanation: 'Correto!' }], correct: 1 },
+        { type: 'end' }
+    ]},
+    hereThere: { title: "HERE / THERE", slides: [
+        { type: 'title', emoji: '📍🗺️', title: 'HERE / THERE', subtitle: 'Saber onde tá, saber explicar' },
+        { type: 'rule', cardClass: 'green', text: 'Quando algo tá <strong>perto de você</strong>,<br>você usa <span class="hl-green">HERE</span>.', examples: ["I'm <span class='hl-green'>here</span>. (Tô aqui.)", "It's <span class='hl-green'>here</span>. (Tá aqui.)"] },
+        { type: 'rule', cardClass: 'orange', text: 'E quando algo tá <strong>longe</strong>,<br>você usa <span class="hl-orange">THERE</span>.', examples: ["It's <span class='hl-orange'>there</span>. (Tá ali.)", 'The bathroom is <span class="hl-orange">there</span>. (O banheiro é ali.)'] },
+        { type: 'text', text: '<span class="hl-green">HERE</span> → aqui, perto<br><br><span class="hl-orange">THERE</span> → ali ou lá, longe' },
+        { type: 'rule', cardClass: 'cyan', text: 'Pra chamar ou mandar:', examples: ['Come <span class="hl-green">here</span>. (Vem aqui.)', 'Go <span class="hl-orange">there</span>. (Vai lá.)'] },
+        { type: 'quiz', cardClass: 'cyan', question: 'Perto de você?', options: ['there', 'here', 'where'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: "It's _____ on the left.", correctWord: 'here' },
+        { type: 'end' }
+    ]},
+    wouldShouldCould: { title: "WOULD / SHOULD / COULD", slides: [
+        { type: 'title', emoji: '🎩💬', title: 'WOULD / SHOULD / COULD', subtitle: 'Falar de forma educada' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🎩', keyword: 'WOULD', keywordColor: 'cyan', translation: 'pedido educado' },
+        { type: 'single-example', cardClass: 'cyan', text: '<span class="hl-cyan">Would</span> you help me?', translation: 'Você poderia me ajudar?' },
+        { type: 'keyword-only', cardClass: 'green', emoji: '💡', keyword: 'SHOULD', keywordColor: 'green', translation: 'conselho' },
+        { type: 'single-example', cardClass: 'green', text: 'You <span class="hl-green">should</span> rest.', translation: 'Você deveria descansar.' },
+        { type: 'keyword-only', cardClass: 'purple', emoji: '🤔', keyword: 'COULD', keywordColor: 'purple', translation: 'possibilidade' },
+        { type: 'single-example', cardClass: 'purple', text: 'It <span class="hl-purple">could</span> rain.', translation: 'Pode chover.' },
+        { type: 'text', text: '<span class="hl-cyan">WOULD</span> → educado<br><span class="hl-green">SHOULD</span> → conselho<br><span class="hl-purple">COULD</span> → possibilidade' },
+        { type: 'quiz', cardClass: 'cyan', question: '"Would you help me?" é:', options: ['rude', 'educado', 'estranho'], correct: 1 },
+        { type: 'multiple-choice', cardClass: 'green', question: '"Should" significa:', options: [{ text: 'pedido educado', explanation: 'Não, é "would".' }, { text: 'conselho', explanation: 'Correto!' }, { text: 'possibilidade', explanation: 'Não, é "could".' }], correct: 1 },
+        { type: 'end' }
+    ]},
+    wantNeed: { title: "WANT / NEED", slides: [
+        { type: 'title', emoji: '🙏💭', title: 'WANT / NEED', subtitle: 'Dizer o que você quer ou precisa' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '💭', keyword: 'WANT', keywordColor: 'cyan', translation: 'querer (desejo)' },
+        { type: 'single-example', cardClass: 'cyan', emoji: '💧', text: 'I <span class="hl-cyan">want</span> water.', translation: 'Eu quero água.' },
+        { type: 'keyword-only', cardClass: 'orange', emoji: '⚠️', keyword: 'NEED', keywordColor: 'orange', translation: 'precisar (necessidade)' },
+        { type: 'single-example', cardClass: 'orange', emoji: '🆘', text: 'I <span class="hl-orange">need</span> help.', translation: 'Eu preciso de ajuda.' },
+        { type: 'text', text: '<span class="hl-cyan">WANT</span> → você quer (desejo)<br><br><span class="hl-orange">NEED</span> → você precisa (necessidade)' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Qual é desejo?', options: ['need', 'want', 'must'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: 'I _____ help.', correctWord: 'need' },
+        { type: 'end' }
+    ]},
+    haveToNeedTo: { title: "HAVE TO / NEED TO", slides: [
+        { type: 'title', emoji: '⚠️✅', title: 'I HAVE TO / I NEED TO', subtitle: 'Dizer que você tem que fazer algo' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '✅', keyword: 'I HAVE TO', keywordColor: 'cyan', translation: 'tenho que' },
+        { type: 'single-example', cardClass: 'cyan', emoji: '💼', text: 'I <span class="hl-cyan">have to</span> work.', translation: 'Tenho que trabalhar.' },
+        { type: 'single-example', cardClass: 'cyan', emoji: '🚪', text: 'I <span class="hl-cyan">have to</span> go.', translation: 'Tenho que ir.' },
+        { type: 'keyword-only', cardClass: 'orange', emoji: '⚠️', keyword: 'I NEED TO', keywordColor: 'orange', translation: 'preciso' },
+        { type: 'single-example', cardClass: 'orange', emoji: '😴', text: 'I <span class="hl-orange">need to</span> rest.', translation: 'Preciso descansar.' },
+        { type: 'text', text: '<span class="hl-cyan">I HAVE TO</span> = obrigação<br><br><span class="hl-orange">I NEED TO</span> = necessidade<br><br>Na prática, quase a mesma coisa.' },
+        { type: 'quiz', cardClass: 'cyan', question: '"I have to work":', options: ['eu quero', 'eu tenho que', 'eu gosto'], correct: 1 },
+        { type: 'multiple-choice', cardClass: 'green', question: 'Qual é obrigação?', options: [{ text: 'I need to rest.', explanation: 'Necessidade.' }, { text: 'I have to work.', explanation: 'Correto!' }], correct: 1 },
+        { type: 'end' }
+    ]},
+    letMeCanI: { title: "LET ME / CAN I", slides: [
+        { type: 'title', emoji: '🙋✋', title: 'LET ME / CAN I', subtitle: 'Pedir pra fazer algo' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '👀', keyword: 'LET ME', keywordColor: 'cyan', translation: 'deixa eu / me deixa' },
+        { type: 'single-example', cardClass: 'cyan', text: '<span class="hl-cyan">Let me</span> see.', translation: 'Deixa eu ver.' },
+        { type: 'single-example', cardClass: 'cyan', emoji: '🤝', text: '<span class="hl-cyan">Let me</span> help you.', translation: 'Deixa eu te ajudar.' },
+        { type: 'keyword-only', cardClass: 'purple', emoji: '❓', keyword: 'CAN I', keywordColor: 'purple', translation: 'posso...?' },
+        { type: 'single-example', cardClass: 'purple', emoji: '🚻', text: '<span class="hl-purple">Can I</span> use the bathroom?', translation: 'Posso usar o banheiro?' },
+        { type: 'text', text: '<span class="hl-cyan">LET ME</span> → você avisa que vai fazer<br><br><span class="hl-purple">CAN I</span> → você pede permissão' },
+        { type: 'quiz', cardClass: 'cyan', question: '"Let me" quando:', options: ['pede permissão', 'você vai fazer algo', 'não sabe'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: '_____ help you.', correctWord: 'Let me' },
+        { type: 'end' }
+    ]},
+    lookingFor: { title: "I'M LOOKING FOR", slides: [
+        { type: 'title', emoji: '🔍👀', title: "I'M LOOKING FOR", subtitle: 'Dizer que você tá procurando algo' },
+        { type: 'rule', cardClass: 'cyan', text: "<span class='hl-cyan'>I'M LOOKING FOR</span> + algo<br><br>= Tô procurando..." },
+        { type: 'example', cardClass: 'cyan', emoji: '👕', question: "<span class='hl-cyan'>I'm looking for</span> a shirt.", questionTr: 'Tô procurando uma camisa.', answer: "They're over there.", answerTr: 'São ali.' },
+        { type: 'example', cardClass: 'cyan', emoji: '🚻', question: "<span class='hl-cyan'>I'm looking for</span> the bathroom.", questionTr: 'Tô procurando o banheiro.', answer: "It's on the left.", answerTr: 'É à esquerda.' },
+        { type: 'single-example', cardClass: 'cyan', emoji: '💼', text: "<span class='hl-cyan'>I'm looking for</span> a job.", translation: 'Tô procurando emprego.' },
+        { type: 'text', text: "<span class='hl-cyan'>I'M LOOKING FOR...</span><br><br>Funciona pra coisas, lugares e pessoas." },
+        { type: 'quiz', cardClass: 'cyan', question: '"I\'m looking for...":', options: ['vejo', 'procuro', 'encontro'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: "I'm looking for a _____.", correctWord: 'job' },
+        { type: 'end' }
+    ]},
+    likeLoveHate: { title: "LIKE / LOVE / HATE", slides: [
+        { type: 'title', emoji: '👍❤️👎', title: 'LIKE / LOVE / HATE', subtitle: 'Falar do que você gosta ou não' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '👍', keyword: 'LIKE', keywordColor: 'cyan', translation: 'gostar' },
+        { type: 'single-example', cardClass: 'cyan', emoji: '🍕', text: 'I <span class="hl-cyan">like</span> pizza.', translation: 'Eu gosto de pizza.' },
+        { type: 'keyword-only', cardClass: 'green', emoji: '❤️', keyword: 'LOVE', keywordColor: 'green', translation: 'amar' },
+        { type: 'single-example', cardClass: 'green', emoji: '👨‍👩‍👧', text: 'I <span class="hl-green">love</span> my family.', translation: 'Eu amo minha família.' },
+        { type: 'keyword-only', cardClass: 'red', emoji: '👎', keyword: 'HATE', keywordColor: 'red', translation: 'odiar' },
+        { type: 'single-example', cardClass: 'red', emoji: '🚗', text: 'I <span class="hl-red">hate</span> traffic.', translation: 'Eu odeio trânsito.' },
+        { type: 'text', text: '<span class="hl-cyan">LIKE</span> → gosta<br><span class="hl-green">LOVE</span> → ama<br><span class="hl-red">HATE</span> → odeia' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Use "love" quando:', options: ['você gosta', 'você ama', 'você não gosta'], correct: 1 },
+        { type: 'multiple-choice', cardClass: 'green', question: 'Qual é mais forte?', options: [{ text: 'like', explanation: 'Fraco.' }, { text: 'love', explanation: 'Correto!' }, { text: 'hate', explanation: 'Oposto.' }], correct: 1 },
+        { type: 'end' }
+    ]},
+    moodsFeelings: { title: "MOODS & FEELINGS", slides: [
+        { type: 'title', emoji: '😊😢', title: 'MOODS & FEELINGS', subtitle: 'Como falar como você tá' },
+        { type: 'text', text: 'Quando alguém pergunta <strong>"How are you?"</strong>,<br>você pode dizer como você <strong>realmente tá</strong>.' },
+        { type: 'keyword-only', cardClass: 'green', emoji: '😊', keyword: "I'm happy", keywordColor: 'green', translation: 'Tô feliz' },
+        { type: 'keyword-only', cardClass: 'orange', emoji: '😴', keyword: "I'm tired", keywordColor: 'orange', translation: 'Tô cansado' },
+        { type: 'keyword-only', cardClass: 'red', emoji: '😢', keyword: "I'm sad", keywordColor: 'red', translation: 'Tô triste' },
+        { type: 'keyword-only', cardClass: 'red', emoji: '😠', keyword: "I'm angry", keywordColor: 'red', translation: 'Tô bravo' },
+        { type: 'keyword-only', cardClass: 'green', emoji: '🤩', keyword: "I'm excited", keywordColor: 'green', translation: 'Tô animado' },
+        { type: 'keyword-only', cardClass: 'red', emoji: '😫', keyword: "I'm stressed", keywordColor: 'red', translation: 'Tô estressado' },
+        { type: 'keyword-only', cardClass: 'red', emoji: '🤒', keyword: "I'm sick", keywordColor: 'red', translation: 'Tô doente' },
+        { type: 'text', text: "É sempre <span class='hl-cyan'>I'M</span> + sentimento." },
+        { type: 'error', text: '❌ Erro comum:', errors: [{ wrong: 'I have tired', right: "I'm tired" }] },
+        { type: 'quiz', cardClass: 'cyan', question: 'Para dizer feliz:', options: ["I have happy", "I'm happy", "I is happy"], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: "I'm _____", correctWord: 'happy' },
+        { type: 'end' }
+    ]},
+    weather: { title: "WEATHER", slides: [
+        { type: 'title', emoji: '☀️🌧️', title: 'WEATHER', subtitle: 'Falar do clima em inglês' },
+        { type: 'text', text: 'Todo americano puxa papo falando do clima.' },
+        { type: 'rule', cardClass: 'cyan', text: 'Não precisa de frase complicada.', keyword: "IT'S + clima.", keywordAfter: 'Pronto.' },
+        { type: 'keyword-only', cardClass: 'orange', emoji: '🔥', keyword: "It's hot", keywordColor: 'orange', translation: 'Tá quente' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🥶', keyword: "It's cold", keywordColor: 'cyan', translation: 'Tá frio' },
+        { type: 'keyword-only', cardClass: 'orange', emoji: '☀️', keyword: "It's sunny", keywordColor: 'orange', translation: 'Tá sol' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🌧️', keyword: "It's raining", keywordColor: 'cyan', translation: 'Tá chovendo' },
+        { type: 'keyword-only', cardClass: '', emoji: '❄️', keyword: "It's snowing", keywordColor: 'white', translation: 'Tá nevando' },
+        { type: 'error', text: '❌ Erro comum:', errors: [{ wrong: 'Is hot', right: "It's hot" }], note: "Sempre <span class='hl-cyan'>IT'S</span> + clima." },
+        { type: 'quiz', cardClass: 'cyan', question: 'Para falar quente:', options: ['Is hot', "It's hot", 'Hot is'], correct: 1 },
+        { type: 'multiple-choice', cardClass: 'green', question: 'Qual está correto?', options: [{ text: 'Is raining', explanation: 'Incorreto.' }, { text: "It's raining", explanation: 'Correto!' }], correct: 1 },
+        { type: 'end' }
+    ]},
+    monthsSeasons: { title: "MONTHS & SEASONS", slides: [
+        { type: 'title', emoji: '📅🌦️', title: 'MONTHS & SEASONS', subtitle: 'Meses e estações sem travar' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🎆', keyword: 'January', keywordColor: 'cyan', translation: 'janeiro' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '💘', keyword: 'February', keywordColor: 'cyan', translation: 'fevereiro' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🍀', keyword: 'March', keywordColor: 'cyan', translation: 'março' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🌧️', keyword: 'April', keywordColor: 'cyan', translation: 'abril' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🌷', keyword: 'May', keywordColor: 'cyan', translation: 'maio' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '👰', keyword: 'June', keywordColor: 'cyan', translation: 'junho' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🎇', keyword: 'July', keywordColor: 'cyan', translation: 'julho' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🔥', keyword: 'August', keywordColor: 'cyan', translation: 'agosto' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '📚', keyword: 'September', keywordColor: 'cyan', translation: 'setembro' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🎃', keyword: 'October', keywordColor: 'cyan', translation: 'outubro' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🦃', keyword: 'November', keywordColor: 'cyan', translation: 'novembro' },
+        { type: 'keyword-only', cardClass: 'cyan', emoji: '🎄', keyword: 'December', keywordColor: 'cyan', translation: 'dezembro' },
+        { type: 'rule', cardClass: 'orange', text: 'Pra falar o mês, usa <span class="hl-orange">IN</span>.', examples: ['My birthday is <span class="hl-orange">in</span> March. (Meu aniversário é em março.)'] },
+        { type: 'keyword-only', cardClass: 'green', emoji: '🌸', keyword: 'Spring', keywordColor: 'green', translation: 'primavera' },
+        { type: 'keyword-only', cardClass: 'green', emoji: '☀️', keyword: 'Summer', keywordColor: 'green', translation: 'verão' },
+        { type: 'keyword-only', cardClass: 'green', emoji: '🍂', keyword: 'Fall', keywordColor: 'green', translation: 'outono' },
+        { type: 'keyword-only', cardClass: 'green', emoji: '❄️', keyword: 'Winter', keywordColor: 'green', translation: 'inverno' },
+        { type: 'rule', cardClass: 'orange', text: 'Pra estação, usa <span class="hl-orange">IN THE</span>.', examples: ["It's cold <span class='hl-orange'>in the</span> winter. (Tá frio no inverno.)"] },
+        { type: 'text', text: '<span class="hl-orange">IN</span> pro mês.<br><br><span class="hl-orange">IN THE</span> pra estação.' },
+        { type: 'quiz', cardClass: 'cyan', question: 'Para mês usa:', options: ['on', 'in', 'at'], correct: 1 },
+        { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: 'My birthday is _____ March.', correctWord: 'in' },
+        { type: 'end' }
+    ]}
+};
+let currentLesson = null, currentSlide = 0, totalSlides = 0;
+function openLesson(id) {
+    currentLesson = lessonsData[id]; currentSlide = 0; totalSlides = currentLesson.slides.length;
+    document.getElementById('gridView').style.display = 'none';
+    document.getElementById('lessonView').classList.add('lesson-view-active');
+    document.getElementById('lessonTitleBar').textContent = currentLesson.title;
+    document.body.style.overflow = 'hidden';
+    renderSlides(); showSlide(0);
+}
+function backToGrid() {
+    document.getElementById('lessonView').classList.remove('lesson-view-active');
+    document.getElementById('gridView').style.display = 'block';
+    document.body.style.overflow = 'auto'; currentLesson = null;
+}
+function renderSlides() {
+    document.getElementById('slidesContainer').innerHTML = currentLesson.slides.map((s, i) => 
+        '<div class="slide" data-index="'+i+'">'+renderSlideContent(s)+'</div>').join('');
+}
+function renderSlideContent(s) {
+    const c = s.cardClass || '';
+    switch(s.type) {
+        case 'title': return '<div class="card '+c+'"><div style="text-align:center"><div style="font-size:3rem;margin-bottom:15px">'+s.emoji+'</div><h1 class="slide-title">'+s.title+'</h1><p class="slide-subtitle">'+s.subtitle+'</p></div></div>';
+        case 'text': return '<div class="card '+c+'"><p class="text center">'+s.text+'</p></div>';
+        case 'rule': 
+            let r = '<p class="text center" style="margin-bottom:20px">'+s.text+'</p>';
+            if(s.keyword) r += '<div class="keyword">'+s.keyword+'</div>';
+            if(s.keywordAfter) r += '<p class="text center" style="margin-top:20px;color:var(--gold)">'+s.keywordAfter+'</p>';
+            if(s.examples) r += s.examples.map(e => '<div class="example-big">'+e+'</div>').join('');
+            return '<div class="card '+c+'">'+r+'</div>';
+        case 'example': return '<div class="card '+c+'"><div class="emoji-big">'+s.emoji+'</div><div class="example-big">'+s.question+' <span style="color:var(--gray);font-size:1.1rem">('+s.questionTr+')</span></div><div class="example-big response">→ '+s.answer+' <span style="color:var(--gray);font-size:1.1rem">('+s.answerTr+')</span></div></div>';
+        case 'single-example': 
+            let se = s.emoji ? '<div class="emoji-big">'+s.emoji+'</div>' : '';
+            return '<div class="card '+c+'">'+se+'<div class="example-big">'+s.text+' <span style="color:var(--gray);font-size:1.1rem">('+s.translation+')</span></div></div>';
+        case 'keyword-only':
+            const kc = s.keywordColor === 'gray' ? '#8899aa' : s.keywordColor === 'white' ? '#FFFFFF' : 'var(--'+s.keywordColor+')';
+            return '<div class="card '+c+'"><div class="emoji-big">'+s.emoji+'</div><div class="keyword" style="color:'+kc+'">'+s.keyword+'</div><div class="translation">'+s.translation+'</div></div>';
+        case 'conversation': return '<div class="card '+c+'"><p class="text center" style="margin-bottom:20px">'+s.context+'</p><div class="example-big">'+s.line1+'</div><p class="text center" style="margin-top:20px">'+s.line2Label+'</p><div class="example-big">'+s.line2+'</div></div>';
+        case 'error':
+            let er = '<p class="text center" style="margin-bottom:25px">'+s.text+'</p>';
+            s.errors.forEach(e => { er += '<div class="error-row"><span class="error-wrong">'+e.wrong+'</span><span>→</span><span class="error-right">'+e.right+'</span></div>'; });
+            if(s.note) er += '<p class="text center" style="margin-top:20px">'+s.note+'</p>';
+            return '<div class="card red">'+er+'</div>';
+        case 'quiz':
+            let qz = '<div class="card '+c+'"><p class="text center" style="margin-bottom:25px">'+s.question+'</p><div style="text-align:center">';
+            s.options.forEach((opt, idx) => { qz += '<div class="quiz-option" onclick="handleQuizAnswer('+idx+','+s.correct+')">'+opt+'</div>'; });
+            qz += '</div><div class="quiz-feedback"></div></div>';
+            return qz;
+        case 'fill-blank':
+            return '<div class="card '+c+'"><p class="text center" style="margin-bottom:20px">'+s.prompt+'</p><p class="text center" style="margin:20px 0; font-size:1.3rem">'+s.sentence+'</p><input type="text" class="fill-input" placeholder="Type your answer..." onkeyup="handleFillBlank(this, \''+s.correctWord+'\')"><button class="fill-submit" onclick="checkFillBlank(this, \''+s.correctWord+'\')">Check Answer</button><div class="quiz-feedback"></div></div>';
+        case 'multiple-choice':
+            let mc = '<div class="card '+c+'"><p class="text center" style="margin-bottom:25px"><strong>'+s.question+'</strong></p>';
+            s.options.forEach((opt, idx) => { mc += '<button class="mc-choice" onclick="handleMCChoice(this, '+idx+', '+s.correct+')" style="cursor:pointer">'+opt.text+'<div class="mc-explanation" data-explain="'+opt.explanation+'"></div></button>'; });
+            mc += '</div>';
+            return mc;
+        case 'timed-challenge':
+            return '<div class="card '+c+'"><p class="text center" style="margin-bottom:20px"><strong>⏱️ Timed Challenge ('+s.timeLimit+' seconds)</strong></p><p class="timer-text" data-time="'+s.timeLimit+'">'+s.timeLimit+'s</p><div class="timer-bar"><div class="timer-fill" data-time="'+s.timeLimit+'"></div></div><p class="text center" style="margin-bottom:20px">'+s.question+'</p><div style="text-align:center">' + (s.options ? s.options.map((opt, idx) => '<div class="quiz-option" onclick="handleTimedAnswer('+idx+','+s.correct+', this)">'+opt+'</div>').join('') : '') + '</div></div>';
+        case 'cta': return '<div class="card"><p class="text center">'+s.text+'</p></div>';
+        case 'end': return '<div class="card"><div style="text-align:center"><div style="font-size:3.5rem;margin-bottom:20px">🗣️🔓</div><h1 class="slide-title">UNLOCK</h1><p style="font-family:Orbitron;font-size:2.5rem;color:var(--gold);margin:10px 0">2026</p><p class="slide-subtitle" style="margin-top:20px">Destrave Seu Inglês</p><div style="margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:15px;max-width:600px;margin-left:auto;margin-right:auto"><a href="./games/word-drop.html" class="end-game-btn" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:25px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,191,255,0.2));border:2px solid var(--green);border-radius:12px;text-decoration:none;cursor:pointer;color:var(--white)"><div style="font-size:3rem;margin-bottom:10px">📍</div><div style="font-weight:700;font-size:1rem">Word Drop</div></a><a href="./games/word-match.html" class="end-game-btn" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:25px;background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,140,0,0.2));border:2px solid var(--gold);border-radius:12px;text-decoration:none;cursor:pointer;color:var(--white)"><div style="font-size:3rem;margin-bottom:10px">🎯</div><div style="font-weight:700;font-size:1rem">Word Match</div></a><a href="./games/word-stack.html" class="end-game-btn" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:25px;background:linear-gradient(135deg,rgba(155,109,255,0.2),rgba(200,150,255,0.2));border:2px solid var(--purple);border-radius:12px;text-decoration:none;cursor:pointer;color:var(--white)"><div style="font-size:3rem;margin-bottom:10px">📚</div><div style="font-weight:700;font-size:1rem">Word Stack</div></a></div></div></div>';
+        default: return '<div class="card"><p class="text center">Slide não reconhecido</p></div>';
+    }
+}
+function resetQuizState(slide) {
+    // Reset quiz options - remove all styling and enable clicks
+    const quizOptions = slide.querySelectorAll('.quiz-option');
+    quizOptions.forEach(opt => {
+        opt.classList.remove('selected', 'correct', 'incorrect');
+        opt.style.pointerEvents = 'auto';
+    });
+
+    // Reset fill-in-the-blank - clear input and enable
+    const fillInput = slide.querySelector('.fill-input');
+    if (fillInput) {
+        fillInput.value = '';
+        fillInput.classList.remove('correct', 'incorrect');
+        fillInput.disabled = false;
+    }
+
+    // Reset fill-blank submit button
+    const fillBtn = slide.querySelector('.fill-submit');
+    if (fillBtn) {
+        fillBtn.disabled = false;
+    }
+
+    // Reset multiple choice - remove all styling and enable clicks
+    const mcChoices = slide.querySelectorAll('.mc-choice');
+    mcChoices.forEach(choice => {
+        choice.classList.remove('selected', 'correct', 'incorrect');
+        choice.style.pointerEvents = 'auto';
+        const explanation = choice.querySelector('.mc-explanation');
+        if (explanation) explanation.classList.remove('show');
+    });
+
+    // Reset feedback messages
+    const feedbacks = slide.querySelectorAll('.quiz-feedback');
+    feedbacks.forEach(fb => {
+        fb.classList.remove('show', 'correct', 'incorrect');
+        fb.innerHTML = '';
+    });
+
+    // Reset timer for timed challenges
+    const timerText = slide.querySelector('.timer-text');
+    if (timerText) {
+        timerText.classList.remove('warning', 'danger');
+        window.timerRunning = false;
+        if (window.timerInterval) clearInterval(window.timerInterval);
+    }
+}
+
+function showSlide(i) {
+    currentSlide = i;
+    document.querySelectorAll('.slide').forEach((el, j) => el.classList.toggle('active', j === i));
+    document.getElementById('current').textContent = i + 1;
+    document.getElementById('total').textContent = totalSlides;
+    document.getElementById('prev').style.opacity = i === 0 ? '0.3' : '1';
+
+    // Check if current slide requires answer
+    const activeSlide = document.querySelector('.slide.active');
+
+    // Reset quiz state when showing a new slide
+    resetQuizState(activeSlide);
+
+    const requiresAnswer = activeSlide.querySelector('.quiz-option') ||
+                          activeSlide.querySelector('.fill-input') ||
+                          activeSlide.querySelector('.mc-choice');
+
+    const nextBtn = document.getElementById('next');
+    if (requiresAnswer) {
+        nextBtn.style.opacity = '0.3';
+        nextBtn.style.pointerEvents = 'auto'; // Allow clicks so we can show denial effect
+        nextBtn.setAttribute('data-locked', 'true');
+        nextBtn.title = '⚠️ Responda o quiz antes de prosseguir';
+    } else {
+        nextBtn.style.opacity = '1';
+        nextBtn.style.pointerEvents = 'auto';
+        nextBtn.removeAttribute('data-locked');
+        nextBtn.title = 'Próximo slide';
+    }
+    document.getElementById('next').style.opacity = i === totalSlides - 1 ? '0.3' : '1';
+    document.getElementById('progress').style.width = ((i + 1) / totalSlides * 100) + '%';
+}
+function nextSlide() {
+    const nextBtn = document.getElementById('next');
+    if (nextBtn.getAttribute('data-locked') === 'true') {
+        // Epic red aura denial effect!
+        triggerRedAuraDeny();
+        return;
+    }
+    if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+}
+
+function triggerRedAuraDeny() {
+    // Play fail sound
+    playFailSound();
+    triggerVibration(100);
+
+    // Red screen flash overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'red-deny-overlay';
+    document.body.appendChild(overlay);
+    setTimeout(() => overlay.remove(), 600);
+
+    // Screen shake effect
+    const slidesContainer = document.getElementById('slidesContainer');
+    slidesContainer.style.animation = 'screen-shake 0.6s ease-out';
+    setTimeout(() => slidesContainer.style.animation = '', 600);
+
+    // Red aura effect on quiz card
+    const activeSlide = document.querySelector('.slide.active .card');
+    if (activeSlide) {
+        activeSlide.style.animation = 'card-deny-shake 0.6s ease-out, red-aura-pulse 0.8s ease-out';
+        setTimeout(() => activeSlide.style.animation = '', 800);
+    }
+
+    // Next button red pulse
+    const nextBtn = document.getElementById('next');
+    nextBtn.style.animation = 'none';
+    setTimeout(() => {
+        nextBtn.style.animation = 'red-aura-pulse 0.8s ease-out';
+    }, 10);
+    setTimeout(() => nextBtn.style.animation = '', 800);
+
+    // Epic warning message
+    showRedDenyWarning();
+}
+
+function showRedDenyWarning() {
+    const existing = document.querySelector('.red-deny-warning');
+    if (existing) {
+        existing.remove(); // Remove old one to ensure fresh animation
+    }
+
+    const warning = document.createElement('div');
+    warning.className = 'red-deny-warning';
+    warning.innerHTML = '🔴 RESPONDA O QUIZ! 🔴<br>Você não pode prosseguir sem responder!';
+    warning.style.cssText = `
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, rgba(255,68,68,0.98), rgba(255,20,20,0.98));
+        color: #fff;
+        padding: 20px 40px;
+        border-radius: 15px;
+        font-weight: 900;
+        font-size: 1.2rem;
+        z-index: 10004;
+        animation: slide-down 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        box-shadow:
+            0 0 30px rgba(255,68,68,0.8),
+            0 8px 40px rgba(255,68,68,0.4),
+            inset 0 -2px 10px rgba(0,0,0,0.3);
+        border: 3px solid rgba(255,100,100,0.8);
+        text-align: center;
+        line-height: 1.4;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    `;
+    document.body.appendChild(warning);
+
+    // Trigger reflow to ensure animation starts
+    warning.offsetHeight;
+
+    // Add pulsing animation after initial animation completes
+    setTimeout(() => {
+        warning.style.animation = 'red-aura-pulse 0.6s ease-in-out 2s infinite';
+    }, 100);
+
+    setTimeout(() => {
+        if (warning.parentNode) warning.remove();
+    }, 4000);
+}
+function prevSlide() { if (currentSlide > 0) showSlide(currentSlide - 1); }
+document.addEventListener('keydown', e => {
+    if (!currentLesson) return;
+    if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+    if (e.key === 'ArrowLeft') prevSlide();
+    if (e.key === 'Escape') backToGrid();
+});
+
+// MOTIVATIONAL MESSAGES POOL
+const motivationalMessages = [
+    '🎯 Spot on!', '⚡ Lightning fast!', '🚀 You\'re on fire!', '💪 Crushing it!',
+    '🌟 Brilliant!', '✨ Fantastic!', '🎉 Awesome!', '👑 You rock!',
+    '🔥 Incredible!', '💯 Perfect score!', '🏆 Champion!', '🎊 Excellent!',
+    '🌈 Outstanding!', '⭐ Superb!', '🎯 Dead accurate!', '🌠 Stellar work!'
+];
+
+// SOUND & FEEDBACK UTILITIES
+function playSuccessSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.frequency.setValueAtTime(800, audioContext.currentTime);
+        osc.frequency.setValueAtTime(1200, audioContext.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gain.gain.setValueAtTime(0, audioContext.currentTime + 0.15);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.15);
+    } catch(e) {
+        // Audio not supported, silently fail
+    }
+}
+
+function playFailSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.frequency.setValueAtTime(400, audioContext.currentTime);
+        osc.frequency.setValueAtTime(300, audioContext.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gain.gain.setValueAtTime(0, audioContext.currentTime + 0.2);
+        osc.start(audioContext.currentTime);
+        osc.stop(audioContext.currentTime + 0.2);
+    } catch(e) {
+        // Audio not supported, silently fail
+    }
+}
+
+function triggerVibration(duration = 50) {
+    if (navigator.vibrate) {
+        navigator.vibrate(duration);
+    }
+}
+
+function createCelebration(isCorrect = true) {
+    const emojis = isCorrect ? ['🎉', '✨', '⭐', '🌟', '🎊', '🔥'] : ['💭', '🤔', '📚'];
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+    // Celebration emoji
+    const el = document.createElement('div');
+    el.className = 'celebration-emoji';
+    el.textContent = emoji;
+    el.style.left = Math.random() * 80 + 10 + '%';
+    el.style.top = Math.random() * 60 + 20 + '%';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+
+    // Confetti burst
+    if (isCorrect) {
+        for (let i = 0; i < 12; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            const colors = [getComputedStyle(document.documentElement).getPropertyValue('--green').trim(),
+                           getComputedStyle(document.documentElement).getPropertyValue('--gold').trim(),
+                           getComputedStyle(document.documentElement).getPropertyValue('--cyan').trim()];
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.top = '50%';
+            confetti.style.setProperty('--tx', (Math.random() - 0.5) * 300 + 'px');
+            confetti.style.setProperty('--ty', -(Math.random() * 300 + 150) + 'px');
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 2000);
+        }
+    }
+}
+
+function showStreakPopup(newStreak) {
+    if (newStreak % 5 === 0) {
+        const popup = document.createElement('div');
+        popup.className = 'streak-popup';
+        popup.textContent = `🔥 STREAK ×${newStreak}!`;
+        document.body.appendChild(popup);
+
+        triggerVibration(100);
+        playSuccessSound();
+
+        setTimeout(() => popup.remove(), 2000);
+    }
+}
+
+function showMotivationalBadge() {
+    const msg = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+    const badge = document.createElement('div');
+    badge.className = 'motivational-badge';
+    badge.textContent = msg;
+    document.body.appendChild(badge);
+    setTimeout(() => badge.remove(), 2500);
+}
+
+function animateStreakCounter() {
+    const counter = document.querySelector('[data-unlock-streak]');
+    if (counter) {
+        counter.style.animation = 'none';
+        setTimeout(() => {
+            counter.style.animation = 'streak-bounce 0.6s ease';
+        }, 10);
+    }
+}
+
+// INTERACTIVE SLIDE HANDLERS
+function handleQuizAnswer(selectedIdx, correctIdx) {
+    const slide = document.querySelector('.slide.active');
+    const options = slide.querySelectorAll('.quiz-option');
+    const feedback = slide.querySelector('.quiz-feedback');
+
+    options.forEach((opt, idx) => {
+        if (idx === selectedIdx) opt.classList.add('selected');
+    });
+
+    if (selectedIdx === correctIdx) {
+        // Correct answer - disable all options and unlock next
+        options.forEach(opt => opt.style.pointerEvents = 'none');
+        playSuccessSound();
+        triggerVibration(60);
+        options[correctIdx].classList.remove('selected');
+        options[correctIdx].classList.add('correct');
+        feedback.classList.add('show', 'correct');
+        feedback.innerHTML = '✅ Correct! Well done!';
+        createCelebration(true);
+        showMotivationalBadge();
+        awardStreakBonus(1);
+        setTimeout(() => {
+            animateStreakCounter();
+            showStreakPopup(getCurrentStreak());
+            unlockNextButton();
+            autoAdvanceSlide();
+        }, 1200);
+    } else {
+        // Incorrect answer - show feedback but allow retry
+        playFailSound();
+        triggerVibration(50);
+        options[selectedIdx].classList.add('incorrect');
+        options[correctIdx].classList.add('correct');
+        feedback.classList.add('show', 'incorrect');
+        feedback.innerHTML = '❌ Try again! Hint: The correct answer is ' + options[correctIdx].textContent;
+        // Remove selected and incorrect classes after 1.5s to allow retry
+        setTimeout(() => {
+            options[selectedIdx].classList.remove('selected', 'incorrect');
+            options[correctIdx].classList.remove('correct');
+            feedback.classList.remove('show', 'incorrect');
+        }, 1500);
+    }
+}
+
+function handleFillBlank(input, correctWord) {
+    const normalized = input.value.trim().toLowerCase();
+    if (normalized === correctWord.toLowerCase()) {
+        input.classList.remove('incorrect');
+        input.classList.add('correct');
+    } else {
+        input.classList.remove('correct');
+        if (normalized.length > 0) input.classList.add('incorrect');
+    }
+}
+
+function checkFillBlank(btn, correctWord) {
+    const slide = document.querySelector('.slide.active');
+    const input = slide.querySelector('.fill-input');
+    const feedback = slide.querySelector('.quiz-feedback');
+
+    const normalized = input.value.trim().toLowerCase();
+    if (normalized === correctWord.toLowerCase()) {
+        playSuccessSound();
+        triggerVibration(60);
+        feedback.classList.add('show', 'correct');
+        feedback.innerHTML = '✅ Correct! Great job!';
+        input.disabled = true;
+        btn.disabled = true;
+        createCelebration(true);
+        showMotivationalBadge();
+        awardStreakBonus(1);
+        setTimeout(() => {
+            animateStreakCounter();
+            showStreakPopup(getCurrentStreak());
+            unlockNextButton();
+            autoAdvanceSlide();
+        }, 1200);
+    } else {
+        playFailSound();
+        feedback.classList.add('show', 'incorrect');
+        feedback.innerHTML = '❌ Try again! Hint: ' + correctWord;
+    }
+}
+
+function handleMCChoice(btn, selectedIdx, correctIdx) {
+    const slide = document.querySelector('.slide.active');
+    const choices = slide.querySelectorAll('.mc-choice');
+
+    if (selectedIdx === correctIdx) {
+        // Correct answer - disable all choices and unlock next
+        choices.forEach(ch => ch.style.pointerEvents = 'none');
+        playSuccessSound();
+        triggerVibration(60);
+        btn.classList.add('correct');
+        btn.querySelector('.mc-explanation').classList.add('show');
+        btn.querySelector('.mc-explanation').textContent = btn.querySelector('.mc-explanation').getAttribute('data-explain');
+        createCelebration(true);
+        showMotivationalBadge();
+        awardStreakBonus(1);
+        setTimeout(() => {
+            animateStreakCounter();
+            showStreakPopup(getCurrentStreak());
+            unlockNextButton();
+            autoAdvanceSlide();
+        }, 1200);
+    } else {
+        // Incorrect answer - show feedback but allow retry
+        playFailSound();
+        triggerVibration(50);
+        btn.classList.add('incorrect');
+        choices[correctIdx].classList.add('correct');
+        choices[correctIdx].querySelector('.mc-explanation').classList.add('show');
+        choices[correctIdx].querySelector('.mc-explanation').textContent = choices[correctIdx].querySelector('.mc-explanation').getAttribute('data-explain');
+        // Remove incorrect styling after 1.5s to allow retry
+        setTimeout(() => {
+            btn.classList.remove('incorrect');
+            choices[correctIdx].classList.remove('correct');
+            choices[correctIdx].querySelector('.mc-explanation').classList.remove('show');
+        }, 1500);
+    }
+}
+
+function handleTimedAnswer(selectedIdx, correctIdx, btn) {
+    clearTimeout(window.timerInterval);
+    handleQuizAnswer(selectedIdx, correctIdx);
+}
+
+let timerInterval;
+function startTimer(timeLimit, cardClass) {
+    let timeLeft = timeLimit;
+    const timerText = document.querySelector('.timer-text');
+    const timerFill = document.querySelector('.timer-fill');
+
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        timerText.textContent = timeLeft + 's';
+
+        if (timeLeft <= 3) timerText.classList.add('danger');
+        else if (timeLeft <= 5) timerText.classList.add('warning');
+
+        timerFill.style.width = ((timeLimit - timeLeft) / timeLimit * 100) + '%';
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            const options = document.querySelectorAll('.slide.active .quiz-option');
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+            const feedback = document.querySelector('.slide.active .quiz-feedback');
+            feedback.classList.add('show', 'incorrect');
+            feedback.innerHTML = '⏱️ Time\'s up! Try the next one!';
+        }
+    }, 1000);
+}
+
+function awardStreakBonus(points) {
+    if (typeof UNLOCK !== 'undefined' && UNLOCK.loadUser && UNLOCK.saveUser) {
+        const u = UNLOCK.loadUser();
+        if (u) {
+            u.streak = (u.streak || 0) + points;
+            if (u.streak > (u.maxStreak || 0)) u.maxStreak = u.streak;
+            UNLOCK.saveUser(u);
+            updateAulasAppbar();
+        }
+    }
+}
+
+function getCurrentStreak() {
+    if (typeof UNLOCK !== 'undefined' && UNLOCK.loadUser) {
+        const u = UNLOCK.loadUser();
+        return u ? (u.streak || 0) : 0;
+    }
+    return 0;
+}
+
+function autoAdvanceSlide() {
+    if (currentSlide < totalSlides - 1) {
+        setTimeout(() => {
+            nextSlide();
+        }, 800);
+    }
+}
+
+function unlockNextButton() {
+    const nextBtn = document.getElementById('next');
+    nextBtn.style.opacity = '1';
+    nextBtn.style.pointerEvents = 'auto';
+    nextBtn.removeAttribute('data-locked');
+    nextBtn.title = 'Próximo slide - Continue!';
+    nextBtn.style.animation = 'pulse-scale 0.5s ease';
+
+    // Add visual indicator
+    nextBtn.style.boxShadow = '0 0 20px rgba(0,255,136,0.8)';
+    nextBtn.style.borderColor = 'var(--green)';
+    setTimeout(() => {
+        nextBtn.style.boxShadow = '';
+        nextBtn.style.borderColor = '';
+    }, 2000);
+}
+
+// Start timers when timed-challenge slides load
+const observer = new MutationObserver(() => {
+    const timerText = document.querySelector('.slide.active .timer-text');
+    if (timerText && !window.timerRunning) {
+        window.timerRunning = true;
+        const timeLimit = parseInt(timerText.getAttribute('data-time'));
+        startTimer(timeLimit);
+    }
+});
+observer.observe(document.getElementById('slidesContainer'), { childList: true, subtree: true });
+let startX = 0;
+document.getElementById('lessonView').addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+document.getElementById('lessonView').addEventListener('touchend', e => {
+    if (!currentLesson) return;
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+}, { passive: true });
+document.getElementById('next').addEventListener('touchstart', e => { e.preventDefault(); nextSlide(); }, { passive: false });
+document.getElementById('prev').addEventListener('touchstart', e => { e.preventDefault(); prevSlide(); }, { passive: false });
+
+// ========== 11 NOVAS AULAS ==========
+lessonsData.can = { title: "CAN", slides: [
+    { type: 'title', emoji: '💪🔓', title: 'CAN', subtitle: 'Habilidade e Permissão em uma palavra só' },
+    { type: 'rule', cardClass: 'orange', text: 'Quando você precisa <strong>pedir algo</strong>,<br>você usa <span class="hl-cyan">CAN</span>.', examples: ['<span class="hl-cyan">Can</span> I use the bathroom?', '<span class="hl-cyan">Can</span> I sit here?'] },
+    { type: 'rule', cardClass: 'green', text: 'E também usa <span class="hl-cyan">CAN</span> pra dizer<br>que você <strong>sabe fazer algo</strong>.', examples: ['I <span class="hl-cyan">can</span> drive.', 'I <span class="hl-cyan">can</span> speak English.'] },
+    { type: 'text', text: '<span class="hl-cyan">CAN</span> serve pra <strong>duas coisas</strong>:<br><br>1️⃣ <strong>Pedir permissão</strong><br>2️⃣ <strong>Falar o que você sabe fazer</strong>' },
+    { type: 'rule', cardClass: 'red', text: 'Pra negar, vira <span class="hl-red">CAN\'T</span>.', examples: ["I <span class='hl-red'>can't</span> talk now.", "You <span class='hl-red'>can't</span> park here."] },
+    { type: 'error', text: '❌ Não usa TO depois de CAN:', errors: [{ wrong: 'I can to drive', right: 'I can drive' }] },
+    { type: 'end' }
+]};
+lessonsData.doDoesdid = { title: "DO / DOES / DID", slides: [
+    { type: 'title', emoji: '🔵🔴🟡', title: 'DO · DOES · DID', subtitle: 'Quando usar cada um' },
+    { type: 'text', text: 'Pra fazer pergunta em inglês,<br>pensa no <strong>tempo</strong>.<br><br><span class="hl-cyan">DO</span> / <span class="hl-green">DOES</span> → Presente<br><span class="hl-orange">DID</span> → Passado' },
+    { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">DO</span> → I, you, we, they', examples: ['<span class="hl-cyan">Do</span> you work here?'] },
+    { type: 'rule', cardClass: 'green', text: '<span class="hl-green">DOES</span> → he, she, it', examples: ['<span class="hl-green">Does</span> she live nearby?'] },
+    { type: 'rule', cardClass: 'orange', text: '<span class="hl-orange">DID</span> → passado (todos)', examples: ['<span class="hl-orange">Did</span> you go yesterday?'] },
+    { type: 'error', text: '❌ Com DOES e DID, o verbo não muda:', errors: [{ wrong: 'Does she runs?', right: 'Does she run?' }, { wrong: 'Did you went?', right: 'Did you go?' }] },
+    { type: 'text', text: '<span class="hl-cyan">DO</span> → I, you, we, they<br><span class="hl-green">DOES</span> → he, she, it<br><span class="hl-orange">DID</span> → passado (todos)' },
+    { type: 'end' }
+]};
+lessonsData.haveHas = { title: "HAVE / HAS", slides: [
+    { type: 'title', emoji: '✋📦', title: 'HAVE / HAS', subtitle: 'Dizer que você tem algo' },
+    { type: 'text', text: 'Você quer dizer que <strong>tem carro</strong>.<br><br>Mas não sabe se é HAVE ou HAS.' },
+    { type: 'text', text: 'I, you, we, they → <span class="hl-cyan">HAVE</span><br><br>He, she, it → <span class="hl-green">HAS</span>' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🚗', text: 'I <span class="hl-cyan">have</span> a car.', translation: 'Eu tenho um carro.' },
+    { type: 'single-example', cardClass: 'green', emoji: '🐕', text: 'She <span class="hl-green">has</span> a dog.', translation: 'Ela tem um cachorro.' },
+    { type: 'single-example', cardClass: 'green', emoji: '💵', text: 'He <span class="hl-green">has</span> money.', translation: 'Ele tem dinheiro.' },
+    { type: 'text', text: '<span class="hl-cyan">HAVE</span> pra maioria.<br><br><span class="hl-green">HAS</span> só pra he, she, it.' },
+    { type: 'end' }
+]};
+lessonsData.doYouHave = { title: "DO YOU HAVE...?", slides: [
+    { type: 'title', emoji: '🤲❓', title: 'DO YOU HAVE...?', subtitle: 'Perguntar se tem algo' },
+    { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">DO YOU HAVE</span> + algo?<br><br>= Você tem...?' },
+    { type: 'example', cardClass: 'cyan', emoji: '✏️', question: '<span class="hl-cyan">Do you have</span> a pen?', questionTr: 'Você tem uma caneta?', answer: 'Yes, here you go.', answerTr: 'Sim, aqui.' },
+    { type: 'example', cardClass: 'cyan', emoji: '📶', question: '<span class="hl-cyan">Do you have</span> Wi-Fi?', questionTr: 'Vocês têm Wi-Fi?', answer: 'Yes, the password is...', answerTr: 'Sim, a senha é...' },
+    { type: 'example', cardClass: 'cyan', emoji: '💳', question: '<span class="hl-cyan">Do you have</span> change?', questionTr: 'Você tem troco?', answer: "Sorry, I don't.", answerTr: 'Desculpa, não tenho.' },
+    { type: 'text', text: '<span class="hl-cyan">DO YOU HAVE...?</span><br><br>A pergunta mais útil pra pedir coisas.' },
+    { type: 'quiz', cardClass: 'cyan', question: 'Complete: _____ you have a phone?', options: ['Can', 'Do', 'Are'], correct: 1 },
+    { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete the question:', sentence: '_____ you have a car?', correctWord: 'Do' },
+    { type: 'end' }
+]};
+lessonsData.goingTo = { title: "I'M GOING TO", slides: [
+    { type: 'title', emoji: '🎯➡️', title: "I'M GOING TO", subtitle: 'Falar do que você vai fazer' },
+    { type: 'text', text: 'Você quer dizer que <strong>vai fazer algo</strong>.<br><br>Um plano. Uma intenção.' },
+    { type: 'rule', cardClass: 'cyan', text: "<span class='hl-cyan'>I'M GOING TO</span> + verbo<br><br>= vou + verbo" },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🍽️', text: "<span class='hl-cyan'>I'm going to</span> eat.", translation: 'Vou comer.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '😴', text: "<span class='hl-cyan'>I'm going to</span> sleep.", translation: 'Vou dormir.' },
+    { type: 'single-example', cardClass: 'green', text: "<span class='hl-cyan'>I'm gonna</span> eat.", translation: 'Vou comer. (informal)' },
+    { type: 'text', text: "<span class='hl-cyan'>I'M GOING TO</span> = vou fazer<br><br><span class='hl-cyan'>GONNA</span> = mesma coisa (informal)" },
+    { type: 'end' }
+]};
+lessonsData.goCome = { title: "GO / COME", slides: [
+    { type: 'title', emoji: '🚶➡️⬅️', title: 'GO / COME', subtitle: 'Ir e vir' },
+    { type: 'text', text: 'Quando você <strong>sai</strong> de onde está → <span class="hl-cyan">GO</span><br><br>Quando você <strong>vem</strong> pra onde está → <span class="hl-green">COME</span>' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '💼', text: 'I <span class="hl-cyan">go</span> to work.', translation: 'Eu vou pro trabalho.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🏠', text: "I'm <span class='hl-cyan'>going</span> home.", translation: 'Tô indo pra casa.' },
+    { type: 'single-example', cardClass: 'green', emoji: '👋', text: '<span class="hl-green">Come</span> here!', translation: 'Vem aqui!' },
+    { type: 'single-example', cardClass: 'green', emoji: '🎉', text: 'Are you <span class="hl-green">coming</span> to the party?', translation: 'Você vem pra festa?' },
+    { type: 'text', text: '<span class="hl-cyan">GO</span> → sair de onde você está<br><br><span class="hl-green">COME</span> → vir pra onde você está' },
+    { type: 'end' }
+]};
+lessonsData.get = { title: "GET", slides: [
+    { type: 'title', emoji: '🤲✨', title: 'GET', subtitle: 'Pegar, conseguir, ficar' },
+    { type: 'text', text: '<span class="hl-cyan">GET</span> é uma das palavras mais usadas.<br><br>Tem vários significados.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🤲', text: "I'll <span class='hl-cyan'>get</span> the phone.", translation: 'Vou pegar o telefone.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🏆', text: 'I <span class="hl-cyan">got</span> the job!', translation: 'Consegui o emprego!' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🚗', text: 'When did you <span class="hl-cyan">get</span> home?', translation: 'Quando você chegou em casa?' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '😤', text: "I'm <span class='hl-cyan'>getting</span> tired.", translation: 'Tô ficando cansado.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🤔', text: "I don't <span class='hl-cyan'>get</span> it.", translation: 'Não tô entendendo.' },
+    { type: 'text', text: '<span class="hl-cyan">GET</span> = pegar, conseguir, chegar, ficar, entender...<br><br>O contexto define o significado.' },
+    { type: 'end' }
+]};
+lessonsData.directions = { title: "DIRECTIONS", slides: [
+    { type: 'title', emoji: '🧭', title: 'DIRECTIONS', subtitle: 'Direções e localização' },
+    { type: 'keyword-only', cardClass: 'cyan', emoji: '⬅️', keyword: 'Turn left', keywordColor: 'cyan', translation: 'Vira à esquerda' },
+    { type: 'keyword-only', cardClass: 'cyan', emoji: '➡️', keyword: 'Turn right', keywordColor: 'cyan', translation: 'Vira à direita' },
+    { type: 'keyword-only', cardClass: 'cyan', emoji: '⬆️', keyword: 'Go straight', keywordColor: 'cyan', translation: 'Segue reto' },
+    { type: 'keyword-only', cardClass: 'cyan', emoji: '🛑', keyword: 'Stop here', keywordColor: 'cyan', translation: 'Para aqui' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '📍', text: "It's on the left.", translation: 'É à esquerda.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🏢', text: "It's on the corner.", translation: 'É na esquina.' },
+    { type: 'text', text: '<span class="hl-cyan">Left</span> = esquerda<br><span class="hl-cyan">Right</span> = direita<br><span class="hl-cyan">Straight</span> = reto' },
+    { type: 'end' }
+]};
+lessonsData.days = { title: "DAYS OF THE WEEK", slides: [
+    { type: 'title', emoji: '📅', title: 'DAYS OF THE WEEK', subtitle: 'Dias da semana' },
+    { type: 'text', text: 'Sunday = Domingo<br>Monday = Segunda<br>Tuesday = Terça<br>Wednesday = Quarta<br>Thursday = Quinta<br>Friday = Sexta<br>Saturday = Sábado' },
+    { type: 'text', text: 'Pra dizer "na segunda", "na terça"...<br><br>Usa <span class="hl-cyan">ON</span> + dia' },
+    { type: 'single-example', cardClass: 'cyan', text: 'I work <span class="hl-cyan">on Monday</span>.', translation: 'Trabalho na segunda.' },
+    { type: 'single-example', cardClass: 'cyan', text: 'See you <span class="hl-cyan">on Friday</span>!', translation: 'Te vejo na sexta!' },
+    { type: 'text', text: 'Dias da semana sempre com <strong>letra maiúscula</strong>.<br><br><span class="hl-cyan">Monday</span>, não monday.' },
+    { type: 'end' }
+]};
+lessonsData.numbers = { title: "NUMBERS", slides: [
+    { type: 'title', emoji: '🔢', title: 'NUMBERS', subtitle: 'Números em inglês' },
+    { type: 'text', text: '1 one · 2 two · 3 three · 4 four · 5 five<br>6 six · 7 seven · 8 eight · 9 nine · 10 ten' },
+    { type: 'text', text: '11 eleven · 12 twelve · 13 thirteen<br>14 fourteen · 15 fifteen · 16 sixteen<br>17 seventeen · 18 eighteen · 19 nineteen · 20 twenty' },
+    { type: 'text', text: '10 ten · 20 twenty · 30 thirty · 40 forty<br>50 fifty · 60 sixty · 70 seventy<br>80 eighty · 90 ninety · 100 hundred' },
+    { type: 'text', text: 'Dezena + unidade:<br><br><span class="hl-cyan">25</span> = twenty-five<br><span class="hl-cyan">83</span> = eighty-three' },
+    { type: 'end' }
+]};
+lessonsData.orderingFood = { title: "ORDERING FOOD", slides: [
+    { type: 'title', emoji: '🍔🍟', title: 'ORDERING FOOD', subtitle: 'Pedindo comida em inglês' },
+    { type: 'text', text: 'Você tá no restaurante.<br>O garçom pergunta o que você quer.<br><br>Como pede?' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🍔', text: "<span class='hl-cyan'>I'll have</span> a burger.", translation: 'Vou querer um hambúrguer.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '☕', text: "<span class='hl-cyan'>Can I get</span> a coffee?", translation: 'Posso pedir um café?' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🍕', text: "<span class='hl-cyan'>I'd like</span> a pizza, please.", translation: 'Gostaria de uma pizza, por favor.' },
+    { type: 'single-example', cardClass: 'green', text: "That's all, thanks.", translation: 'Só isso, obrigado.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '💳', text: '<span class="hl-cyan">Can I have the check?</span>', translation: 'Pode trazer a conta?' },
+    { type: 'text', text: "<span class='hl-cyan'>I'll have...</span><br><span class='hl-cyan'>Can I get...</span><br><span class='hl-cyan'>I'd like...</span><br><br>Três formas de pedir." },
+    { type: 'end' }
+]};
+
+// AUTO-OPEN LESSON FROM URL PARAMETER
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    const lessonParam = params.get('lesson');
+    if (lessonParam && lessonsData[lessonParam]) {
+        // Delay slightly to ensure DOM is fully rendered
+        setTimeout(function() {
+            openLesson(lessonParam);
+        }, 50);
+    }
+})();
+
+// UPDATE APPBAR WITH USER STATS AND SMART BACK BUTTON
+function updateAulasAppbar() {
+    if (typeof UNLOCK !== 'undefined' && UNLOCK.loadUser) {
+        const u = UNLOCK.loadUser();
+        if (u) {
+            // Update streak display
+            const streakEl = document.querySelector('[data-unlock-streak]');
+            if (streakEl) {
+                streakEl.textContent = '🔥 ' + (u.streak || 0);
+            }
+            // Update badge counter
+            if (UNLOCK.getBadges) {
+                const badges = UNLOCK.getBadges(u);
+                const badgeCount = Object.keys(badges).length;
+                const badgeEl = document.getElementById('badgeCounter');
+                if (badgeEl) {
+                    badgeEl.textContent = '🏆 ' + badgeCount;
+                }
+            }
+        }
+    }
+}
+
+// SET UP SMART BACK BUTTON
+function setupSmartBackButton() {
+    const params = new URLSearchParams(window.location.search);
+    const returnTo = params.get('returnTo');
+    const backLink = document.getElementById('backLink');
+    const backText = document.getElementById('backText');
+
+    if (returnTo) {
+        // User came from a game, show game name and link back to it
+        const gameNames = {
+            'games/word-drop.html': 'Word Drop',
+            'games/word-match.html': 'Word Match',
+            'games/word-stack.html': 'Word Stack'
+        };
+        const gameName = gameNames[returnTo] || 'Jogo';
+        backLink.href = './' + returnTo;
+        backText.textContent = gameName;
+    }
+}
+
+// Initialize appbar on page load
+document.addEventListener('DOMContentLoaded', function() {
+    setupSmartBackButton();
+    updateAulasAppbar();
+});
+    </script>
+    <script src="../assets/unlock-core.js"></script>
+</body>
+</html>
