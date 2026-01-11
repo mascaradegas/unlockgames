@@ -2768,6 +2768,9 @@ body{padding-top:var(--unlock-bar-h);}
             // Update UI
             updateQuickPlayHUD();
 
+            // Spawn first block immediately
+            spawnQuickPlayBlock();
+
             // Start game loop
             quickPlayGameLoop();
         }
@@ -2802,6 +2805,11 @@ body{padding-top:var(--unlock-bar-h);}
                 y: -80,
                 speed: 1 + (quickPlayState.wave * 0.3) // Faster as waves increase
             });
+
+            // Auto-select if no block is selected
+            if (!quickPlayState.selectedBlockId) {
+                setTimeout(() => selectQuickPlayBlock(id, word), 100);
+            }
         }
 
         function selectQuickPlayBlock(id, word) {
@@ -2960,8 +2968,10 @@ body{padding-top:var(--unlock-bar-h);}
             });
 
             // Spawn blocks based on wave intensity
+            // Wave 1: 1 block every 60 frames (1 per second at 60fps)
+            // Wave 8: 1 block every 20 frames (~3 per second)
             const spawnIntensity = Math.min(quickPlayState.wave, 8);
-            const spawnThreshold = Math.max(8, 15 - spawnIntensity); // Faster spawning at higher waves
+            const spawnThreshold = Math.max(20, 60 - (spawnIntensity - 1) * 5); // Spawn every 20-60 frames
 
             quickPlayState.spawnCounter++;
             if (quickPlayState.spawnCounter >= spawnThreshold) {
