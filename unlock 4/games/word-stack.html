@@ -1014,7 +1014,7 @@ body{padding-top:var(--unlock-bar-h);}
     <div class="quickplay-target" id="qsTarget">—</div>
 
     <div class="quickplay-stack" id="qsStack">
-      <div class="quickplay-stack-empty">Click words to stack</div>
+      <div class="quickplay-stack-empty">CLICK WORDS TO STACK</div>
     </div>
 
     <!-- UNDO Button -->
@@ -1069,7 +1069,7 @@ body{padding-top:var(--unlock-bar-h);}
         <div class="feedback" id="feedback"></div>
         <div class="gameover-overlay" id="gameoverOverlay">
           <div class="gameover-title">GAME OVER</div>
-          <div class="gameover-score" id="gameoverScore">Score: 0</div>
+          <div class="gameover-score" id="gameoverScore">SCORE: 0</div>
           <button class="gameover-btn" id="gameoverRetryBtn">TENTAR DE NOVO</button>
           <button class="gameover-btn secondary" id="gameoverMenuBtn">MENU</button>
         </div>
@@ -3114,7 +3114,7 @@ body{padding-top:var(--unlock-bar-h);}
   function renderQuickPlayStack() {
     qsStack.innerHTML = '';
     if (quickPlayState.selectedWords.length === 0) {
-      qsStack.innerHTML = '<div class="quickplay-stack-empty">Click words to stack</div>';
+      qsStack.innerHTML = '<div class="quickplay-stack-empty">CLICK WORDS TO STACK</div>';
       return;
     }
 
