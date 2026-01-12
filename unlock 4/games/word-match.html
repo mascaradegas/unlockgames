@@ -1571,16 +1571,16 @@ function renderCards() {
   shuffledPt.forEach(pair => {
     const card = document.createElement('div');
     card.className = 'card';
-    card.textContent = pair.pt;
+    card.textContent = pair.pt.toUpperCase();
     card.dataset.pairId = pair.en;
     card.addEventListener('click', () => clickCard(card, 'pt'));
     colPt.appendChild(card);
   });
-  
+
   shuffledEn.forEach(pair => {
     const card = document.createElement('div');
     card.className = 'card';
-    card.textContent = pair.en;
+    card.textContent = pair.en.toUpperCase();
     card.dataset.pairId = pair.en;
     card.addEventListener('click', () => clickCard(card, 'en'));
     colEn.appendChild(card);
@@ -2060,7 +2060,7 @@ function renderQuickPlayCards() {
   shuffledPt.forEach(pair => {
     const card = document.createElement('div');
     card.className = 'qp-card';
-    card.textContent = pair.pt;
+    card.textContent = pair.pt.toUpperCase();
     card.dataset.pairId = pair.en;
     card.addEventListener('click', () => clickQuickPlayCard(card, 'pt'));
     ptContainer.appendChild(card);
@@ -2069,7 +2069,7 @@ function renderQuickPlayCards() {
   shuffledEn.forEach(pair => {
     const card = document.createElement('div');
     card.className = 'qp-card';
-    card.textContent = pair.en;
+    card.textContent = pair.en.toUpperCase();
     card.dataset.pairId = pair.en;
     card.addEventListener('click', () => clickQuickPlayCard(card, 'en'));
     enContainer.appendChild(card);

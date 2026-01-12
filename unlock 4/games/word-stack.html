@@ -2944,7 +2944,7 @@ body{padding-top:var(--unlock-bar-h);}
     quickPlayState.availableWords.forEach((word, idx) => {
       const btn = document.createElement('button');
       btn.className = 'quickplay-word-btn';
-      btn.textContent = word;
+      btn.textContent = word.toUpperCase();
       btn.disabled = false;
       btn.addEventListener('click', () => selectQuickPlayWord(idx, word));
       qsWordQueue.appendChild(btn);
@@ -3121,7 +3121,7 @@ body{padding-top:var(--unlock-bar-h);}
     quickPlayState.selectedWords.forEach(word => {
       const div = document.createElement('div');
       div.className = 'quickplay-stack-word';
-      div.textContent = word;
+      div.textContent = word.toUpperCase();
       qsStack.appendChild(div);
     });
   }

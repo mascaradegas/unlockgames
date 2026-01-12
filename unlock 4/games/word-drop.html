@@ -2848,7 +2848,7 @@ body{padding-top:var(--unlock-bar-h);}
             options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.textContent = opt;
+                btn.textContent = opt.toUpperCase();
                 btn.addEventListener('click', () => checkQuickPlayAnswer(opt, word.en[0]));
                 optionsContainer.appendChild(btn);
             });
