@@ -103,7 +103,160 @@
     color:var(--gray);
     margin-top:6px;
   }
-  
+
+  /* === QUICK PLAY SCREEN === */
+  .quickplay-screen{
+    min-height:100vh;
+    padding:30px 20px;
+    position:relative;
+    z-index:1;
+  }
+  .quickplay-title{
+    text-align:center;
+    font-family:'Orbitron',sans-serif;
+    font-size:2rem;
+    font-weight:900;
+    color:var(--gold);
+    text-shadow:0 0 30px rgba(255,215,0,0.5);
+    margin-bottom:20px;
+  }
+  .quickplay-hud{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:12px;
+    margin-bottom:20px;
+    max-width:600px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .quickplay-stat{
+    background:linear-gradient(135deg, rgba(20,40,80,0.8), rgba(10,22,40,0.9));
+    border:2px solid var(--green);
+    border-radius:10px;
+    padding:12px;
+    text-align:center;
+  }
+  .quickplay-stat-label{
+    font-size:0.65rem;
+    color:var(--gray);
+    text-transform:uppercase;
+    margin-bottom:5px;
+  }
+  .quickplay-stat-value{
+    font-family:'Orbitron',sans-serif;
+    font-size:1.4rem;
+    font-weight:900;
+    color:var(--green);
+  }
+  .quickplay-arena{
+    background:linear-gradient(135deg,rgba(20,40,80,0.6),rgba(10,22,40,0.8));
+    border:2px solid var(--green);
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:20px;
+    min-height:350px;
+    max-width:600px;
+    margin-left:auto;
+    margin-right:auto;
+    position:relative;
+  }
+  .quickplay-wave-info{
+    text-align:center;
+    color:var(--gold);
+    font-size:0.9rem;
+    margin-bottom:15px;
+  }
+  .quickplay-word-queue{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+    margin-bottom:15px;
+  }
+  .quickplay-word-btn{
+    padding:12px;
+    background:linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,191,255,0.1));
+    border:2px solid var(--green);
+    border-radius:8px;
+    color:var(--white);
+    font-family:'Orbitron',sans-serif;
+    font-weight:700;
+    font-size:0.85rem;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .quickplay-word-btn:hover:not(:disabled){
+    border-color:var(--gold);
+    background:linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.1));
+    transform:translateY(-2px);
+  }
+  .quickplay-word-btn:disabled{
+    opacity:0.3;
+    cursor:not-allowed;
+  }
+  .quickplay-stack{
+    background:rgba(0,0,0,0.3);
+    border:2px dashed rgba(0,255,136,0.3);
+    border-radius:8px;
+    padding:15px;
+    min-height:80px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:15px;
+  }
+  .quickplay-stack-word{
+    background:linear-gradient(135deg, rgba(0,191,255,0.3), rgba(0,255,136,0.2));
+    border:2px solid var(--cyan);
+    border-radius:6px;
+    padding:8px 12px;
+    font-weight:700;
+    text-align:center;
+  }
+  .quickplay-stack-empty{
+    color:var(--gray);
+    text-align:center;
+    font-size:0.9rem;
+  }
+  .quickplay-target{
+    background:linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.05));
+    border:2px solid var(--gold);
+    border-radius:8px;
+    padding:12px;
+    text-align:center;
+    color:var(--gold);
+    font-weight:700;
+  }
+  .quickplay-controls{
+    display:flex;
+    gap:10px;
+    max-width:600px;
+    margin:20px auto 0;
+    justify-content:center;
+  }
+  .quickplay-btn{
+    padding:12px 24px;
+    background:linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,191,255,0.1));
+    border:2px solid var(--green);
+    border-radius:8px;
+    color:var(--green);
+    font-family:'Orbitron',sans-serif;
+    font-weight:700;
+    font-size:0.9rem;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .quickplay-btn:hover{
+    border-color:var(--gold);
+    color:var(--gold);
+    background:linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.1));
+    transform:translateY(-2px);
+  }
+  .quickplay-btn.back{
+    background:none;
+    border:2px solid var(--cyan);
+    color:var(--cyan);
+  }
+
   /* === GAME SCREEN === */
   .game-screen{
     height:100vh;
@@ -658,9 +811,49 @@ body{padding-top:var(--unlock-bar-h);}
   <h1 class="menu-title">🎮 WORD STACK</h1>
   <p class="menu-subtitle">Monte a frase em inglês na ordem certa!</p>
   <div class="aulas-grid" id="aulasGrid"></div>
-  <a href="../study.html" style="display: block; margin-top: 30px; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto;">
-    <button style="width: 100%; background: linear-gradient(180deg, rgba(155,109,255,0.2) 0%, rgba(155,109,255,0.08) 100%); border: 2px solid rgba(155,109,255,0.6); color: #E8E8E8; font-size: 16px; padding: 20px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s;">📚 STUDY - APRENDA ANTES DE JOGAR</button>
-  </a>
+</div>
+
+<!-- QUICK PLAY SCREEN -->
+<div class="screen quickplay-screen" id="quickplayScreen">
+  <button class="quickplay-btn back" onclick="showScreen('menuScreen')">← MENU</button>
+
+  <h1 class="quickplay-title">⚡ QUICK PLAY</h1>
+
+  <div class="quickplay-hud">
+    <div class="quickplay-stat">
+      <div class="quickplay-stat-label">Score</div>
+      <div class="quickplay-stat-value" id="qsScore">0</div>
+    </div>
+    <div class="quickplay-stat">
+      <div class="quickplay-stat-label">Lives</div>
+      <div class="quickplay-stat-value" id="qsLives">3</div>
+    </div>
+    <div class="quickplay-stat">
+      <div class="quickplay-stat-label">Combo</div>
+      <div class="quickplay-stat-value" id="qsCombo">0x</div>
+    </div>
+    <div class="quickplay-stat">
+      <div class="quickplay-stat-label">Wave</div>
+      <div class="quickplay-stat-value" id="qsWave">1</div>
+    </div>
+  </div>
+
+  <div class="quickplay-arena">
+    <div class="quickplay-wave-info" id="qsWaveInfo">WAVE 1</div>
+
+    <div class="quickplay-target" id="qsTarget">—</div>
+
+    <div class="quickplay-stack" id="qsStack">
+      <div class="quickplay-stack-empty">Click words to stack</div>
+    </div>
+
+    <div class="quickplay-word-queue" id="qsWordQueue"></div>
+  </div>
+
+  <div class="quickplay-controls">
+    <button class="quickplay-btn" id="qsUndoBtn">UNDO</button>
+    <button class="quickplay-btn" id="qsSubmitBtn">SUBMIT</button>
+  </div>
 </div>
 
 <!-- GAME SCREEN -->
@@ -1722,6 +1915,20 @@ body{padding-top:var(--unlock-bar-h);}
   let rowCells = [];
   let usedSentences = [];
 
+  // === QUICK PLAY STATE ===
+  let quickPlayState = {
+    score: 0,
+    lives: 3,
+    combo: 0,
+    wave: 1,
+    running: false,
+    currentSentence: null,
+    selectedWords: [],
+    availableWords: [],
+    allSentences: [],
+    animating: false
+  };
+
   // === DOM REFS ===
   const menuScreen = $("menuScreen");
   const gameScreen = $("gameScreen");
@@ -1741,6 +1948,19 @@ body{padding-top:var(--unlock-bar-h);}
   const gameoverMenuBtn = $("gameoverMenuBtn");
   const hint = $("hint");
   const aulaTitle = $("aulaTitle");
+
+  // Quick Play DOM refs
+  const quickplayScreen = $("quickplayScreen");
+  const qsScore = $("qsScore");
+  const qsLives = $("qsLives");
+  const qsCombo = $("qsCombo");
+  const qsWave = $("qsWave");
+  const qsWaveInfo = $("qsWaveInfo");
+  const qsTarget = $("qsTarget");
+  const qsStack = $("qsStack");
+  const qsWordQueue = $("qsWordQueue");
+  const qsUndoBtn = $("qsUndoBtn");
+  const qsSubmitBtn = $("qsSubmitBtn");
 
   // === SCREEN MANAGEMENT ===
   function showScreen(screenId) {
@@ -1822,6 +2042,21 @@ body{padding-top:var(--unlock-bar-h);}
       wrapper.appendChild(studyBtn);
       aulasGrid.appendChild(wrapper);
     });
+
+    // Add Quick Play button
+    const quickPlayWrapper = document.createElement("div");
+    quickPlayWrapper.style.position = "relative";
+    const quickPlayCard = document.createElement("div");
+    quickPlayCard.className = "aula-card";
+    quickPlayCard.style.cssText = "cursor: pointer; border: 3px solid var(--gold); background: linear-gradient(180deg, rgba(255,215,0,0.15), rgba(255,140,0,0.1)); grid-column: 1 / -1;";
+    quickPlayCard.innerHTML = `
+      <div class="emoji" style="font-size: 3rem;">⚡</div>
+      <div class="name" style="color: var(--gold); font-weight: 900; font-size: 1.1rem;">QUICK PLAY</div>
+      <div style="font-size: 0.75rem; margin-top: 8px; color: var(--gold);">Stack Fast • Survive Waves!</div>
+    `;
+    quickPlayCard.addEventListener("click", () => startQuickPlay());
+    quickPlayWrapper.appendChild(quickPlayCard);
+    aulasGrid.appendChild(quickPlayWrapper);
   }
 
   function selectAula(aula) {
@@ -2381,6 +2616,176 @@ body{padding-top:var(--unlock-bar-h);}
   document.getElementById('statsCloseBtn').addEventListener('click', () => {
     document.getElementById('statsModal').style.display = 'none';
   });
+
+  // === QUICK PLAY FUNCTIONS ===
+  function startQuickPlay() {
+    quickPlayState.score = 0;
+    quickPlayState.lives = 3;
+    quickPlayState.combo = 0;
+    quickPlayState.wave = 1;
+    quickPlayState.running = true;
+    quickPlayState.selectedWords = [];
+    quickPlayState.allSentences = [];
+
+    // Combine all sentences from all aulas
+    AULAS.forEach(aula => {
+      quickPlayState.allSentences.push(...aula.sentences);
+    });
+    quickPlayState.allSentences = shuffle(quickPlayState.allSentences);
+
+    updateQuickPlayHUD();
+    startQuickPlayWave();
+    showScreen("quickplayScreen");
+  }
+
+  function startQuickPlayWave() {
+    quickPlayState.selectedWords = [];
+
+    if (quickPlayState.allSentences.length === 0) {
+      AULAS.forEach(aula => {
+        quickPlayState.allSentences.push(...aula.sentences);
+      });
+      quickPlayState.allSentences = shuffle(quickPlayState.allSentences);
+    }
+
+    quickPlayState.currentSentence = quickPlayState.allSentences.pop();
+    const words = quickPlayState.currentSentence.en.split(' ');
+    quickPlayState.availableWords = shuffle([...words]);
+
+    qsWaveInfo.textContent = `WAVE ${quickPlayState.wave}`;
+    qsTarget.textContent = quickPlayState.currentSentence.pt;
+    qsTarget.style.borderColor = 'var(--gold)';
+    qsTarget.style.color = 'var(--gold)';
+    renderQuickPlayWords();
+    renderQuickPlayStack();
+  }
+
+  function renderQuickPlayWords() {
+    qsWordQueue.innerHTML = '';
+    quickPlayState.availableWords.forEach((word, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'quickplay-word-btn';
+      btn.textContent = word;
+      btn.disabled = false;
+      btn.addEventListener('click', () => selectQuickPlayWord(idx, word));
+      qsWordQueue.appendChild(btn);
+    });
+  }
+
+  function selectQuickPlayWord(index, word) {
+    if (quickPlayState.animating) return;
+
+    quickPlayState.selectedWords.push(word);
+    quickPlayState.availableWords.splice(index, 1);
+
+    renderQuickPlayStack();
+    renderQuickPlayWords();
+  }
+
+  function renderQuickPlayStack() {
+    qsStack.innerHTML = '';
+    if (quickPlayState.selectedWords.length === 0) {
+      qsStack.innerHTML = '<div class="quickplay-stack-empty">Click words to stack</div>';
+      return;
+    }
+
+    quickPlayState.selectedWords.forEach(word => {
+      const div = document.createElement('div');
+      div.className = 'quickplay-stack-word';
+      div.textContent = word;
+      qsStack.appendChild(div);
+    });
+  }
+
+  function undoQuickPlayWord() {
+    if (quickPlayState.selectedWords.length > 0) {
+      const word = quickPlayState.selectedWords.pop();
+      quickPlayState.availableWords.push(word);
+      quickPlayState.availableWords = shuffle(quickPlayState.availableWords);
+
+      renderQuickPlayStack();
+      renderQuickPlayWords();
+    }
+  }
+
+  function submitQuickPlayStack() {
+    if (quickPlayState.selectedWords.length === 0) return;
+    if (quickPlayState.animating) return;
+
+    quickPlayState.animating = true;
+
+    const userStack = quickPlayState.selectedWords.join(' ').toLowerCase();
+    const correctStack = quickPlayState.currentSentence.en.toLowerCase();
+
+    if (userStack === correctStack) {
+      // CORRECT!
+      quickPlayState.combo++;
+      const baseScore = 100;
+      const comboMultiplier = 1 + (quickPlayState.combo * 0.1);
+      const points = Math.round(baseScore * comboMultiplier);
+      quickPlayState.score += points;
+
+      qsTarget.style.borderColor = 'var(--green)';
+      qsTarget.style.color = 'var(--green)';
+      qsTarget.textContent = '✓ CORRECT!';
+
+      setTimeout(() => {
+        quickPlayState.wave++;
+        updateQuickPlayHUD();
+        quickPlayState.animating = false;
+        startQuickPlayWave();
+      }, 1000);
+
+    } else {
+      // WRONG!
+      quickPlayState.lives--;
+      quickPlayState.combo = 0;
+
+      qsTarget.style.borderColor = 'var(--red)';
+      qsTarget.style.color = 'var(--red)';
+      qsTarget.textContent = '✗ WRONG: ' + correctStack;
+
+      if (quickPlayState.lives <= 0) {
+        setTimeout(() => {
+          endQuickPlay();
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          quickPlayState.animating = false;
+          startQuickPlayWave();
+        }, 1500);
+      }
+    }
+
+    updateQuickPlayHUD();
+  }
+
+  function updateQuickPlayHUD() {
+    qsScore.textContent = quickPlayState.score;
+    qsLives.textContent = '❤️'.repeat(Math.max(0, quickPlayState.lives));
+    qsCombo.textContent = quickPlayState.combo + 'x';
+    qsWave.textContent = quickPlayState.wave;
+  }
+
+  function endQuickPlay() {
+    quickPlayState.running = false;
+
+    const user = window.UNLOCK && window.UNLOCK.loadUser ? window.UNLOCK.loadUser() : null;
+    if (user) {
+      window.UNLOCK.completeQuest(user);
+      window.UNLOCK.saveUser(user);
+      window.UNLOCK.hydrateUI(user);
+    }
+
+    setTimeout(() => {
+      alert(`GAME OVER!\n\nScore: ${quickPlayState.score}\nWaves: ${quickPlayState.wave}\nMax Combo: ${quickPlayState.combo}x`);
+      showScreen("menuScreen");
+    }, 500);
+  }
+
+  // Quick Play button handlers
+  qsUndoBtn.addEventListener('click', undoQuickPlayWord);
+  qsSubmitBtn.addEventListener('click', submitQuickPlayStack);
 
   // === INIT ===
   renderMenu();
