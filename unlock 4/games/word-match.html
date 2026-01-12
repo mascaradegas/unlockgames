@@ -2154,6 +2154,11 @@ function clickQuickPlayCard(card, type) {
 }
 
 function checkQuickPlayMatch() {
+  // Prevent double-processing if timeout is happening
+  if (!quickPlayState.running) {
+    return;
+  }
+
   // Lock interactions during animation
   quickPlayState.animating = true;
 
@@ -2275,16 +2280,24 @@ function startQuickPlayMatchTimer() {
 }
 
 function handleQuickPlayTimeout() {
+  // Prevent timeout if already animating (race condition guard)
+  if (quickPlayState.animating) {
+    return;
+  }
+
   quickPlayState.lives--;
   quickPlayState.combo = 0;
   quickPlayState.waveErrors++;
 
+  // Reset animation flag to allow next interaction
+  quickPlayState.animating = false;
+
   if (quickPlayState.selectedPt) {
-    quickPlayState.selectedPt.classList.remove('selected');
+    quickPlayState.selectedPt.classList.remove('selected', 'checking');
     quickPlayState.selectedPt = null;
   }
   if (quickPlayState.selectedEn) {
-    quickPlayState.selectedEn.classList.remove('selected');
+    quickPlayState.selectedEn.classList.remove('selected', 'checking');
     quickPlayState.selectedEn = null;
   }
 
