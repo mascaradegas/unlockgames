@@ -60,6 +60,36 @@ html,body{
 .screen.active{display:flex;flex-direction:column;align-items:center;animation:fadeIn 0.5s ease-out}
 @keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
 
+/* Loading Screen */
+#loading-screen{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:var(--bg);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+}
+#loading-screen.hidden{display:none}
+.loading-spinner{
+  width:60px;
+  height:60px;
+  border:4px solid rgba(255,215,0,0.2);
+  border-top-color:var(--gold);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+.loading-text{
+  color:var(--gold);
+  font-size:1.2rem;
+  font-weight:600;
+}
+
 /* Menu */
 .menu-title{
   font-family:'Orbitron',sans-serif;
@@ -1011,10 +1041,20 @@ body{padding-top:var(--unlock-bar-h);}
 <div class="bg-grid"></div>
 <div class="combo-aura" id="combo-aura"></div>
 
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Carregando classes...</div>
+</div>
+
 <!-- Menu -->
 <div class="screen active" id="screen-menu">
   <h1 class="menu-title">🔗 WORD MATCH</h1>
   <p class="menu-sub">Conecte português ↔ inglês</p>
+  <div id="json-proof" style="text-align: center; margin-bottom: 20px; padding: 8px 16px; background: rgba(0,255,136,0.1); border: 2px solid var(--green); border-radius: 8px; max-width: 300px; margin-left: auto; margin-right: auto;">
+    <span style="color: var(--green); font-weight: bold; font-size: 0.9rem;">📅 Loaded from JSON</span>
+    <div id="last-updated-date" style="color: var(--gold); font-size: 0.85rem; margin-top: 4px;"></div>
+  </div>
   <div class="aulas" id="aulas-list"></div>
   <a href="../study.html" style="display: block; margin-top: 30px; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto;">
     <button style="width: 100%; background: linear-gradient(180deg, rgba(155,109,255,0.2) 0%, rgba(155,109,255,0.08) 100%); border: 2px solid rgba(155,109,255,0.6); color: #E8E8E8; font-size: 16px; padding: 20px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s;">📚 STUDY - APRENDA ANTES DE JOGAR</button>
@@ -1153,7 +1193,16 @@ body{padding-top:var(--unlock-bar-h);}
   </div>
 </div>
 
+<!-- Load external data first -->
+<script src="../assets/load-classes.js"></script>
+
 <script>
+// AULAS and AULA_DESCRIPTIONS are now loaded from ../assets/classes-data.json
+// via the load-classes.js script. This makes monthly updates easier!
+// Just edit classes-data.json and all games auto-update.
+
+/*
+// OLD HARDCODED DATA - Now loaded from JSON file
 const AULAS = [
   {id:1,title:"IS / ARE",emoji:"🔵🟢",pairs:[{pt:"ele está feliz",en:"he is happy"},{pt:"ela está triste",en:"she is sad"},{pt:"eu estou cansado",en:"i am tired"},{pt:"você está atrasado",en:"you are late"},{pt:"nós estamos prontos",en:"we are ready"},{pt:"eles estão aqui",en:"they are here"},{pt:"a loja está aberta",en:"the store is open"},{pt:"a loja está fechada",en:"the store is closed"},{pt:"o dia está bom",en:"the day is good"},{pt:"está frio hoje",en:"it is cold today"},{pt:"está quente hoje",en:"it is hot today"},{pt:"eu estou com fome",en:"i am hungry"},{pt:"eu estou com sede",en:"i am thirsty"},{pt:"você está bem",en:"you are okay"},{pt:"ela está ocupada",en:"she is busy"},{pt:"ele está livre",en:"he is free"},{pt:"nós estamos perdidos",en:"we are lost"},{pt:"eles estão cansados",en:"they are tired"},{pt:"o carro está aqui",en:"the car is here"},{pt:"o banheiro está ali",en:"the bathroom is there"},{pt:"eu estou confuso",en:"i am confused"},{pt:"você está certo",en:"you are right"},{pt:"você está errado",en:"you are wrong"},{pt:"a comida está boa",en:"the food is good"},{pt:"o lugar está cheio",en:"the place is full"},{pt:"o lugar está vazio",en:"the place is empty"},{pt:"eu estou com sono",en:"i am sleepy"},{pt:"ela está feliz agora",en:"she is happy now"},{pt:"eles estão prontos agora",en:"they are ready now"},{pt:"nós estamos bem",en:"we are fine"}]},
   {id:2,title:"NUMBERS",emoji:"🔢",pairs:[{pt:"um",en:"one"},{pt:"dois",en:"two"},{pt:"três",en:"three"},{pt:"quatro",en:"four"},{pt:"cinco",en:"five"},{pt:"seis",en:"six"},{pt:"sete",en:"seven"},{pt:"oito",en:"eight"},{pt:"nove",en:"nine"},{pt:"dez",en:"ten"},{pt:"onze",en:"eleven"},{pt:"doze",en:"twelve"},{pt:"quinze",en:"fifteen"},{pt:"vinte",en:"twenty"},{pt:"trinta",en:"thirty"},{pt:"quarenta",en:"forty"},{pt:"cinquenta",en:"fifty"},{pt:"sessenta",en:"sixty"},{pt:"setenta",en:"seventy"},{pt:"oitenta",en:"eighty"},{pt:"noventa",en:"ninety"},{pt:"cem",en:"hundred"},{pt:"mil",en:"thousand"},{pt:"vinte e um",en:"twenty one"},{pt:"trinta e cinco",en:"thirty five"},{pt:"quarenta e sete",en:"forty seven"},{pt:"noventa e nove",en:"ninety nine"},{pt:"cem reais",en:"one hundred reais"},{pt:"dois dólares",en:"two dollars"},{pt:"um milhão",en:"one million"}]},
@@ -1411,6 +1460,7 @@ const AULA_DESCRIPTIONS = {
   23: "Domine 'this' e 'that'. Demonstre e especifique objetos na conversa.",
   24: "Expresse desejos e necessidades. Aprenda 'want' e 'need' em vários contextos."
 };
+*/
 
 // Menu
 function renderMenu() {
@@ -2578,10 +2628,40 @@ function endQuickPlay() {
   showScreen('menu');
 }
 
-// Init
-renderMenu();
-// Atualizar contador de badges na inicialização
-updateBadgeCounter();
+// Init function with data loading
+async function init() {
+  try {
+    // Wait for classes data to load
+    await loadClassesData();
+
+    // Hide loading screen
+    document.getElementById('loading-screen').classList.add('hidden');
+
+    // Show the last updated date as proof JSON is loaded
+    const dateEl = document.getElementById('last-updated-date');
+    if (dateEl && CLASSES_LAST_UPDATED) {
+      dateEl.textContent = `Updated: ${CLASSES_LAST_UPDATED}`;
+    }
+
+    // Now render menu with loaded data
+    renderMenu();
+
+    // Update badge counter
+    updateBadgeCounter();
+  } catch (error) {
+    console.error('Failed to load classes:', error);
+    document.getElementById('loading-screen').innerHTML = `
+      <div style="text-align:center; color:var(--red);">
+        <div style="font-size:3rem; margin-bottom:20px;">⚠️</div>
+        <div style="font-size:1.2rem; margin-bottom:20px;">Erro ao carregar classes</div>
+        <button onclick="location.reload()" style="padding:15px 30px; background:var(--gold); color:var(--bg); border:none; border-radius:8px; font-size:1rem; cursor:pointer; font-weight:bold;">Tentar Novamente</button>
+      </div>
+    `;
+  }
+}
+
+// Start initialization when DOM is ready
+document.addEventListener('DOMContentLoaded', init);
 </script>
   <script src="../assets/unlock-core.js"></script>
 </body>
