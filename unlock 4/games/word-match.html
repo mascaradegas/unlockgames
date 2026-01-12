@@ -1051,6 +1051,10 @@ body{padding-top:var(--unlock-bar-h);}
 <div class="screen active" id="screen-menu">
   <h1 class="menu-title">🔗 WORD MATCH</h1>
   <p class="menu-sub">Conecte português ↔ inglês</p>
+  <div id="json-proof" style="text-align: center; margin-bottom: 20px; padding: 8px 16px; background: rgba(0,255,136,0.1); border: 2px solid var(--green); border-radius: 8px; max-width: 300px; margin-left: auto; margin-right: auto;">
+    <span style="color: var(--green); font-weight: bold; font-size: 0.9rem;">📅 Loaded from JSON</span>
+    <div id="last-updated-date" style="color: var(--gold); font-size: 0.85rem; margin-top: 4px;"></div>
+  </div>
   <div class="aulas" id="aulas-list"></div>
   <a href="../study.html" style="display: block; margin-top: 30px; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto;">
     <button style="width: 100%; background: linear-gradient(180deg, rgba(155,109,255,0.2) 0%, rgba(155,109,255,0.08) 100%); border: 2px solid rgba(155,109,255,0.6); color: #E8E8E8; font-size: 16px; padding: 20px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s;">📚 STUDY - APRENDA ANTES DE JOGAR</button>
@@ -2632,6 +2636,12 @@ async function init() {
 
     // Hide loading screen
     document.getElementById('loading-screen').classList.add('hidden');
+
+    // Show the last updated date as proof JSON is loaded
+    const dateEl = document.getElementById('last-updated-date');
+    if (dateEl && CLASSES_LAST_UPDATED) {
+      dateEl.textContent = `Updated: ${CLASSES_LAST_UPDATED}`;
+    }
 
     // Now render menu with loaded data
     renderMenu();

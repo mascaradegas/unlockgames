@@ -7,6 +7,7 @@
 
 let AULAS = [];
 let AULA_DESCRIPTIONS = {};
+let CLASSES_LAST_UPDATED = '';
 
 // Fetch and load the classes data
 async function loadClassesData() {
@@ -17,6 +18,9 @@ async function loadClassesData() {
     }
 
     const data = await response.json();
+
+    // Store the last updated date
+    CLASSES_LAST_UPDATED = data.lastUpdated || '';
 
     // Convert to AULAS array format
     AULAS = data.classes.map(cls => ({
@@ -35,12 +39,13 @@ async function loadClassesData() {
 
     console.log('✅ Classes loaded successfully!');
     console.log(`📚 Loaded ${AULAS.length} classes`);
+    console.log(`📅 Last updated: ${CLASSES_LAST_UPDATED}`);
 
-    return { AULAS, AULA_DESCRIPTIONS };
+    return { AULAS, AULA_DESCRIPTIONS, CLASSES_LAST_UPDATED };
   } catch (error) {
     console.error('❌ Error loading classes:', error);
     // Fallback to empty arrays if loading fails
-    return { AULAS: [], AULA_DESCRIPTIONS: {} };
+    return { AULAS: [], AULA_DESCRIPTIONS: {}, CLASSES_LAST_UPDATED: '' };
   }
 }
 
