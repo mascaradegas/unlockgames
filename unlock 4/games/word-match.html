@@ -1189,6 +1189,9 @@ body{padding-top:var(--unlock-bar-h);}
   </div>
 </div>
 
+<!-- Load external data first -->
+<script src="../assets/load-classes.js"></script>
+
 <script>
 // AULAS and AULA_DESCRIPTIONS are now loaded from ../assets/classes-data.json
 // via the load-classes.js script. This makes monthly updates easier!
@@ -2650,7 +2653,6 @@ async function init() {
 // Start initialization when DOM is ready
 document.addEventListener('DOMContentLoaded', init);
 </script>
-  <script src="../assets/load-classes.js"></script>
   <script src="../assets/unlock-core.js"></script>
 </body>
 </html>
