@@ -2162,6 +2162,12 @@ function checkQuickPlayMatch() {
   // Lock interactions during animation
   quickPlayState.animating = true;
 
+  // CRITICAL: Clear the timer immediately to prevent timeout from interfering during animation
+  if (quickPlayState.timerInterval) {
+    clearInterval(quickPlayState.timerInterval);
+    quickPlayState.timerInterval = null;
+  }
+
   // Show checking state briefly
   quickPlayState.selectedPt.classList.add('checking');
   quickPlayState.selectedEn.classList.add('checking');
@@ -2280,8 +2286,8 @@ function startQuickPlayMatchTimer() {
 }
 
 function handleQuickPlayTimeout() {
-  // Prevent timeout if already animating (race condition guard)
-  if (quickPlayState.animating) {
+  // Prevent timeout if not running or already animating
+  if (!quickPlayState.running || quickPlayState.animating) {
     return;
   }
 
@@ -2291,6 +2297,12 @@ function handleQuickPlayTimeout() {
 
   // Reset animation flag to allow next interaction
   quickPlayState.animating = false;
+
+  // Clear any existing timer to prevent double-firing
+  if (quickPlayState.timerInterval) {
+    clearInterval(quickPlayState.timerInterval);
+    quickPlayState.timerInterval = null;
+  }
 
   if (quickPlayState.selectedPt) {
     quickPlayState.selectedPt.classList.remove('selected', 'checking');
