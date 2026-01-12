@@ -368,16 +368,14 @@
     box-shadow:0 0 15px rgba(0,255,255,0.5), inset 0 0 10px rgba(0,255,255,0.2);
     transform:scale(1.05);
   }
-  .quickplay-buttons-grid{
-    display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:15px;
+  .quickplay-button-row{
+    display:flex;
+    justify-content:center;
     width:100%;
-    max-width:420px;
-    margin:20px auto;
+    margin:15px 0;
   }
-  .quickplay-buttons-grid .quickplay-btn{
-    padding:14px 20px;
+  .quickplay-button-row .quickplay-btn{
+    min-width:200px;
   }
 
   @keyframes waveEntrance {
@@ -1019,12 +1017,16 @@ body{padding-top:var(--unlock-bar-h);}
       <div class="quickplay-stack-empty">Click words to stack</div>
     </div>
 
+    <!-- UNDO Button -->
+    <div class="quickplay-button-row">
+      <button class="quickplay-btn" id="qsUndoBtn">UNDO</button>
+    </div>
+
     <!-- Words Grid (3 columns) -->
     <div class="quickplay-word-queue" id="qsWordQueue"></div>
 
-    <!-- Buttons Grid (UNDO and SUBMIT) -->
-    <div class="quickplay-buttons-grid">
-      <button class="quickplay-btn" id="qsUndoBtn">UNDO</button>
+    <!-- SUBMIT Button -->
+    <div class="quickplay-button-row">
       <button class="quickplay-btn" id="qsSubmitBtn">SUBMIT</button>
     </div>
   </div>
@@ -2993,69 +2995,73 @@ body{padding-top:var(--unlock-bar-h);}
   }
 
   function navigateVertical(direction) {
-    // Navigation flow: UNDO/SUBMIT (buttons) ↔ WORD GRID
+    // Navigation flow: UNDO → WORD GRID → SUBMIT
     if (direction === 'down') {
-      if (quickPlayState.focusType === 'undo' || quickPlayState.focusType === 'submit') {
-        // BUTTONS → WORD GRID
+      if (quickPlayState.focusType === 'undo') {
+        // UNDO → WORD GRID
         if (quickPlayState.availableWords.length > 0) {
           quickPlayState.focusType = 'word';
           quickPlayState.selectedWordIndex = 0;
+        } else {
+          // No words, go to SUBMIT
+          quickPlayState.focusType = 'submit';
         }
       } else if (quickPlayState.focusType === 'word') {
-        // WORD GRID → BUTTONS (default to UNDO)
+        // WORD GRID → SUBMIT
+        quickPlayState.focusType = 'submit';
+      } else if (quickPlayState.focusType === 'submit') {
+        // SUBMIT → UNDO (cycle)
         quickPlayState.focusType = 'undo';
       }
     } else {
       // direction === 'up'
-      if (quickPlayState.focusType === 'word') {
-        // WORD GRID → BUTTONS (default to UNDO)
-        quickPlayState.focusType = 'undo';
-      } else if (quickPlayState.focusType === 'undo' || quickPlayState.focusType === 'submit') {
-        // BUTTONS → WORD GRID
+      if (quickPlayState.focusType === 'submit') {
+        // SUBMIT → WORD GRID
         if (quickPlayState.availableWords.length > 0) {
           quickPlayState.focusType = 'word';
           quickPlayState.selectedWordIndex = quickPlayState.availableWords.length - 1;
+        } else {
+          // No words, go to UNDO
+          quickPlayState.focusType = 'undo';
         }
+      } else if (quickPlayState.focusType === 'word') {
+        // WORD GRID → UNDO
+        quickPlayState.focusType = 'undo';
+      } else if (quickPlayState.focusType === 'undo') {
+        // UNDO → SUBMIT (cycle)
+        quickPlayState.focusType = 'submit';
       }
     }
     updateFocus();
   }
 
   function navigateHorizontal(direction) {
-    // Left/Right navigation for buttons or word grid
-    if (quickPlayState.focusType === 'undo' || quickPlayState.focusType === 'submit') {
-      // Toggle between UNDO and SUBMIT buttons
-      if (direction === 'right') {
-        quickPlayState.focusType = 'submit';
-      } else {
-        quickPlayState.focusType = 'undo';
-      }
-    } else if (quickPlayState.focusType === 'word') {
-      // Navigate within word grid
-      const wordCount = quickPlayState.availableWords.length;
-      if (wordCount === 0) return;
+    // Left/Right navigation only works in word grid
+    if (quickPlayState.focusType !== 'word') return;
 
-      const cols = 3;
-      let currentIdx = quickPlayState.selectedWordIndex;
-      if (currentIdx < 0) currentIdx = 0;
+    const wordCount = quickPlayState.availableWords.length;
+    if (wordCount === 0) return;
 
-      const row = Math.floor(currentIdx / cols);
-      const col = currentIdx % cols;
+    const cols = 3;
+    let currentIdx = quickPlayState.selectedWordIndex;
+    if (currentIdx < 0) currentIdx = 0;
 
-      let newCol = col;
-      if (direction === 'right') {
-        newCol = (col + 1) % cols;
-      } else {
-        newCol = (col - 1 + cols) % cols;
-      }
+    const row = Math.floor(currentIdx / cols);
+    const col = currentIdx % cols;
 
-      let newIdx = row * cols + newCol;
-      if (newIdx >= wordCount) {
-        newIdx = wordCount - 1;
-      }
-
-      quickPlayState.selectedWordIndex = newIdx;
+    let newCol = col;
+    if (direction === 'right') {
+      newCol = (col + 1) % cols;
+    } else {
+      newCol = (col - 1 + cols) % cols;
     }
+
+    let newIdx = row * cols + newCol;
+    if (newIdx >= wordCount) {
+      newIdx = wordCount - 1;
+    }
+
+    quickPlayState.selectedWordIndex = newIdx;
     updateFocus();
   }
 
