@@ -277,7 +277,50 @@
     background:linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.1));
     transform:translateY(-2px);
   }
+  .quickplay-word-btn.selected{
+    border-color:var(--cyan);
+    background:linear-gradient(135deg, rgba(0,255,255,0.25), rgba(0,255,136,0.15));
+    box-shadow:0 0 15px rgba(0,255,255,0.5), inset 0 0 10px rgba(0,255,255,0.2);
+    transform:scale(1.05);
+  }
   .quickplay-word-btn:disabled{
+    opacity:0.3;
+    cursor:not-allowed;
+  }
+  .quickplay-words-nav{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:15px;
+  }
+  .quickplay-nav-btn{
+    padding:12px 16px;
+    background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1));
+    border:2px solid var(--gold);
+    border-radius:8px;
+    color:var(--gold);
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:1.2rem;
+    cursor:pointer;
+    transition:all 0.2s;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-width:50px;
+    height:50px;
+  }
+  .quickplay-nav-btn:hover:not(:disabled){
+    border-color:var(--cyan);
+    background:linear-gradient(135deg, rgba(0,255,255,0.2), rgba(0,255,136,0.1));
+    transform:scale(1.1);
+    box-shadow:0 0 15px rgba(0,255,255,0.5);
+  }
+  .quickplay-nav-btn:active:not(:disabled){
+    transform:scale(0.95);
+  }
+  .quickplay-nav-btn:disabled{
     opacity:0.3;
     cursor:not-allowed;
   }
@@ -984,7 +1027,11 @@ body{padding-top:var(--unlock-bar-h);}
       <div class="quickplay-stack-empty">Click words to stack</div>
     </div>
 
-    <div class="quickplay-word-queue" id="qsWordQueue"></div>
+    <div class="quickplay-words-nav">
+      <button class="quickplay-nav-btn" id="qsNavPrev" aria-label="Previous word">←</button>
+      <div class="quickplay-word-queue" id="qsWordQueue"></div>
+      <button class="quickplay-nav-btn" id="qsNavNext" aria-label="Next word">→</button>
+    </div>
   </div>
 
   <div class="quickplay-controls">
@@ -2067,7 +2114,8 @@ body{padding-top:var(--unlock-bar-h);}
     timerSeconds: 30,
     timerInterval: null,
     timerStartTime: 30,
-    waveStartTime: null
+    waveStartTime: null,
+    selectedWordIndex: -1
   };
 
   // === DOM REFS ===
@@ -2102,6 +2150,8 @@ body{padding-top:var(--unlock-bar-h);}
   const qsWordQueue = $("qsWordQueue");
   const qsUndoBtn = $("qsUndoBtn");
   const qsSubmitBtn = $("qsSubmitBtn");
+  const qsNavPrev = $("qsNavPrev");
+  const qsNavNext = $("qsNavNext");
 
   // === SCREEN MANAGEMENT ===
   function showScreen(screenId) {
@@ -2767,6 +2817,7 @@ body{padding-top:var(--unlock-bar-h);}
     quickPlayState.running = true;
     quickPlayState.selectedWords = [];
     quickPlayState.allSentences = [];
+    quickPlayState.selectedWordIndex = -1;
 
     // Combine all sentences from all aulas
     AULAS.forEach(aula => {
@@ -2897,11 +2948,16 @@ body{padding-top:var(--unlock-bar-h);}
     quickPlayState.availableWords.forEach((word, idx) => {
       const btn = document.createElement('button');
       btn.className = 'quickplay-word-btn';
+      btn.id = `qsWord${idx}`;
       btn.textContent = word;
       btn.disabled = false;
+      if (idx === quickPlayState.selectedWordIndex) {
+        btn.classList.add('selected');
+      }
       btn.addEventListener('click', () => selectQuickPlayWord(idx, word));
       qsWordQueue.appendChild(btn);
     });
+    updateNavigationButtons();
   }
 
   function selectQuickPlayWord(index, word) {
@@ -2909,9 +2965,46 @@ body{padding-top:var(--unlock-bar-h);}
 
     quickPlayState.selectedWords.push(word);
     quickPlayState.availableWords.splice(index, 1);
+    quickPlayState.selectedWordIndex = -1; // Reset selection
 
     renderQuickPlayStack();
     renderQuickPlayWords();
+  }
+
+  function updateNavigationButtons() {
+    const hasWords = quickPlayState.availableWords.length > 0;
+    const isAtStart = quickPlayState.selectedWordIndex <= 0;
+    const isAtEnd = quickPlayState.selectedWordIndex >= quickPlayState.availableWords.length - 1;
+
+    qsNavPrev.disabled = !hasWords || isAtStart;
+    qsNavNext.disabled = !hasWords || isAtEnd;
+  }
+
+  function navigatePrevWord() {
+    if (quickPlayState.selectedWordIndex > 0) {
+      quickPlayState.selectedWordIndex--;
+      renderQuickPlayWords();
+    } else if (quickPlayState.availableWords.length > 0) {
+      quickPlayState.selectedWordIndex = quickPlayState.availableWords.length - 1;
+      renderQuickPlayWords();
+    }
+  }
+
+  function navigateNextWord() {
+    if (quickPlayState.selectedWordIndex < quickPlayState.availableWords.length - 1) {
+      quickPlayState.selectedWordIndex++;
+      renderQuickPlayWords();
+    } else if (quickPlayState.availableWords.length > 0) {
+      quickPlayState.selectedWordIndex = 0;
+      renderQuickPlayWords();
+    }
+  }
+
+  function selectCurrentWord() {
+    if (quickPlayState.selectedWordIndex >= 0 && quickPlayState.selectedWordIndex < quickPlayState.availableWords.length) {
+      const word = quickPlayState.availableWords[quickPlayState.selectedWordIndex];
+      selectQuickPlayWord(quickPlayState.selectedWordIndex, word);
+    }
   }
 
   function renderQuickPlayStack() {
@@ -3073,6 +3166,35 @@ body{padding-top:var(--unlock-bar-h);}
   // Quick Play button handlers
   qsUndoBtn.addEventListener('click', undoQuickPlayWord);
   qsSubmitBtn.addEventListener('click', submitQuickPlayStack);
+  qsNavPrev.addEventListener('click', navigatePrevWord);
+  qsNavNext.addEventListener('click', navigateNextWord);
+
+  // Keyboard controls for Quick Play
+  document.addEventListener('keydown', (e) => {
+    if (!quickPlayState.running) return;
+
+    // Arrow keys for navigation
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      navigatePrevWord();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      navigateNextWord();
+    }
+    // Up/Down for navigation (alternative)
+    else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      navigatePrevWord();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      navigateNextWord();
+    }
+    // Space to select current word
+    else if (e.key === ' ') {
+      e.preventDefault();
+      selectCurrentWord();
+    }
+  });
 
   // === INIT ===
   renderMenu();
