@@ -2153,6 +2153,22 @@ body{padding-top:var(--unlock-bar-h);}
   // === RENDER MENU ===
   function renderMenu() {
     aulasGrid.innerHTML = "";
+
+    // Add Quick Play button first
+    const quickPlayWrapper = document.createElement("div");
+    quickPlayWrapper.style.position = "relative";
+    const quickPlayCard = document.createElement("div");
+    quickPlayCard.className = "aula-card";
+    quickPlayCard.style.cssText = "cursor: pointer; border: 3px solid var(--gold); background: linear-gradient(180deg, rgba(255,215,0,0.15), rgba(255,140,0,0.1));";
+    quickPlayCard.innerHTML = `
+      <div class="emoji">⚡</div>
+      <div class="name" style="color: var(--gold); font-weight: 900;">QUICK PLAY</div>
+      <div style="font-size: 0.75rem; margin-top: 8px; color: var(--gold);">Waves</div>
+    `;
+    quickPlayCard.addEventListener("click", () => startQuickPlay());
+    quickPlayWrapper.appendChild(quickPlayCard);
+    aulasGrid.appendChild(quickPlayWrapper);
+
     AULAS.forEach(aula => {
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
@@ -2224,21 +2240,6 @@ body{padding-top:var(--unlock-bar-h);}
       wrapper.appendChild(studyBtn);
       aulasGrid.appendChild(wrapper);
     });
-
-    // Add Quick Play button
-    const quickPlayWrapper = document.createElement("div");
-    quickPlayWrapper.style.position = "relative";
-    const quickPlayCard = document.createElement("div");
-    quickPlayCard.className = "aula-card";
-    quickPlayCard.style.cssText = "cursor: pointer; border: 3px solid var(--gold); background: linear-gradient(180deg, rgba(255,215,0,0.15), rgba(255,140,0,0.1)); grid-column: 1 / -1;";
-    quickPlayCard.innerHTML = `
-      <div class="emoji" style="font-size: 3rem;">⚡</div>
-      <div class="name" style="color: var(--gold); font-weight: 900; font-size: 1.1rem;">QUICK PLAY</div>
-      <div style="font-size: 0.75rem; margin-top: 8px; color: var(--gold);">Stack Fast • Survive Waves!</div>
-    `;
-    quickPlayCard.addEventListener("click", () => startQuickPlay());
-    quickPlayWrapper.appendChild(quickPlayCard);
-    aulasGrid.appendChild(quickPlayWrapper);
   }
 
   function selectAula(aula) {
