@@ -994,7 +994,6 @@ body{padding-top:var(--unlock-bar-h);}
   </div>
 
   <div class="quickplay-controls">
-    <button class="quickplay-btn" id="qsUndoBtn">UNDO</button>
     <button class="quickplay-btn" id="qsSubmitBtn">SUBMIT</button>
   </div>
 </div>
@@ -2107,7 +2106,6 @@ body{padding-top:var(--unlock-bar-h);}
   const qsTarget = $("qsTarget");
   const qsStack = $("qsStack");
   const qsWordQueue = $("qsWordQueue");
-  const qsUndoBtn = $("qsUndoBtn");
   const qsSubmitBtn = $("qsSubmitBtn");
 
   // === SCREEN MANAGEMENT ===
@@ -2969,17 +2967,6 @@ body{padding-top:var(--unlock-bar-h);}
     });
   }
 
-  function undoQuickPlayWord() {
-    if (quickPlayState.selectedWords.length > 0) {
-      const word = quickPlayState.selectedWords.pop();
-      quickPlayState.availableWords.push(word);
-      quickPlayState.availableWords = shuffle(quickPlayState.availableWords);
-
-      renderQuickPlayStack();
-      renderQuickPlayWords();
-    }
-  }
-
   function submitQuickPlayStack() {
     if (quickPlayState.selectedWords.length === 0) return;
     if (quickPlayState.animating) return;
@@ -3111,7 +3098,6 @@ body{padding-top:var(--unlock-bar-h);}
   }
 
   // Quick Play button handlers
-  qsUndoBtn.addEventListener('click', undoQuickPlayWord);
   qsSubmitBtn.addEventListener('click', submitQuickPlayStack);
 
   // Keyboard controls for Quick Play words
