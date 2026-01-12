@@ -1392,8 +1392,8 @@ function renderMenu() {
   // Add Quick Play button first
   const qpBtn = document.createElement('div');
   qpBtn.className = 'aula';
-  qpBtn.style.cssText = 'cursor: pointer; border: 3px solid var(--gold); background: linear-gradient(180deg, rgba(255,215,0,0.15), rgba(255,140,0,0.1)); grid-column: 1 / -1;';
-  qpBtn.innerHTML = `<div class="aula-emoji" style="font-size: 3rem;">⚡</div><div class="aula-name" style="color: var(--gold); font-weight: 900; font-size: 1.1rem;">QUICK PLAY</div><div style="font-size: 0.75rem; margin-top: 8px; color: var(--gold);">Match Fast • Survive Waves!</div>`;
+  qpBtn.style.cssText = 'cursor: pointer; border: 3px solid var(--gold); background: linear-gradient(180deg, rgba(255,215,0,0.15), rgba(255,140,0,0.1));';
+  qpBtn.innerHTML = `<div class="aula-emoji">⚡</div><div class="aula-name" style="color: var(--gold); font-weight: 900;">QUICK PLAY</div><div style="font-size: 0.75rem; margin-top: 8px; color: var(--gold);">Waves</div>`;
   qpBtn.addEventListener('click', startQuickPlay);
   container.appendChild(qpBtn);
   AULAS.forEach(aula => {
