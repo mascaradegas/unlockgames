@@ -575,6 +575,378 @@ body{padding-top:var(--unlock-bar-h);}
   :root{--unlock-bar-h:56px;}
 }
 
+
+/* QUICK PLAY MODE STYLES */
+#screen-quickplay {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.quick-play-hud {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.quick-play-stat {
+  background: linear-gradient(135deg, rgba(20,40,80,0.8), rgba(10,22,40,0.9));
+  border: 2px solid var(--purple);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+
+.quick-play-stat-label {
+  font-size: 0.7rem;
+  color: var(--gray);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.quick-play-stat-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--gold);
+}
+
+.quick-play-timer {
+  background: linear-gradient(135deg, rgba(255,68,68,0.1), rgba(255,68,68,0.05));
+  border: 2px solid rgba(255,68,68,0.3);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.quick-play-timer.danger {
+  border-color: var(--red);
+  animation: timerPulse 0.5s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.timer-label {
+  font-size: 0.7rem;
+  color: var(--gray);
+  margin-bottom: 5px;
+}
+
+.timer-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--red);
+  margin-bottom: 10px;
+}
+
+.timer-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,68,68,0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.timer-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), #ff8888);
+  transition: width 0.1s linear;
+}
+
+.quick-play-match-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.qp-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 15px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(155,109,255,0.08), rgba(155,109,255,0.03));
+  border: 2px solid rgba(155,109,255,0.2);
+  transition: all 0.3s;
+}
+
+.qp-cards.focused {
+  background: linear-gradient(135deg, rgba(155,109,255,0.15), rgba(155,109,255,0.08));
+  border: 2px solid rgba(155,109,255,0.4);
+  box-shadow: inset 0 0 20px rgba(155,109,255,0.1);
+}
+
+.column-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  opacity: 0.7;
+  letter-spacing: 1px;
+}
+
+.column-title.pt {
+  color: #00FF88;
+}
+
+.column-title.en {
+  color: #00BFFF;
+}
+
+.selection-progress {
+  font-size: 0.75rem;
+  color: var(--gray);
+  margin-bottom: 8px;
+  text-align: center;
+  font-weight: 600;
+  height: 18px;
+}
+
+.qp-card {
+  background: linear-gradient(135deg, rgba(20,40,80,0.9), rgba(10,22,40,0.95));
+  border: 2px solid var(--purple);
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 1rem;
+  color: var(--white);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  font-weight: 600;
+  position: relative;
+}
+
+.qp-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.qp-card:hover {
+  border-color: var(--cyan);
+  transform: translateY(-2px);
+}
+
+.qp-card.selected {
+  border: 3px solid var(--gold);
+  background: linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,215,0,0.15));
+  box-shadow: 0 0 25px rgba(255,215,0,0.6), inset 0 0 15px rgba(255,215,0,0.2);
+  transform: translateY(-3px);
+  font-weight: 700;
+}
+
+.qp-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  color: var(--gold);
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+
+.qp-card.keyboard-focused {
+  border: 3px solid var(--cyan);
+  box-shadow: 0 0 20px rgba(0,191,255,0.7), inset 0 0 10px rgba(0,191,255,0.15);
+  background: linear-gradient(135deg, rgba(0,191,255,0.2), rgba(0,191,255,0.1));
+}
+
+.qp-card.keyboard-focused.selected {
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 25px rgba(255,215,0,0.7), inset 0 0 15px rgba(255,215,0,0.2);
+}
+
+.qp-card.checking {
+  border-color: var(--cyan);
+  animation: cardPulse 0.5s ease-in-out;
+}
+
+.qp-card.correct {
+  border: 3px solid var(--green);
+  background: linear-gradient(135deg, rgba(0,255,136,0.3), rgba(0,255,136,0.15));
+  box-shadow: 0 0 30px rgba(0,255,136,0.8);
+  animation: cardPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: scale(1.05);
+}
+
+.qp-card.correct::after {
+  content: '✓';
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  color: var(--green);
+  font-weight: 900;
+  font-size: 1.2rem;
+  animation: checkMark 0.4s ease-out;
+}
+
+.qp-card.wrong {
+  border: 3px solid var(--red);
+  background: linear-gradient(135deg, rgba(255,68,68,0.3), rgba(255,68,68,0.15));
+  box-shadow: 0 0 25px rgba(255,68,68,0.8);
+  animation: shake 0.4s ease-out;
+}
+
+.qp-card.wrong::after {
+  content: '✗';
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  color: var(--red);
+  font-weight: 900;
+  font-size: 1.2rem;
+  animation: xMark 0.4s ease-out;
+}
+
+.qp-card.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+}
+
+@keyframes cardPop {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes cardPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,191,255,0.5); }
+  50% { box-shadow: 0 0 30px rgba(0,191,255,0.8); }
+}
+
+@keyframes checkMark {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes xMark {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.powerups-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 500px;
+  margin: 25px auto 0;
+  padding-bottom: 30px;
+}
+
+.powerup-btn {
+  padding: 15px 12px;
+  background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.1));
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  color: var(--gold);
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.powerup-btn::before {
+  content: attr(data-key);
+  position: absolute;
+  top: 3px;
+  right: 6px;
+  font-size: 0.7rem;
+  opacity: 0.6;
+  background: rgba(255,215,0,0.15);
+  padding: 2px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,215,0,0.3);
+}
+
+.powerup-btn::after {
+  content: 'Press ' attr(data-key);
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  color: var(--cyan);
+  opacity: 0.8;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.powerup-btn:not(:disabled):hover {
+  background: linear-gradient(135deg, rgba(255,215,0,0.4), rgba(255,165,0,0.2));
+  box-shadow: 0 0 25px rgba(255,215,0,0.7);
+  transform: translateY(-3px) scale(1.05);
+  border-color: var(--cyan);
+}
+
+.powerup-btn:not(:disabled):focus {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.powerup-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  border-color: rgba(255,215,0,0.2);
+}
+
+.powerup-btn-icon {
+  font-size: 1.8rem;
+}
+
+.powerup-btn-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.powerup-btn-count {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  font-weight: 600;
+  color: var(--cyan);
+}
 </style>
 </head>
 <body>
@@ -654,6 +1026,51 @@ body{padding-top:var(--unlock-bar-h);}
   </div>
 </div>
 
+
+<!-- QUICK PLAY SCREEN -->
+<div class="screen" id="screen-quickplay">
+  <button class="game-back" id="quickplay-back">←</button>
+
+  <div class="quick-play-hud">
+    <div class="quick-play-stat">
+      <div class="quick-play-stat-label">Score</div>
+      <div class="quick-play-stat-value" id="qpScore">0</div>
+    </div>
+    <div class="quick-play-stat">
+      <div class="quick-play-stat-label">Lives</div>
+      <div class="quick-play-stat-value" id="qpLives">❤️❤️❤️</div>
+    </div>
+    <div class="quick-play-stat">
+      <div class="quick-play-stat-label">Combo</div>
+      <div class="quick-play-stat-value" id="qpCombo">0x</div>
+    </div>
+    <div class="quick-play-stat">
+      <div class="quick-play-stat-label">Wave</div>
+      <div class="quick-play-stat-value" id="qpWave">1</div>
+    </div>
+  </div>
+
+  <div class="quick-play-timer">
+    <div class="timer-label">TIME</div>
+    <div class="timer-value" id="qpTimer">10</div>
+    <div class="timer-bar">
+      <div class="timer-fill" id="qpTimerFill"></div>
+    </div>
+  </div>
+
+  <div class="quick-play-match-area">
+    <div>
+      <div class="column-title pt">🇧🇷 PT</div>
+      <div class="qp-cards" id="qp-col-pt"></div>
+    </div>
+    <div>
+      <div class="column-title en">🇺🇸 EN</div>
+      <div class="qp-cards" id="qp-col-en"></div>
+    </div>
+  </div>
+
+  <div class="powerups-container" id="qpPowerups"></div>
+</div>
 <!-- Win Modal -->
 <div class="modal" id="modal-win">
   <div class="modal-box">
@@ -736,6 +1153,71 @@ let currentPairs = [];
 let comboCount = 0;
 let focusedColumn = 'pt';
 let focusedIndex = 0;
+
+// ===== QUICK PLAY STATE =====
+let quickPlayState = {
+  score: 0,
+  lives: 3,
+  combo: 0,
+  wave: 1,
+  running: false,
+  matchedCount: 0,
+  waveErrors: 0,
+  currentPairs: [],
+  selectedPt: null,
+  selectedEn: null,
+  timerSeconds: 10,
+  timerInterval: null,
+  timerStartTime: 0,
+  deck: [],
+  frozen: false
+};
+
+let quickPlayKeyboardState = {
+  selectedPtIndex: -1,
+  selectedEnIndex: -1,
+  focusedColumn: "pt"
+};
+
+const QUICK_PLAY_POWERUPS = {
+  freeze: {
+    name: '⏸️ FREEZE',
+    description: 'Pausa o timer por 5 segundos',
+    effect: 'freeze',
+    duration: 5
+  },
+  timeBoost: {
+    name: '⏱️ TIME BOOST',
+    description: '+5 segundos no próximo match',
+    effect: 'timeBoost',
+    duration: -1
+  },
+  extraLife: {
+    name: '🛡️ EXTRA LIFE',
+    description: 'Ganha 1 vida extra',
+    effect: 'extraLife',
+    duration: -1
+  }
+};
+
+const WAVE_POWERUP_GRANTS = {
+  1: 'timeBoost',
+  2: 'extraLife',
+  3: 'freeze',
+  4: 'timeBoost',
+  5: 'extraLife',
+  6: 'freeze',
+  7: 'timeBoost',
+  8: 'extraLife'
+};
+
+let quickPlayPowerups = {
+  freeze: 0,
+  timeBoost: 0,
+  extraLife: 0
+};
+
+let nextMatchTimeBonus = 0;
 
 // Utils
 function shuffle(arr) {
@@ -862,6 +1344,14 @@ function showTimeBonus(text, isPerfect) {
 function renderMenu() {
   const container = document.getElementById('aulas-list');
   container.innerHTML = '';
+
+  // Add Quick Play button first
+  const qpBtn = document.createElement('div');
+  qpBtn.className = 'aula';
+  qpBtn.style.cssText = 'cursor: pointer; border: 3px solid var(--gold); background: linear-gradient(180deg, rgba(255,215,0,0.15), rgba(255,140,0,0.1)); grid-column: 1 / -1;';
+  qpBtn.innerHTML = `<div class="aula-emoji" style="font-size: 3rem;">⚡</div><div class="aula-name" style="color: var(--gold); font-weight: 900; font-size: 1.1rem;">QUICK PLAY</div><div style="font-size: 0.75rem; margin-top: 8px; color: var(--gold);">Match Fast • Survive Waves!</div>`;
+  qpBtn.addEventListener('click', startQuickPlay);
+  container.appendChild(qpBtn);
   AULAS.forEach(aula => {
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
@@ -1359,6 +1849,563 @@ document.getElementById('statsBtn').addEventListener('click', () => {
 document.getElementById('statsCloseBtn').addEventListener('click', () => {
   document.getElementById('statsModal').classList.remove('show');
 });
+
+
+// ===== QUICK PLAY FUNCTIONS =====
+function startQuickPlay() {
+  quickPlayState.deck = [];
+  AULAS.forEach(aula => {
+    quickPlayState.deck.push(...aula.pairs);
+  });
+  quickPlayState.deck = shuffle(quickPlayState.deck);
+
+  quickPlayState.score = 0;
+  quickPlayState.lives = 3;
+  quickPlayState.combo = 0;
+  quickPlayState.wave = 1;
+  quickPlayState.matchedCount = 0;
+  quickPlayState.waveErrors = 0;
+  quickPlayState.running = true;
+  quickPlayState.frozen = false;
+  quickPlayPowerups = { freeze: 0, timeBoost: 0, extraLife: 0 };
+  nextMatchTimeBonus = 0;
+
+  showScreen('quickplay');
+  attachQuickPlayListeners();
+  startQuickPlayWave();
+}
+
+function attachQuickPlayListeners() {
+  const backBtn = document.getElementById('quickplay-back');
+  if (backBtn) {
+    backBtn.addEventListener('click', endQuickPlay);
+  }
+  document.addEventListener('keydown', quickPlayKeydownHandler);
+}
+
+function detachQuickPlayListeners() {
+  document.removeEventListener('keydown', quickPlayKeydownHandler);
+}
+
+function quickPlayKeydownHandler(e) {
+  if (!quickPlayState.running) return;
+
+  const ptCards = Array.from(document.querySelectorAll('#qp-col-pt .qp-card:not(.hidden)'));
+  const enCards = Array.from(document.querySelectorAll('#qp-col-en .qp-card:not(.hidden)'));
+
+  if (ptCards.length === 0 || enCards.length === 0) return;
+
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (quickPlayKeyboardState.focusedColumn === 'pt') {
+      quickPlayKeyboardState.selectedPtIndex = Math.max(0, quickPlayKeyboardState.selectedPtIndex - 1);
+      selectQuickPlayCardByIndex('pt', quickPlayKeyboardState.selectedPtIndex);
+    } else {
+      quickPlayKeyboardState.selectedEnIndex = Math.max(0, quickPlayKeyboardState.selectedEnIndex - 1);
+      selectQuickPlayCardByIndex('en', quickPlayKeyboardState.selectedEnIndex);
+    }
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (quickPlayKeyboardState.focusedColumn === 'pt') {
+      quickPlayKeyboardState.selectedPtIndex = Math.min(ptCards.length - 1, quickPlayKeyboardState.selectedPtIndex + 1);
+      selectQuickPlayCardByIndex('pt', quickPlayKeyboardState.selectedPtIndex);
+    } else {
+      quickPlayKeyboardState.selectedEnIndex = Math.min(enCards.length - 1, quickPlayKeyboardState.selectedEnIndex + 1);
+      selectQuickPlayCardByIndex('en', quickPlayKeyboardState.selectedEnIndex);
+    }
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    quickPlayKeyboardState.focusedColumn = 'pt';
+    if (quickPlayKeyboardState.selectedPtIndex < 0) quickPlayKeyboardState.selectedPtIndex = 0;
+    selectQuickPlayCardByIndex('pt', quickPlayKeyboardState.selectedPtIndex);
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    quickPlayKeyboardState.focusedColumn = 'en';
+    if (quickPlayKeyboardState.selectedEnIndex < 0) quickPlayKeyboardState.selectedEnIndex = 0;
+    selectQuickPlayCardByIndex('en', quickPlayKeyboardState.selectedEnIndex);
+  }
+
+  if (e.key === ' ' || e.key === 'Enter') {
+    e.preventDefault();
+    if (quickPlayKeyboardState.focusedColumn === 'pt') {
+      if (quickPlayKeyboardState.selectedPtIndex >= 0) {
+        const card = ptCards[quickPlayKeyboardState.selectedPtIndex];
+        clickQuickPlayCard(card, 'pt');
+      }
+    } else {
+      if (quickPlayKeyboardState.selectedEnIndex >= 0) {
+        const card = enCards[quickPlayKeyboardState.selectedEnIndex];
+        clickQuickPlayCard(card, 'en');
+      }
+    }
+  }
+
+  // Power-up shortcuts: 1, 2, 3
+  if (e.key === '1' || e.key === '2' || e.key === '3') {
+    e.preventDefault();
+    const powerupIndex = parseInt(e.key) - 1; // 0, 1, 2
+    const powerupTypes = ['freeze', 'timeBoost', 'extraLife'];
+    const powerupType = powerupTypes[powerupIndex];
+
+    // Only activate if button would be enabled
+    const count = quickPlayPowerups[powerupType];
+    if (count > 0 && quickPlayState.running) {
+      useQuickPlayPowerup(powerupType);
+    }
+  }
+}
+
+function selectQuickPlayCardByIndex(column, index) {
+  const cards = Array.from(document.querySelectorAll(`#qp-col-${column} .qp-card:not(.hidden)`));
+  cards.forEach(card => card.classList.remove('keyboard-focused'));
+  if (index >= 0 && index < cards.length) {
+    cards[index].classList.add('keyboard-focused');
+  }
+
+  // Update column focus indication
+  const ptContainer = document.getElementById('qp-col-pt').parentElement;
+  const enContainer = document.getElementById('qp-col-en').parentElement;
+
+  ptContainer.querySelector('.qp-cards').classList.toggle('focused', column === 'pt');
+  enContainer.querySelector('.qp-cards').classList.toggle('focused', column === 'en');
+}
+
+function startQuickPlayWave() {
+  quickPlayState.matchedCount = 0;
+  quickPlayState.waveErrors = 0;
+
+  quickPlayState.currentPairs = [];
+  for (let i = 0; i < 5; i++) {
+    if (quickPlayState.deck.length === 0) {
+      AULAS.forEach(aula => {
+        quickPlayState.deck.push(...aula.pairs);
+      });
+      quickPlayState.deck = shuffle(quickPlayState.deck);
+    }
+    quickPlayState.currentPairs.push(quickPlayState.deck.pop());
+  }
+
+  renderQuickPlayCards();
+  updateQuickPlayHUD();
+  startQuickPlayMatchTimer();
+}
+
+function renderQuickPlayCards() {
+  const ptContainer = document.getElementById('qp-col-pt');
+  const enContainer = document.getElementById('qp-col-en');
+
+  ptContainer.innerHTML = '';
+  enContainer.innerHTML = '';
+
+  quickPlayKeyboardState.selectedPtIndex = -1;
+  quickPlayKeyboardState.selectedEnIndex = -1;
+  quickPlayKeyboardState.focusedColumn = 'pt';
+
+  const shuffledPt = shuffle([...quickPlayState.currentPairs]);
+  const shuffledEn = shuffle([...quickPlayState.currentPairs]);
+
+  shuffledPt.forEach(pair => {
+    const card = document.createElement('div');
+    card.className = 'qp-card';
+    card.textContent = pair.pt;
+    card.dataset.pairId = pair.en;
+    card.addEventListener('click', () => clickQuickPlayCard(card, 'pt'));
+    ptContainer.appendChild(card);
+  });
+
+  shuffledEn.forEach(pair => {
+    const card = document.createElement('div');
+    card.className = 'qp-card';
+    card.textContent = pair.en;
+    card.dataset.pairId = pair.en;
+    card.addEventListener('click', () => clickQuickPlayCard(card, 'en'));
+    enContainer.appendChild(card);
+  });
+
+  updateSelectionProgress();
+}
+
+function updateSelectionProgress() {
+  const ptParent = document.getElementById('qp-col-pt').parentElement;
+  const enParent = document.getElementById('qp-col-en').parentElement;
+
+  // Create progress indicators if they don't exist
+  let ptProgress = ptParent.querySelector('.selection-progress');
+  if (!ptProgress) {
+    ptProgress = document.createElement('div');
+    ptProgress.className = 'selection-progress';
+    ptParent.insertBefore(ptProgress, ptParent.querySelector('.qp-cards'));
+  }
+
+  let enProgress = enParent.querySelector('.selection-progress');
+  if (!enProgress) {
+    enProgress = document.createElement('div');
+    enProgress.className = 'selection-progress';
+    enParent.insertBefore(enProgress, enParent.querySelector('.qp-cards'));
+  }
+
+  // Update text based on selection state
+  const ptSelected = quickPlayState.selectedPt ? '✓ SELECTED' : 'WAITING';
+  const enSelected = quickPlayState.selectedEn ? '✓ SELECTED' : 'WAITING';
+
+  ptProgress.textContent = ptSelected;
+  enProgress.textContent = enSelected;
+
+  // Color code the progress
+  if (quickPlayState.selectedPt && quickPlayState.selectedEn) {
+    ptProgress.style.color = 'var(--green)';
+    enProgress.style.color = 'var(--green)';
+  } else if (quickPlayState.selectedPt) {
+    ptProgress.style.color = 'var(--gold)';
+    enProgress.style.color = 'var(--gray)';
+  } else if (quickPlayState.selectedEn) {
+    ptProgress.style.color = 'var(--gray)';
+    enProgress.style.color = 'var(--gold)';
+  } else {
+    ptProgress.style.color = 'var(--gray)';
+    enProgress.style.color = 'var(--gray)';
+  }
+}
+
+function clickQuickPlayCard(card, type) {
+  if (!quickPlayState.running) return;
+  if (card.classList.contains('hidden')) return;
+  if (quickPlayState.frozen) return;
+
+  if (card.classList.contains('selected')) {
+    card.classList.remove('selected');
+    if (type === 'pt') quickPlayState.selectedPt = null;
+    else quickPlayState.selectedEn = null;
+    updateSelectionProgress();
+    return;
+  }
+
+  if (type === 'pt') {
+    if (quickPlayState.selectedPt) {
+      quickPlayState.selectedPt.classList.remove('selected');
+    }
+    quickPlayState.selectedPt = card;
+  } else {
+    if (quickPlayState.selectedEn) {
+      quickPlayState.selectedEn.classList.remove('selected');
+    }
+    quickPlayState.selectedEn = card;
+  }
+  card.classList.add('selected');
+  updateSelectionProgress();
+
+  if (quickPlayState.selectedPt && quickPlayState.selectedEn) {
+    checkQuickPlayMatch();
+  }
+}
+
+function checkQuickPlayMatch() {
+  // Show checking state briefly
+  quickPlayState.selectedPt.classList.add('checking');
+  quickPlayState.selectedEn.classList.add('checking');
+
+  const ptId = quickPlayState.selectedPt.dataset.pairId;
+  const enId = quickPlayState.selectedEn.dataset.pairId;
+
+  setTimeout(() => {
+    quickPlayState.selectedPt.classList.remove('checking');
+    quickPlayState.selectedEn.classList.remove('checking');
+
+    if (ptId === enId) {
+      // CORRECT!
+      quickPlayState.selectedPt.classList.add('correct');
+      quickPlayState.selectedEn.classList.add('correct');
+
+      quickPlayState.combo++;
+      const baseScore = 100;
+      const comboMultiplier = 1 + (quickPlayState.combo * 0.1);
+      const points = Math.round(baseScore * comboMultiplier);
+      quickPlayState.score += points;
+
+      createParticles(quickPlayState.selectedPt);
+      createParticles(quickPlayState.selectedEn);
+      if (quickPlayState.combo % 3 === 0) {
+        triggerAura();
+      }
+
+      setTimeout(() => {
+        quickPlayState.selectedPt.classList.add('hidden');
+        quickPlayState.selectedEn.classList.add('hidden');
+        quickPlayState.selectedPt = null;
+        quickPlayState.selectedEn = null;
+
+        quickPlayState.matchedCount++;
+
+        if (quickPlayState.matchedCount >= 5) {
+          completeQuickPlayWave();
+        } else {
+          startQuickPlayMatchTimer();
+        }
+      }, 500);
+
+    } else {
+      // WRONG!
+      quickPlayState.waveErrors++;
+      quickPlayState.combo = 0;
+
+      quickPlayState.selectedPt.classList.add('wrong');
+      quickPlayState.selectedEn.classList.add('wrong');
+
+      setTimeout(() => {
+        quickPlayState.selectedPt.classList.remove('selected', 'wrong');
+        quickPlayState.selectedEn.classList.remove('selected', 'wrong');
+        quickPlayState.selectedPt = null;
+        quickPlayState.selectedEn = null;
+      }, 500);
+    }
+
+    updateQuickPlayHUD();
+  }, 200);
+}
+
+function startQuickPlayMatchTimer() {
+  if (quickPlayState.timerInterval) {
+    clearInterval(quickPlayState.timerInterval);
+  }
+
+  let baseTime = 10;
+  let timeReduction = Math.min(5, (quickPlayState.wave - 1) * 0.5);
+  quickPlayState.timerSeconds = Math.max(5, baseTime - timeReduction + nextMatchTimeBonus);
+  nextMatchTimeBonus = 0;
+
+  quickPlayState.timerStartTime = quickPlayState.timerSeconds;
+
+  const timerEl = document.querySelector('.quick-play-timer');
+  const timerValue = document.getElementById('qpTimer');
+  const timerFill = document.getElementById('qpTimerFill');
+
+  timerValue.textContent = quickPlayState.timerSeconds;
+  timerFill.style.width = '100%';
+  timerEl.classList.remove('danger');
+
+  quickPlayState.timerInterval = setInterval(() => {
+    if (quickPlayState.frozen) return;
+
+    quickPlayState.timerSeconds--;
+    timerValue.textContent = quickPlayState.timerSeconds;
+
+    const percent = (quickPlayState.timerSeconds / quickPlayState.timerStartTime) * 100;
+    timerFill.style.width = percent + '%';
+
+    if (quickPlayState.timerSeconds <= 3) {
+      timerEl.classList.add('danger');
+    }
+
+    if (quickPlayState.timerSeconds <= 0) {
+      clearInterval(quickPlayState.timerInterval);
+      handleQuickPlayTimeout();
+    }
+  }, 1000);
+}
+
+function handleQuickPlayTimeout() {
+  quickPlayState.lives--;
+  quickPlayState.combo = 0;
+  quickPlayState.waveErrors++;
+
+  if (quickPlayState.selectedPt) {
+    quickPlayState.selectedPt.classList.remove('selected');
+    quickPlayState.selectedPt = null;
+  }
+  if (quickPlayState.selectedEn) {
+    quickPlayState.selectedEn.classList.remove('selected');
+    quickPlayState.selectedEn = null;
+  }
+
+  if (quickPlayState.lives <= 0) {
+    endQuickPlay();
+  } else {
+    setTimeout(() => {
+      startQuickPlayMatchTimer();
+    }, 1000);
+  }
+
+  updateQuickPlayHUD();
+}
+
+function completeQuickPlayWave() {
+  clearInterval(quickPlayState.timerInterval);
+
+  if (quickPlayState.waveErrors === 0) {
+    grantQuickPlayPowerup();
+  } else {
+    showWaveImperfectNotification();
+  }
+
+  quickPlayState.wave++;
+
+  setTimeout(() => {
+    if (quickPlayState.running) {
+      startQuickPlayWave();
+    }
+  }, 2000);
+}
+
+function grantQuickPlayPowerup() {
+  const waveNumber = quickPlayState.wave;
+  let powerupType;
+
+  if (waveNumber <= 8) {
+    powerupType = WAVE_POWERUP_GRANTS[waveNumber];
+  } else {
+    const cycleIndex = ((waveNumber - 1) % 3);
+    const types = ['timeBoost', 'extraLife', 'freeze'];
+    powerupType = types[cycleIndex];
+  }
+
+  if (powerupType) {
+    quickPlayPowerups[powerupType]++;
+    showWavePerfectNotification(QUICK_PLAY_POWERUPS[powerupType]);
+    updatePowerupUI();
+  }
+}
+
+function useQuickPlayPowerup(type) {
+  if (quickPlayPowerups[type] <= 0 || !quickPlayState.running) return;
+
+  quickPlayPowerups[type]--;
+  const powerup = QUICK_PLAY_POWERUPS[type];
+
+  if (type === 'extraLife') {
+    quickPlayState.lives++;
+    showWavePerfectNotification(powerup, 'USADO!');
+  } else if (type === 'freeze') {
+    quickPlayState.frozen = true;
+    showWavePerfectNotification(powerup, 'USADO!');
+    setTimeout(() => {
+      quickPlayState.frozen = false;
+    }, 5000);
+  } else if (type === 'timeBoost') {
+    nextMatchTimeBonus = 5;
+    showWavePerfectNotification(powerup, 'USADO!');
+  }
+
+  updatePowerupUI();
+  updateQuickPlayHUD();
+}
+
+function updateQuickPlayHUD() {
+  document.getElementById('qpScore').textContent = quickPlayState.score;
+  document.getElementById('qpLives').textContent = '❤️'.repeat(Math.max(0, quickPlayState.lives));
+  document.getElementById('qpCombo').textContent = quickPlayState.combo + 'x';
+  document.getElementById('qpWave').textContent = quickPlayState.wave;
+}
+
+function updatePowerupUI() {
+  const container = document.getElementById('qpPowerups');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const types = ['freeze', 'timeBoost', 'extraLife'];
+  types.forEach((type, index) => {
+    const count = quickPlayPowerups[type];
+    const powerup = QUICK_PLAY_POWERUPS[type];
+    const keyNum = index + 1; // 1, 2, 3
+
+    const btn = document.createElement('button');
+    btn.className = 'powerup-btn';
+    btn.dataset.key = keyNum;
+    btn.dataset.powerupType = type;
+    btn.disabled = count <= 0 || !quickPlayState.running;
+    btn.title = `Press ${keyNum} or click to use`;
+
+    // Extract emoji from powerup name (first character)
+    const emoji = powerup.name.match(/[\p{Emoji}]/u)?.[0] || '⚡';
+    const powerupText = powerup.name.replace(/[\p{Emoji}]/gu, '').trim();
+
+    btn.innerHTML = `
+      <div class="powerup-btn-icon">${emoji}</div>
+      <div class="powerup-btn-name">${powerupText}</div>
+      <div class="powerup-btn-count">x${count}</div>
+    `;
+    btn.addEventListener('click', () => useQuickPlayPowerup(type));
+    container.appendChild(btn);
+  });
+}
+
+function showWavePerfectNotification(powerup, label = '✨ PERFECT WAVE!') {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,255,136,0.1));
+    border: 3px solid var(--green);
+    border-radius: 15px;
+    padding: 30px 40px;
+    text-align: center;
+    font-family: Orbitron, sans-serif;
+    color: var(--green);
+    font-size: 1.3rem;
+    font-weight: 700;
+    z-index: 10000;
+    pointer-events: none;
+    animation: popIn 0.4s ease-out;
+  `;
+  notification.textContent = `${powerup.name} +1 ${label}`;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.style.animation = 'fadeOut 0.4s ease-out forwards';
+    setTimeout(() => notification.remove(), 400);
+  }, 3000);
+}
+
+function showWaveImperfectNotification() {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, rgba(255,68,68,0.2), rgba(255,68,68,0.1));
+    border: 3px solid var(--red);
+    border-radius: 15px;
+    padding: 30px 40px;
+    text-align: center;
+    font-family: Orbitron, sans-serif;
+    color: var(--red);
+    font-size: 1.3rem;
+    font-weight: 700;
+    z-index: 10000;
+    pointer-events: none;
+    animation: popIn 0.4s ease-out;
+  `;
+  notification.textContent = '❌ IMPERFECT WAVE - Mistakes detected';
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.style.animation = 'fadeOut 0.4s ease-out forwards';
+    setTimeout(() => notification.remove(), 400);
+  }, 3000);
+}
+
+function endQuickPlay() {
+  quickPlayState.running = false;
+  clearInterval(quickPlayState.timerInterval);
+  detachQuickPlayListeners();
+
+  if (window.UNLOCK) {
+    const user = window.UNLOCK.loadUser();
+    window.UNLOCK.completeQuest(user);
+    window.UNLOCK.saveUser(user);
+    window.UNLOCK.hydrateUI(user);
+  }
+
+  const finalScore = quickPlayState.score;
+  const wavesReached = quickPlayState.wave - 1;
+
+  alert(`GAME OVER!\n\nScore: ${finalScore}\nWaves: ${wavesReached}`);
+
+  renderMenu();
+  showScreen('menu');
+}
 
 // Init
 renderMenu();
