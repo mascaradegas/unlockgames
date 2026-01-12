@@ -357,10 +357,18 @@
     box-shadow:0 0 15px rgba(0,255,255,0.5), inset 0 0 10px rgba(0,255,255,0.2);
     transform:scale(1.05);
   }
-  .quickplay-controls-top{
+  .quickplay-center-grid{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:15px;
+    max-width:500px;
+    margin:0 auto;
+  }
+  .quickplay-grid-row{
     display:flex;
     justify-content:center;
-    margin-bottom:15px;
+    width:100%;
   }
 
   @keyframes waveEntrance {
@@ -1002,15 +1010,20 @@ body{padding-top:var(--unlock-bar-h);}
       <div class="quickplay-stack-empty">Click words to stack</div>
     </div>
 
-    <div class="quickplay-controls-top">
-      <button class="quickplay-btn" id="qsUndoBtn">UNDO</button>
+    <div class="quickplay-center-grid">
+      <!-- Top row: UNDO button -->
+      <div class="quickplay-grid-row">
+        <button class="quickplay-btn" id="qsUndoBtn">UNDO</button>
+      </div>
+
+      <!-- Middle row: Word grid -->
+      <div class="quickplay-word-queue" id="qsWordQueue"></div>
+
+      <!-- Bottom row: SUBMIT button -->
+      <div class="quickplay-grid-row">
+        <button class="quickplay-btn" id="qsSubmitBtn">SUBMIT</button>
+      </div>
     </div>
-
-    <div class="quickplay-word-queue" id="qsWordQueue"></div>
-  </div>
-
-  <div class="quickplay-controls">
-    <button class="quickplay-btn" id="qsSubmitBtn">SUBMIT</button>
   </div>
 </div>
 
@@ -2090,7 +2103,7 @@ body{padding-top:var(--unlock-bar-h);}
     timerStartTime: 30,
     waveStartTime: null,
     selectedWordIndex: -1,
-    focusType: 'undo'  // 'undo' or 'word'
+    focusType: 'undo'  // 'undo', 'word', or 'submit'
   };
 
   // === DOM REFS ===
@@ -2837,6 +2850,11 @@ body{padding-top:var(--unlock-bar-h);}
 
     renderQuickPlayStack();
 
+    // Initialize focus on UNDO button
+    quickPlayState.focusType = 'undo';
+    quickPlayState.selectedWordIndex = -1;
+    updateFocus();
+
     // Start timer for this wave
     startQuickPlayWaveTimer();
   }
@@ -2934,7 +2952,13 @@ body{padding-top:var(--unlock-bar-h);}
 
     quickPlayState.selectedWords.push(word);
     quickPlayState.availableWords.splice(index, 1);
-    quickPlayState.selectedWordIndex = -1; // Reset selection
+
+    // Reset word index after selection, keep focus on word grid
+    if (quickPlayState.availableWords.length > 0) {
+      quickPlayState.selectedWordIndex = Math.min(index, quickPlayState.availableWords.length - 1);
+    } else {
+      quickPlayState.selectedWordIndex = -1;
+    }
 
     renderQuickPlayStack();
     renderQuickPlayWords();
@@ -2956,33 +2980,33 @@ body{padding-top:var(--unlock-bar-h);}
         btn.classList.remove('focused');
       }
     });
+
+    // Update SUBMIT button focus
+    if (quickPlayState.focusType === 'submit') {
+      qsSubmitBtn.classList.add('focused');
+    } else {
+      qsSubmitBtn.classList.remove('focused');
+    }
   }
 
   function navigateVertical(direction) {
-    const wordCount = quickPlayState.availableWords.length;
-
+    // Up/Down only navigate between UNDO and SUBMIT
     if (direction === 'down') {
-      // From UNDO to first word
       if (quickPlayState.focusType === 'undo') {
-        if (wordCount > 0) {
-          quickPlayState.focusType = 'word';
-          quickPlayState.selectedWordIndex = 0;
-        }
-      } else {
-        // Navigate within words
-        quickPlayState.selectedWordIndex = (quickPlayState.selectedWordIndex + 1) % wordCount;
+        quickPlayState.focusType = 'submit';
+      } else if (quickPlayState.focusType === 'submit') {
+        quickPlayState.focusType = 'undo';
+      } else if (quickPlayState.focusType === 'word') {
+        quickPlayState.focusType = 'submit';
       }
     } else {
       // direction === 'up'
-      // From word to UNDO
-      if (quickPlayState.focusType === 'word') {
-        if (quickPlayState.selectedWordIndex === 0) {
-          quickPlayState.focusType = 'undo';
-        } else {
-          quickPlayState.selectedWordIndex--;
-        }
-      } else {
-        // Already on UNDO, stay on UNDO
+      if (quickPlayState.focusType === 'submit') {
+        quickPlayState.focusType = 'undo';
+      } else if (quickPlayState.focusType === 'undo') {
+        quickPlayState.focusType = 'submit';
+      } else if (quickPlayState.focusType === 'word') {
+        quickPlayState.focusType = 'undo';
       }
     }
     updateFocus();
@@ -3003,18 +3027,20 @@ body{padding-top:var(--unlock-bar-h);}
   function activateFocused() {
     if (quickPlayState.focusType === 'undo') {
       undoQuickPlayWord();
-      // After undo, focus back on first word if any
+      // After undo, move to word grid if available
       if (quickPlayState.availableWords.length > 0) {
         quickPlayState.focusType = 'word';
         quickPlayState.selectedWordIndex = 0;
       }
-    } else {
+    } else if (quickPlayState.focusType === 'word') {
       // Select focused word
       if (quickPlayState.selectedWordIndex >= 0 && quickPlayState.selectedWordIndex < quickPlayState.availableWords.length) {
         const word = quickPlayState.availableWords[quickPlayState.selectedWordIndex];
         selectQuickPlayWord(quickPlayState.selectedWordIndex, word);
-        quickPlayState.focusType = 'undo';  // Reset focus to undo
+        // Stay in word grid after selection
       }
+    } else if (quickPlayState.focusType === 'submit') {
+      submitQuickPlayStack();
     }
     updateFocus();
   }
