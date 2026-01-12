@@ -1170,7 +1170,8 @@ let quickPlayState = {
   timerInterval: null,
   timerStartTime: 0,
   deck: [],
-  frozen: false
+  frozen: false,
+  animating: false
 };
 
 let quickPlayKeyboardState = {
@@ -2071,6 +2072,7 @@ function clickQuickPlayCard(card, type) {
   if (!quickPlayState.running) return;
   if (card.classList.contains('hidden')) return;
   if (quickPlayState.frozen) return;
+  if (quickPlayState.animating) return;
 
   if (card.classList.contains('selected')) {
     card.classList.remove('selected');
@@ -2100,6 +2102,9 @@ function clickQuickPlayCard(card, type) {
 }
 
 function checkQuickPlayMatch() {
+  // Lock interactions during animation
+  quickPlayState.animating = true;
+
   // Show checking state briefly
   quickPlayState.selectedPt.classList.add('checking');
   quickPlayState.selectedEn.classList.add('checking');
@@ -2141,6 +2146,8 @@ function checkQuickPlayMatch() {
         } else {
           startQuickPlayMatchTimer();
         }
+
+        quickPlayState.animating = false;
       }, 500);
 
     } else {
@@ -2156,6 +2163,7 @@ function checkQuickPlayMatch() {
         quickPlayState.selectedEn.classList.remove('selected', 'wrong');
         quickPlayState.selectedPt = null;
         quickPlayState.selectedEn = null;
+        quickPlayState.animating = false;
       }, 500);
     }
 
