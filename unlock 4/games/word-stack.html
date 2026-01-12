@@ -3004,23 +3004,41 @@ body{padding-top:var(--unlock-bar-h);}
   }
 
   function navigateVertical(direction) {
-    // Up/Down only navigate between UNDO and SUBMIT
+    // Navigation flow: UNDO → WORD GRID → SUBMIT
     if (direction === 'down') {
       if (quickPlayState.focusType === 'undo') {
+        // UNDO → WORD GRID
+        if (quickPlayState.availableWords.length > 0) {
+          quickPlayState.focusType = 'word';
+          quickPlayState.selectedWordIndex = 0;
+        } else {
+          // No words, go to SUBMIT
+          quickPlayState.focusType = 'submit';
+        }
+      } else if (quickPlayState.focusType === 'word') {
+        // WORD GRID → SUBMIT
         quickPlayState.focusType = 'submit';
       } else if (quickPlayState.focusType === 'submit') {
+        // SUBMIT → UNDO (cycle)
         quickPlayState.focusType = 'undo';
-      } else if (quickPlayState.focusType === 'word') {
-        quickPlayState.focusType = 'submit';
       }
     } else {
       // direction === 'up'
       if (quickPlayState.focusType === 'submit') {
+        // SUBMIT → WORD GRID
+        if (quickPlayState.availableWords.length > 0) {
+          quickPlayState.focusType = 'word';
+          quickPlayState.selectedWordIndex = quickPlayState.availableWords.length - 1;
+        } else {
+          // No words, go to UNDO
+          quickPlayState.focusType = 'undo';
+        }
+      } else if (quickPlayState.focusType === 'word') {
+        // WORD GRID → UNDO
         quickPlayState.focusType = 'undo';
       } else if (quickPlayState.focusType === 'undo') {
+        // UNDO → SUBMIT (cycle)
         quickPlayState.focusType = 'submit';
-      } else if (quickPlayState.focusType === 'word') {
-        quickPlayState.focusType = 'undo';
       }
     }
     updateFocus();
