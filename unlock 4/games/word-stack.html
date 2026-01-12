@@ -2998,7 +2998,7 @@ body{padding-top:var(--unlock-bar-h);}
     // Navigation flow: UNDO → WORD GRID → SUBMIT
     if (direction === 'down') {
       if (quickPlayState.focusType === 'undo') {
-        // UNDO → WORD GRID
+        // UNDO → WORD GRID (first word)
         if (quickPlayState.availableWords.length > 0) {
           quickPlayState.focusType = 'word';
           quickPlayState.selectedWordIndex = 0;
@@ -3007,8 +3007,21 @@ body{padding-top:var(--unlock-bar-h);}
           quickPlayState.focusType = 'submit';
         }
       } else if (quickPlayState.focusType === 'word') {
-        // WORD GRID → SUBMIT
-        quickPlayState.focusType = 'submit';
+        // In word grid: try to move down a row
+        const wordCount = quickPlayState.availableWords.length;
+        const cols = 3;
+        const currentIdx = quickPlayState.selectedWordIndex;
+        const currentRow = Math.floor(currentIdx / cols);
+        const nextRowStart = (currentRow + 1) * cols;
+
+        if (nextRowStart < wordCount) {
+          // There's a next row, move to it (same column or last available)
+          const currentCol = currentIdx % cols;
+          quickPlayState.selectedWordIndex = Math.min(nextRowStart + currentCol, wordCount - 1);
+        } else {
+          // No next row, go to SUBMIT
+          quickPlayState.focusType = 'submit';
+        }
       } else if (quickPlayState.focusType === 'submit') {
         // SUBMIT → UNDO (cycle)
         quickPlayState.focusType = 'undo';
@@ -3016,7 +3029,7 @@ body{padding-top:var(--unlock-bar-h);}
     } else {
       // direction === 'up'
       if (quickPlayState.focusType === 'submit') {
-        // SUBMIT → WORD GRID
+        // SUBMIT → WORD GRID (last word)
         if (quickPlayState.availableWords.length > 0) {
           quickPlayState.focusType = 'word';
           quickPlayState.selectedWordIndex = quickPlayState.availableWords.length - 1;
@@ -3025,8 +3038,20 @@ body{padding-top:var(--unlock-bar-h);}
           quickPlayState.focusType = 'undo';
         }
       } else if (quickPlayState.focusType === 'word') {
-        // WORD GRID → UNDO
-        quickPlayState.focusType = 'undo';
+        // In word grid: try to move up a row
+        const currentIdx = quickPlayState.selectedWordIndex;
+        const cols = 3;
+        const currentRow = Math.floor(currentIdx / cols);
+        const prevRowStart = (currentRow - 1) * cols;
+
+        if (currentRow > 0) {
+          // There's a previous row, move to it (same column)
+          const currentCol = currentIdx % cols;
+          quickPlayState.selectedWordIndex = prevRowStart + currentCol;
+        } else {
+          // No previous row (in first row), go to UNDO
+          quickPlayState.focusType = 'undo';
+        }
       } else if (quickPlayState.focusType === 'undo') {
         // UNDO → SUBMIT (cycle)
         quickPlayState.focusType = 'submit';
