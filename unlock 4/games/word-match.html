@@ -1384,6 +1384,34 @@ function showTimeBonus(text, isPerfect) {
   setTimeout(() => toast.remove(), 1000);
 }
 
+// Class descriptions
+const AULA_DESCRIPTIONS = {
+  1: "Domine o verbo 'to be' no presente. Aprenda a descrever estados e condições de pessoas e objetos.",
+  2: "Aprenda a contar e reconhecer números em inglês. Essencial para comunicação diária e matemática básica.",
+  3: "Pratique fazer perguntas educadas sobre posse. Útil para interações cotidianas e pedidos.",
+  4: "Entenda o verbo 'get' e seus diversos significados. Um verbo fundamental com múltiplos contextos.",
+  5: "Aprenda verbos direcionais 'go' e 'come'. Essencial para descrever movimento e viagem.",
+  6: "Domine 'going to' para intenções futuras. Aprenda a expressar o que você planeja fazer.",
+  7: "Diferencie entre 'have' e 'has'. Essencial para posse e tempos perfeitos do presente.",
+  8: "Aprenda 'have to' e 'need to' para obrigações. Expresse o que você deve ou precisa fazer.",
+  9: "Domine 'here' e 'there' para localização. Aprenda relações espaciais e direções.",
+  10: "Faça perguntas com 'how much' e 'how many'. Perfeito para compras e quantidades.",
+  11: "Domine 'how' e seus muitos usos. Pergunte sobre modo, frequência e mais.",
+  12: "Pratique formação de perguntas com 'is' e 'are'. Essencial para habilidades de investigação.",
+  13: "Aprenda o verbo versátil 'can'. Expresse habilidade, possibilidade e permissão.",
+  14: "Domine os dias da semana. Essencial para agendamento e planejamento.",
+  15: "Aprenda vocabulário e frases direcionais. Navegue e dê direções com confiança.",
+  16: "Domine 'do', 'does' e 'did'. Fundamental para formar perguntas e negativas.",
+  17: "Pratique pedidos educados com 'let me' e 'can I'. Essencial para educação.",
+  18: "Expresse seus sentimentos e opiniões. Aprenda 'like', 'love' e 'hate' em diferentes intensidades.",
+  19: "Pratique expressões com 'looking for'. Essencial para compras e encontrar coisas.",
+  20: "Domine meses e estações. Aprenda vocabulário temporal para planejamento.",
+  21: "Expresse emoções e estados de espírito. Descreva como você e outros estão se sentindo.",
+  22: "Aplique números em contextos reais. Números usados em situações cotidianas.",
+  23: "Domine 'this' e 'that'. Demonstre e especifique objetos na conversa.",
+  24: "Expresse desejos e necessidades. Aprenda 'want' e 'need' em vários contextos."
+};
+
 // Menu
 function renderMenu() {
   const container = document.getElementById('aulas-list');
@@ -1441,13 +1469,40 @@ function renderMenu() {
       window.location.href = `../aulas.html?lesson=${aulaId}&returnTo=games/word-match.html`;
     });
 
+    // Create tooltip
+    const tooltip = document.createElement('div');
+    tooltip.style.cssText = `
+      position: absolute;
+      top: 65px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.95);
+      color: var(--gold);
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      white-space: normal;
+      width: 220px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      border: 1px solid var(--gold);
+      z-index: 20;
+      line-height: 1.4;
+    `;
+    tooltip.textContent = AULA_DESCRIPTIONS[aula.id] || '';
+    wrapper.appendChild(tooltip);
+
     studyBtn.addEventListener('mouseenter', () => {
       studyBtn.style.transform = 'scale(1.2)';
       studyBtn.style.boxShadow = '0 8px 25px rgba(255,215,0,0.6)';
+      tooltip.style.opacity = '1';
     });
     studyBtn.addEventListener('mouseleave', () => {
       studyBtn.style.transform = 'scale(1)';
       studyBtn.style.boxShadow = '0 4px 15px rgba(255,215,0,0.3)';
+      tooltip.style.opacity = '0';
     });
 
     wrapper.addEventListener('mouseenter', () => {

@@ -1,0 +1,388 @@
+{
+  "classes": [
+    {
+      "id": 1,
+      "title": "IS / ARE",
+      "emoji": "🔵🟢",
+      "description": "Domine o verbo 'to be' no presente. Aprenda a descrever estados e condições de pessoas e objetos.",
+      "pairs": [
+        { "pt": "ele está feliz", "en": "he is happy" },
+        { "pt": "ela está triste", "en": "she is sad" },
+        { "pt": "eu estou cansado", "en": "i am tired" },
+        { "pt": "você está atrasado", "en": "you are late" },
+        { "pt": "nós estamos prontos", "en": "we are ready" },
+        { "pt": "eles estão aqui", "en": "they are here" },
+        { "pt": "isso é grande", "en": "it is big" },
+        { "pt": "ela é inteligente", "en": "she is smart" }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "NUMBERS",
+      "emoji": "🔢",
+      "description": "Aprenda a contar e reconhecer números em inglês. Essencial para comunicação diária e matemática básica.",
+      "pairs": [
+        { "pt": "um", "en": "one" },
+        { "pt": "dois", "en": "two" },
+        { "pt": "três", "en": "three" },
+        { "pt": "quatro", "en": "four" },
+        { "pt": "cinco", "en": "five" },
+        { "pt": "seis", "en": "six" },
+        { "pt": "sete", "en": "seven" },
+        { "pt": "oito", "en": "eight" }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "DO YOU HAVE?",
+      "emoji": "❓",
+      "description": "Pratique fazer perguntas educadas sobre posse. Útil para interações cotidianas e pedidos.",
+      "pairs": [
+        { "pt": "você tem uma caneta?", "en": "do you have a pen?" },
+        { "pt": "você tem tempo?", "en": "do you have time?" },
+        { "pt": "você tem dinheiro?", "en": "do you have money?" },
+        { "pt": "você tem um carro?", "en": "do you have a car?" },
+        { "pt": "você tem um telefone?", "en": "do you have a phone?" },
+        { "pt": "você tem um livro?", "en": "do you have a book?" },
+        { "pt": "você tem uma ideia?", "en": "do you have an idea?" },
+        { "pt": "você tem um plano?", "en": "do you have a plan?" }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "GET",
+      "emoji": "✋",
+      "description": "Entenda o verbo 'get' e seus diversos significados. Um verbo fundamental com múltiplos contextos.",
+      "pairs": [
+        { "pt": "pegue o livro", "en": "get the book" },
+        { "pt": "levante cedo", "en": "get up early" },
+        { "pt": "prepare-se", "en": "get ready" },
+        { "pt": "obtenha ajuda", "en": "get help" },
+        { "pt": "perca-se", "en": "get lost" },
+        { "pt": "fique com raiva", "en": "get angry" },
+        { "pt": "vista-se", "en": "get dressed" },
+        { "pt": "comece", "en": "get started" }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "GO / COME",
+      "emoji": "🚶",
+      "description": "Aprenda verbos direcionais 'go' e 'come'. Essencial para descrever movimento e viagem.",
+      "pairs": [
+        { "pt": "vá para casa", "en": "go home" },
+        { "pt": "venha aqui", "en": "come here" },
+        { "pt": "vá embora", "en": "go away" },
+        { "pt": "volte", "en": "come back" },
+        { "pt": "vá rápido", "en": "go fast" },
+        { "pt": "entre", "en": "come inside" },
+        { "pt": "saia", "en": "go out" },
+        { "pt": "venha comigo", "en": "come with me" }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "GOING TO",
+      "emoji": "📅",
+      "description": "Domine 'going to' para intenções futuras. Aprenda a expressar o que você planeja fazer.",
+      "pairs": [
+        { "pt": "vou estudar", "en": "i am going to study" },
+        { "pt": "ele vai trabalhar", "en": "he is going to work" },
+        { "pt": "ela vai dormir", "en": "she is going to sleep" },
+        { "pt": "vamos comer", "en": "we are going to eat" },
+        { "pt": "eles vão brincar", "en": "they are going to play" },
+        { "pt": "você vai vencer", "en": "you are going to win" },
+        { "pt": "vai chover", "en": "it is going to rain" },
+        { "pt": "vou ligar", "en": "i am going to call" }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "HAVE / HAS",
+      "emoji": "🤲",
+      "description": "Diferencie entre 'have' e 'has'. Essencial para posse e tempos perfeitos do presente.",
+      "pairs": [
+        { "pt": "tenho uma caneta", "en": "i have a pen" },
+        { "pt": "ele tem um livro", "en": "he has a book" },
+        { "pt": "ela tem dinheiro", "en": "she has money" },
+        { "pt": "eles têm tempo", "en": "they have time" },
+        { "pt": "temos um plano", "en": "we have a plan" },
+        { "pt": "você tem um trabalho", "en": "you have a job" },
+        { "pt": "tem uma porta", "en": "it has a door" },
+        { "pt": "tenho uma ideia", "en": "i have an idea" }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "HAVE TO / NEED TO",
+      "emoji": "⚠️",
+      "description": "Aprenda 'have to' e 'need to' para obrigações. Expresse o que você deve ou precisa fazer.",
+      "pairs": [
+        { "pt": "tenho que ir", "en": "i have to go" },
+        { "pt": "você precisa estudar", "en": "you need to study" },
+        { "pt": "ele tem que trabalhar", "en": "he has to work" },
+        { "pt": "ela precisa dormir", "en": "she needs to sleep" },
+        { "pt": "temos que comer", "en": "we have to eat" },
+        { "pt": "eles precisam praticar", "en": "they need to practice" },
+        { "pt": "tem que ser feito", "en": "it has to be done" },
+        { "pt": "preciso da sua ajuda", "en": "i need your help" }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "HERE / THERE",
+      "emoji": "📍",
+      "description": "Domine 'here' e 'there' para localização. Aprenda relações espaciais e direções.",
+      "pairs": [
+        { "pt": "aqui está o livro", "en": "here is the book" },
+        { "pt": "lá está uma caneta", "en": "there is a pen" },
+        { "pt": "aqui estão as chaves", "en": "here are the keys" },
+        { "pt": "lá tem muitas pessoas", "en": "there are many people" },
+        { "pt": "venha aqui", "en": "come here" },
+        { "pt": "vá lá", "en": "go there" },
+        { "pt": "fique aqui", "en": "stay here" },
+        { "pt": "olhe lá", "en": "look there" }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "HOW MUCH / HOW MANY",
+      "emoji": "💰",
+      "description": "Faça perguntas com 'how much' e 'how many'. Perfeito para compras e quantidades.",
+      "pairs": [
+        { "pt": "quanto custa?", "en": "how much is it?" },
+        { "pt": "quantas pessoas?", "en": "how many people?" },
+        { "pt": "quanto dinheiro?", "en": "how much money?" },
+        { "pt": "quantos livros?", "en": "how many books?" },
+        { "pt": "quanto tempo?", "en": "how much time?" },
+        { "pt": "quantos dias?", "en": "how many days?" },
+        { "pt": "quanta água?", "en": "how much water?" },
+        { "pt": "quantas horas?", "en": "how many hours?" }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "HOW",
+      "emoji": "❔",
+      "description": "Domine 'how' e seus muitos usos. Pergunte sobre modo, frequência e mais.",
+      "pairs": [
+        { "pt": "como você está?", "en": "how are you?" },
+        { "pt": "quantos anos você tem?", "en": "how old are you?" },
+        { "pt": "como você se sente?", "en": "how do you feel?" },
+        { "pt": "quanto tempo é?", "en": "how long is it?" },
+        { "pt": "com que frequência?", "en": "how often?" },
+        { "pt": "que distância?", "en": "how far?" },
+        { "pt": "que tamanho?", "en": "how big?" },
+        { "pt": "que velocidade?", "en": "how fast?" }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "IS / ARE QUESTIONS",
+      "emoji": "❓✋",
+      "description": "Pratique formação de perguntas com 'is' e 'are'. Essencial para habilidades de investigação.",
+      "pairs": [
+        { "pt": "isso está certo?", "en": "is this right?" },
+        { "pt": "você está pronto?", "en": "are you ready?" },
+        { "pt": "ele está feliz?", "en": "is he happy?" },
+        { "pt": "eles estão aqui?", "en": "are they here?" },
+        { "pt": "é grande?", "en": "is it big?" },
+        { "pt": "estamos atrasados?", "en": "are we late?" },
+        { "pt": "ela é inteligente?", "en": "is she smart?" },
+        { "pt": "você está cansado?", "en": "are you tired?" }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "CAN",
+      "emoji": "💪",
+      "description": "Aprenda o verbo versátil 'can'. Expresse habilidade, possibilidade e permissão.",
+      "pairs": [
+        { "pt": "posso ajudar", "en": "i can help" },
+        { "pt": "você consegue fazer", "en": "you can do it" },
+        { "pt": "ele consegue falar inglês", "en": "he can speak english" },
+        { "pt": "ela consegue dançar", "en": "she can dance" },
+        { "pt": "podemos vencer", "en": "we can win" },
+        { "pt": "eles conseguem cantar", "en": "they can sing" },
+        { "pt": "pode funcionar", "en": "it can work" },
+        { "pt": "posso tentar", "en": "i can try" }
+      ]
+    },
+    {
+      "id": 14,
+      "title": "DAYS OF THE WEEK",
+      "emoji": "📆",
+      "description": "Domine os dias da semana. Essencial para agendamento e planejamento.",
+      "pairs": [
+        { "pt": "segunda-feira", "en": "monday" },
+        { "pt": "terça-feira", "en": "tuesday" },
+        { "pt": "quarta-feira", "en": "wednesday" },
+        { "pt": "quinta-feira", "en": "thursday" },
+        { "pt": "sexta-feira", "en": "friday" },
+        { "pt": "sábado", "en": "saturday" },
+        { "pt": "domingo", "en": "sunday" },
+        { "pt": "hoje é segunda", "en": "today is monday" }
+      ]
+    },
+    {
+      "id": 15,
+      "title": "DIRECTIONS",
+      "emoji": "🗺️",
+      "description": "Aprenda vocabulário e frases direcionais. Navegue e dê direções com confiança.",
+      "pairs": [
+        { "pt": "vire à esquerda", "en": "go left" },
+        { "pt": "vire à direita", "en": "turn right" },
+        { "pt": "vá em frente", "en": "go straight" },
+        { "pt": "vá para frente", "en": "go forward" },
+        { "pt": "vá para trás", "en": "go back" },
+        { "pt": "suba", "en": "go up" },
+        { "pt": "desça", "en": "go down" },
+        { "pt": "por aqui", "en": "this way" }
+      ]
+    },
+    {
+      "id": 16,
+      "title": "DO / DOES / DID",
+      "emoji": "⚙️",
+      "description": "Domine 'do', 'does' e 'did'. Fundamental para formar perguntas e negativas.",
+      "pairs": [
+        { "pt": "você entende?", "en": "do you understand?" },
+        { "pt": "ele sabe?", "en": "does he know?" },
+        { "pt": "você viu?", "en": "did you see?" },
+        { "pt": "eu gosto", "en": "i do like it" },
+        { "pt": "ela trabalha aqui", "en": "she does work here" },
+        { "pt": "eles foram", "en": "they did go" },
+        { "pt": "faça agora", "en": "do it now" },
+        { "pt": "importa?", "en": "does it matter?" }
+      ]
+    },
+    {
+      "id": 17,
+      "title": "LET ME / CAN I",
+      "emoji": "🙏",
+      "description": "Pratique pedidos educados com 'let me' e 'can I'. Essencial para educação.",
+      "pairs": [
+        { "pt": "deixe-me ajudar", "en": "let me help" },
+        { "pt": "posso ajudá-lo?", "en": "can i help you?" },
+        { "pt": "deixe-me ver", "en": "let me see" },
+        { "pt": "posso perguntar?", "en": "can i ask?" },
+        { "pt": "deixe-me tentar", "en": "let me try" },
+        { "pt": "posso ir?", "en": "can i go?" },
+        { "pt": "deixe-me explicar", "en": "let me explain" },
+        { "pt": "posso ficar?", "en": "can i stay?" }
+      ]
+    },
+    {
+      "id": 18,
+      "title": "LIKE / LOVE / HATE",
+      "emoji": "❤️",
+      "description": "Expresse seus sentimentos e opiniões. Aprenda 'like', 'love' e 'hate' em diferentes intensidades.",
+      "pairs": [
+        { "pt": "eu gosto", "en": "i like it" },
+        { "pt": "eu te amo", "en": "i love you" },
+        { "pt": "eu odeio", "en": "i hate it" },
+        { "pt": "ele gosta de esportes", "en": "he likes sports" },
+        { "pt": "ela ama música", "en": "she loves music" },
+        { "pt": "eles odeiam esperar", "en": "they hate waiting" },
+        { "pt": "você gosta?", "en": "do you like it?" },
+        { "pt": "eu realmente amo isso", "en": "i really love this" }
+      ]
+    },
+    {
+      "id": 19,
+      "title": "LOOKING FOR",
+      "emoji": "🔍",
+      "description": "Pratique expressões com 'looking for'. Essencial para compras e encontrar coisas.",
+      "pairs": [
+        { "pt": "estou procurando ajuda", "en": "i am looking for help" },
+        { "pt": "você está procurando por isso?", "en": "are you looking for this?" },
+        { "pt": "ele está procurando um trabalho", "en": "he is looking for a job" },
+        { "pt": "ela está procurando uma chave", "en": "she is looking for a key" },
+        { "pt": "estamos procurando respostas", "en": "we are looking for answers" },
+        { "pt": "eles estão procurando por ele", "en": "they are looking for him" },
+        { "pt": "procurando confusão", "en": "looking for trouble" },
+        { "pt": "pelo que você está procurando?", "en": "what are you looking for?" }
+      ]
+    },
+    {
+      "id": 20,
+      "title": "MONTHS / SEASONS",
+      "emoji": "🍂",
+      "description": "Domine meses e estações. Aprenda vocabulário temporal para planejamento.",
+      "pairs": [
+        { "pt": "janeiro", "en": "january" },
+        { "pt": "fevereiro", "en": "february" },
+        { "pt": "primavera", "en": "spring" },
+        { "pt": "verão", "en": "summer" },
+        { "pt": "outono", "en": "fall" },
+        { "pt": "inverno", "en": "winter" },
+        { "pt": "março", "en": "march" },
+        { "pt": "dezembro", "en": "december" }
+      ]
+    },
+    {
+      "id": 21,
+      "title": "MOODS / FEELINGS",
+      "emoji": "😊",
+      "description": "Expresse emoções e estados de espírito. Descreva como você e outros estão se sentindo.",
+      "pairs": [
+        { "pt": "estou feliz", "en": "i am happy" },
+        { "pt": "você está triste", "en": "you are sad" },
+        { "pt": "ele está com raiva", "en": "he is angry" },
+        { "pt": "ela está animada", "en": "she is excited" },
+        { "pt": "eles estão preocupados", "en": "they are worried" },
+        { "pt": "estamos cansados", "en": "we are tired" },
+        { "pt": "é lindo", "en": "it is beautiful" },
+        { "pt": "tenho medo", "en": "i am scared" }
+      ]
+    },
+    {
+      "id": 22,
+      "title": "NUMBERS REAL LIFE",
+      "emoji": "🔢📱",
+      "description": "Aplique números em contextos reais. Números usados em situações cotidianas.",
+      "pairs": [
+        { "pt": "tenho 5 maçãs", "en": "i have 5 apples" },
+        { "pt": "há 10 pessoas", "en": "there are 10 people" },
+        { "pt": "custa 20 dólares", "en": "it costs 20 dollars" },
+        { "pt": "trabalhei 8 horas", "en": "i worked 8 hours" },
+        { "pt": "o preço é 15 reais", "en": "the price is 15 reais" },
+        { "pt": "há 365 dias", "en": "there are 365 days" },
+        { "pt": "tenho 3 irmãos", "en": "i have 3 brothers" },
+        { "pt": "a temperatura é 25 graus", "en": "the temperature is 25 degrees" }
+      ]
+    },
+    {
+      "id": 23,
+      "title": "THIS / THAT",
+      "emoji": "👉",
+      "description": "Domine 'this' e 'that'. Demonstre e especifique objetos na conversa.",
+      "pairs": [
+        { "pt": "isso é bom", "en": "this is good" },
+        { "pt": "aquilo é ruim", "en": "that is bad" },
+        { "pt": "isso é meu", "en": "this is mine" },
+        { "pt": "aquilo é seu", "en": "that is yours" },
+        { "pt": "gosto deste", "en": "i like this one" },
+        { "pt": "prefiro aquele", "en": "i prefer that one" },
+        { "pt": "isso está aqui", "en": "this is here" },
+        { "pt": "aquilo está lá", "en": "that is there" }
+      ]
+    },
+    {
+      "id": 24,
+      "title": "WANT / NEED",
+      "emoji": "🎯",
+      "description": "Expresse desejos e necessidades. Aprenda 'want' e 'need' em vários contextos.",
+      "pairs": [
+        { "pt": "quero ajudar", "en": "i want to help" },
+        { "pt": "você precisa estudar", "en": "you need to study" },
+        { "pt": "ele quer brincar", "en": "he wants to play" },
+        { "pt": "ela precisa de um intervalo", "en": "she needs a break" },
+        { "pt": "queremos vencer", "en": "we want to win" },
+        { "pt": "eles precisam de dinheiro", "en": "they need money" },
+        { "pt": "você quer isso?", "en": "do you want this?" },
+        { "pt": "preciso da sua ajuda", "en": "i need your help" }
+      ]
+    }
+  ]
+}
