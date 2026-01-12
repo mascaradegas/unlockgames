@@ -623,7 +623,14 @@ body{padding-top:var(--unlock-bar-h);}
 
 .quick-play-timer.danger {
   border-color: var(--red);
-  animation: timerPulse 0.5s ease-in-out infinite;
+  background: linear-gradient(135deg, rgba(255,68,68,0.2), rgba(255,68,68,0.1));
+  animation: pulseRed 0.6s ease-in-out infinite;
+}
+
+.quick-play-timer.critical {
+  border-color: var(--red);
+  background: linear-gradient(135deg, rgba(255,68,68,0.3), rgba(255,68,68,0.2));
+  animation: pulseRed 0.3s ease-in-out infinite;
 }
 
 @keyframes timerPulse {
@@ -856,6 +863,42 @@ body{padding-top:var(--unlock-bar-h);}
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
+}
+
+@keyframes waveEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes screenShake {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  10% { transform: translateX(-8px) translateY(-8px); }
+  20% { transform: translateX(8px) translateY(8px); }
+  30% { transform: translateX(-8px) translateY(8px); }
+  40% { transform: translateX(8px) translateY(-8px); }
+  50% { transform: translateX(-4px) translateY(-4px); }
+  60% { transform: translateX(4px) translateY(4px); }
+  70% { transform: translateX(-4px) translateY(4px); }
+  80% { transform: translateX(4px) translateY(-4px); }
+}
+
+@keyframes pulseRed {
+  0%, 100% { box-shadow: 0 0 0 rgba(255, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(255, 68, 68, 0.8); }
+}
+
+@keyframes pulseGreen {
+  0%, 100% { box-shadow: 0 0 0 rgba(0, 255, 136, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.8); }
 }
 
 .powerups-container {
@@ -1988,6 +2031,15 @@ function startQuickPlayWave() {
 
   renderQuickPlayCards();
   updateQuickPlayHUD();
+
+  // Animate cards entrance
+  setTimeout(() => {
+    const cards = document.querySelectorAll('.qp-card');
+    cards.forEach((card, idx) => {
+      card.style.animation = `waveEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 0.05}s`;
+    });
+  }, 50);
+
   startQuickPlayMatchTimer();
 }
 
@@ -2200,8 +2252,19 @@ function startQuickPlayMatchTimer() {
     const percent = (quickPlayState.timerSeconds / quickPlayState.timerStartTime) * 100;
     timerFill.style.width = percent + '%';
 
-    if (quickPlayState.timerSeconds <= 3) {
+    // Visual urgency scaling
+    timerEl.classList.remove('danger', 'critical');
+    if (quickPlayState.timerSeconds <= 1) {
+      timerEl.classList.add('critical');
+      timerValue.style.color = 'var(--red)';
+      timerValue.style.textShadow = '0 0 15px var(--red)';
+    } else if (quickPlayState.timerSeconds <= 3) {
       timerEl.classList.add('danger');
+      timerValue.style.color = 'var(--red)';
+      timerValue.style.textShadow = '0 0 10px var(--red)';
+    } else {
+      timerValue.style.color = 'var(--red)';
+      timerValue.style.textShadow = 'none';
     }
 
     if (quickPlayState.timerSeconds <= 0) {
@@ -2337,42 +2400,61 @@ function updatePowerupUI() {
 }
 
 function showWavePerfectNotification(powerup, label = '✨ PERFECT WAVE!') {
+  // Screen shake effect
+  const screen = document.querySelector('#screen-quickplay');
+  if (screen) {
+    screen.style.animation = 'screenShake 0.6s ease-out';
+    setTimeout(() => {
+      screen.style.animation = '';
+    }, 600);
+  }
+
   const notification = document.createElement('div');
   notification.style.cssText = `
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,255,136,0.1));
+    background: linear-gradient(135deg, rgba(0,255,136,0.3), rgba(0,255,136,0.15));
     border: 3px solid var(--green);
     border-radius: 15px;
     padding: 30px 40px;
     text-align: center;
     font-family: Orbitron, sans-serif;
     color: var(--green);
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 1.5rem;
+    font-weight: 900;
     z-index: 10000;
     pointer-events: none;
-    animation: popIn 0.4s ease-out;
+    animation: waveEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 40px rgba(0,255,136,0.6);
   `;
-  notification.textContent = `${powerup.name} +1 ${label}`;
+  notification.innerHTML = `<div>${label}</div><div style="font-size: 2rem; margin-top: 10px;">${powerup.name}</div>`;
   document.body.appendChild(notification);
 
   setTimeout(() => {
-    notification.style.animation = 'fadeOut 0.4s ease-out forwards';
-    setTimeout(() => notification.remove(), 400);
-  }, 3000);
+    notification.style.animation = 'fadeOut 0.5s ease-out forwards';
+    setTimeout(() => notification.remove(), 500);
+  }, 2500);
 }
 
 function showWaveImperfectNotification() {
+  // Light screen shake for imperfect
+  const screen = document.querySelector('#screen-quickplay');
+  if (screen) {
+    screen.style.animation = 'screenShake 0.4s ease-out';
+    setTimeout(() => {
+      screen.style.animation = '';
+    }, 400);
+  }
+
   const notification = document.createElement('div');
   notification.style.cssText = `
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: linear-gradient(135deg, rgba(255,68,68,0.2), rgba(255,68,68,0.1));
+    background: linear-gradient(135deg, rgba(255,68,68,0.3), rgba(255,68,68,0.15));
     border: 3px solid var(--red);
     border-radius: 15px;
     padding: 30px 40px;
@@ -2380,18 +2462,19 @@ function showWaveImperfectNotification() {
     font-family: Orbitron, sans-serif;
     color: var(--red);
     font-size: 1.3rem;
-    font-weight: 700;
+    font-weight: 900;
     z-index: 10000;
     pointer-events: none;
-    animation: popIn 0.4s ease-out;
+    animation: waveEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 40px rgba(255,68,68,0.6);
   `;
-  notification.textContent = '❌ IMPERFECT WAVE - Mistakes detected';
+  notification.innerHTML = `<div>❌ IMPERFECT WAVE</div><div style="font-size: 0.9rem; margin-top: 8px;">Mistakes detected</div>`;
   document.body.appendChild(notification);
 
   setTimeout(() => {
-    notification.style.animation = 'fadeOut 0.4s ease-out forwards';
-    setTimeout(() => notification.remove(), 400);
-  }, 3000);
+    notification.style.animation = 'fadeOut 0.5s ease-out forwards';
+    setTimeout(() => notification.remove(), 500);
+  }, 2000);
 }
 
 function endQuickPlay() {
