@@ -49,10 +49,10 @@ async function loadClassesData() {
   }
 }
 
-// Load on page load
-document.addEventListener('DOMContentLoaded', loadClassesData);
+// Don't auto-load - let the game's init() function call loadClassesData when ready
+// This prevents double-loading and race conditions
 
-// Also expose it globally in case it's needed
+// Expose globally for games to use
 window.loadClassesData = loadClassesData;
 window.getAulas = () => AULAS;
 window.getDescriptions = () => AULA_DESCRIPTIONS;
