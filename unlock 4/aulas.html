@@ -196,13 +196,114 @@ const lessonsData = {
     what: { title: "WHAT", slides: [
         { type: 'title', emoji: '❓🤔', title: 'WHAT', subtitle: 'Perguntar "o que"' },
         { type: 'text', text: 'Você não entendeu o que a pessoa disse.<br><br>Quer perguntar <strong>"o que?"</strong>' },
+        { type: 'scenario', cardClass: 'purple', emoji: '🏪',
+          context: 'Você está numa loja em Boston. O vendedor fala rápido...',
+          dialogue: [
+            { speaker: 'Vendedor', text: 'This is on sale for twenty bucks...' },
+            { speaker: 'Você', text: '❓ (não entendeu nada)', highlight: true },
+            { speaker: 'Sua mente', text: 'COMO EU PERGUNTO O QUE ELE DISSE??' }
+          ]
+        },
         { type: 'rule', cardClass: 'cyan', text: '<span class="hl-cyan">WHAT</span> é a palavra.', keyword: '"o que" / "qual"' },
+        { type: 'pronunciation', cardClass: 'orange', emoji: '🎤',
+          word: 'WHAT',
+          phonetic: '/wʌt/',
+          tip: 'Som de "U" + "ÓT"',
+          commonMistake: '❌ Não fale "UATE"<br>✅ Fale "UÓT"'
+        },
         { type: 'example', cardClass: 'cyan', emoji: '🔑', question: '<span class="hl-cyan">What</span> is this?', questionTr: 'O que é isso?', answer: "It's a key.", answerTr: 'É uma chave.' },
         { type: 'example', cardClass: 'cyan', emoji: '💭', question: '<span class="hl-cyan">What</span> do you want?', questionTr: 'O que você quer?', answer: 'I want water.', answerTr: 'Quero água.' },
         { type: 'example', cardClass: 'cyan', emoji: '⏰', question: '<span class="hl-cyan">What</span> time is it?', questionTr: 'Que horas são?', answer: "It's 3 o'clock.", answerTr: 'São 3 horas.' },
-        { type: 'text', text: '<span class="hl-cyan">WHAT</span> = o que / qual<br><br>A pergunta mais <strong>versátil</strong>.' },
+        { type: 'example', cardClass: 'cyan', emoji: '📱', question: '<span class="hl-cyan">What</span> is your number?', questionTr: 'Qual é seu número?', answer: "It's 555-0123.", answerTr: 'É 555-0123.' },
+        { type: 'example', cardClass: 'cyan', emoji: '🍔', question: '<span class="hl-cyan">What</span> do you recommend?', questionTr: 'O que você recomenda?', answer: 'I recommend the burger.', answerTr: 'Recomendo o hambúrguer.' },
+        { type: 'example', cardClass: 'cyan', emoji: '🎬', question: '<span class="hl-cyan">What</span> are you watching?', questionTr: 'O que você tá assistindo?', answer: "I'm watching a movie.", answerTr: 'Tô assistindo um filme.' },
+        { type: 'example', cardClass: 'cyan', emoji: '🎵', question: '<span class="hl-cyan">What</span> song is this?', questionTr: 'Que música é essa?', answer: "It's by Beyoncé.", answerTr: 'É da Beyoncé.' },
+        { type: 'text', text: '💬 Agora veja <span class="hl-gold">conversas reais</span> usando WHAT' },
+        { type: 'dialogue', cardClass: 'green', emoji: '☕', title: 'No Starbucks',
+          lines: [
+            { speaker: 'Você', text: '<span class="hl-cyan">What</span> do you have?', translation: 'O que vocês têm?' },
+            { speaker: 'Barista', text: 'We have coffee, tea, and smoothies.', translation: 'Temos café, chá e smoothies.' },
+            { speaker: 'Você', text: '<span class="hl-cyan">What</span> size is this?', translation: 'Que tamanho é esse?' },
+            { speaker: 'Barista', text: "That's a grande - medium.", translation: 'Esse é grande - médio.' }
+          ]
+        },
+        { type: 'dialogue', cardClass: 'green', emoji: '🏨', title: 'No Hotel',
+          lines: [
+            { speaker: 'Recepcionista', text: 'Your room is 302.', translation: 'Seu quarto é 302.' },
+            { speaker: 'Você', text: '<span class="hl-cyan">What</span> floor?', translation: 'Que andar?' },
+            { speaker: 'Recepcionista', text: 'Third floor. Elevator is on the right.', translation: 'Terceiro andar. Elevador à direita.' },
+            { speaker: 'Você', text: '<span class="hl-cyan">What</span> time is breakfast?', translation: 'Que horas é o café?' },
+            { speaker: 'Recepcionista', text: '6 to 10 AM.', translation: 'Das 6 às 10 da manhã.' }
+          ]
+        },
+        { type: 'dialogue', cardClass: 'green', emoji: '🛒', title: 'No Supermercado',
+          lines: [
+            { speaker: 'Funcionário', text: 'Can I help you?', translation: 'Posso ajudar?' },
+            { speaker: 'Você', text: '<span class="hl-cyan">What</span> aisle is the milk?', translation: 'Que corredor fica o leite?' },
+            { speaker: 'Funcionário', text: 'Aisle 5, in the back.', translation: 'Corredor 5, no fundo.' }
+          ]
+        },
+        { type: 'error', text: '❌ Erros comuns que VOCÊ JÁ DEVE TER FEITO:',
+          errors: [
+            { wrong: 'What is your have?', right: 'What do you have?' },
+            { wrong: 'What you want?', right: 'What do you want?' },
+            { wrong: 'What mean this?', right: 'What does this mean?' }
+          ],
+          note: 'WHAT sempre precisa de verbo auxiliar (do/does/is/are)!'
+        },
+        { type: 'tip', cardClass: 'purple', emoji: '💡',
+          title: 'DICA PRO',
+          tips: [
+            'Se não entendeu: só fale "What?" com tom de pergunta',
+            '"What?" sozinho é informal, mas funciona',
+            'Mais educado: "Sorry, what was that?"',
+            '"What" + "the" = frase de surpresa ("What the...!")'
+          ]
+        },
+        { type: 'comparison', cardClass: 'orange',
+          title: 'WHAT vs WHICH',
+          left: {
+            word: 'WHAT',
+            color: 'cyan',
+            rule: 'Infinitas opções',
+            example: 'What do you want to eat?',
+            exampleTr: '(qualquer comida do mundo)'
+          },
+          right: {
+            word: 'WHICH',
+            color: 'purple',
+            rule: '2-3 opções específicas',
+            example: 'Which one: pizza or burger?',
+            exampleTr: '(só essas 2 opções)'
+          }
+        },
+        { type: 'text', text: '<span class="hl-cyan">WHAT</span> = o que / qual<br><br>A pergunta mais <strong>versátil</strong>.<br><br>✅ Funciona em 90% das situações!' },
         { type: 'quiz', cardClass: 'cyan', question: 'Qual palavra significa "o que"?', options: ['where', 'what', 'when'], correct: 1 },
         { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete a pergunta:', sentence: '_____ is this?', correctWord: 'What' },
+        { type: 'multiple-choice', cardClass: 'green', question: 'No restaurante, você quer saber o que eles têm. Diz:',
+          options: [
+            { text: 'What you have?', explanation: 'Incorreto. Falta o "do".' },
+            { text: 'What do you have?', explanation: 'Correto! Perfeito!' },
+            { text: 'What is you have?', explanation: 'Incorreto. Use "do", não "is".' }
+          ],
+          correct: 1
+        },
+        { type: 'quiz', cardClass: 'cyan', question: 'Para perguntar as horas:', options: ['What hour is it?', 'What time is it?', 'What clock is it?'], correct: 1 },
+        { type: 'challenge', cardClass: 'purple', emoji: '🎯',
+          title: 'DESAFIO REAL',
+          situation: 'Você tá no aeroporto e precisa achar seu portão.',
+          yourGoal: 'Perguntar qual é seu portão de embarque.',
+          options: [
+            'What is my gate?',
+            'Where is my gate?',
+            'Which is my gate?'
+          ],
+          correct: 0,
+          explanation: 'WHAT = qual (perguntando o número do portão)<br>WHERE = onde fica<br>WHICH = escolher entre 2-3 opções'
+        },
+        { type: 'confidence', cardClass: 'gold', emoji: '🔥',
+          text: 'Agora você consegue usar WHAT em:<br><br>✅ Restaurantes<br>✅ Lojas<br>✅ Hotéis<br>✅ Aeroportos<br>✅ Qualquer lugar!<br><br><strong>DESBLOQUEOU: WHAT mastery! 🏆</strong>'
+        },
         { type: 'end' }
     ]},
     where: { title: "WHERE", slides: [
@@ -515,6 +616,88 @@ function renderSlideContent(s) {
             return mc;
         case 'timed-challenge':
             return '<div class="card '+c+'"><p class="text center" style="margin-bottom:20px"><strong>⏱️ Timed Challenge ('+s.timeLimit+' seconds)</strong></p><p class="timer-text" data-time="'+s.timeLimit+'">'+s.timeLimit+'s</p><div class="timer-bar"><div class="timer-fill" data-time="'+s.timeLimit+'"></div></div><p class="text center" style="margin-bottom:20px">'+s.question+'</p><div style="text-align:center">' + (s.options ? s.options.map((opt, idx) => '<div class="quiz-option" onclick="handleTimedAnswer('+idx+','+s.correct+', this)">'+opt+'</div>').join('') : '') + '</div></div>';
+        case 'dialogue':
+            let dlg = '<div class="card '+c+'">';
+            if(s.emoji) dlg += '<div class="emoji-big">'+s.emoji+'</div>';
+            if(s.title) dlg += '<p class="text center" style="margin-bottom:20px;font-weight:700;color:var(--gold)">'+s.title+'</p>';
+            s.lines.forEach(line => {
+                dlg += '<div style="margin:12px 0;padding:12px 15px;background:rgba(0,191,255,0.05);border-left:3px solid var(--cyan);border-radius:6px">';
+                dlg += '<div style="font-weight:700;color:var(--cyan);margin-bottom:5px">'+line.speaker+':</div>';
+                dlg += '<div style="font-size:1.2rem">'+line.text+'</div>';
+                dlg += '<div style="font-size:0.95rem;color:var(--gray);margin-top:5px">('+line.translation+')</div>';
+                dlg += '</div>';
+            });
+            dlg += '</div>';
+            return dlg;
+        case 'scenario':
+            let scn = '<div class="card '+c+'">';
+            if(s.emoji) scn += '<div class="emoji-big">'+s.emoji+'</div>';
+            scn += '<p class="text center" style="margin-bottom:25px;font-size:1.2rem;font-style:italic;color:var(--orange)">'+s.context+'</p>';
+            s.dialogue.forEach(line => {
+                const highlight = line.highlight ? 'background:rgba(255,215,0,0.15);border-color:var(--gold)' : 'background:rgba(0,191,255,0.05);border-color:var(--cyan)';
+                scn += '<div style="margin:10px 0;padding:10px 15px;'+highlight+';border-left:3px solid;border-radius:6px">';
+                scn += '<div style="font-weight:700;color:var(--cyan);margin-bottom:5px">'+line.speaker+':</div>';
+                scn += '<div style="font-size:1.1rem">'+line.text+'</div>';
+                scn += '</div>';
+            });
+            scn += '</div>';
+            return scn;
+        case 'pronunciation':
+            let pron = '<div class="card '+c+'">';
+            if(s.emoji) pron += '<div class="emoji-big">'+s.emoji+'</div>';
+            pron += '<div class="keyword" style="color:var(--orange)">'+s.word+'</div>';
+            pron += '<p style="font-size:1.5rem;text-align:center;color:var(--cyan);margin:15px 0">'+s.phonetic+'</p>';
+            pron += '<p class="text center" style="margin:20px 0;font-size:1.2rem">'+s.tip+'</p>';
+            if(s.commonMistake) pron += '<div style="margin-top:20px;padding:15px;background:rgba(255,68,68,0.1);border:2px solid var(--red);border-radius:10px"><p class="text center">'+s.commonMistake+'</p></div>';
+            pron += '</div>';
+            return pron;
+        case 'comparison':
+            let cmp = '<div class="card '+c+'">';
+            if(s.title) cmp += '<p class="text center" style="margin-bottom:25px;font-weight:700;font-size:1.3rem">'+s.title+'</p>';
+            cmp += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px">';
+            cmp += '<div style="padding:20px;background:rgba(0,191,255,0.1);border:2px solid var(--'+s.left.color+');border-radius:12px">';
+            cmp += '<div class="keyword" style="color:var(--'+s.left.color+');font-size:1.8rem">'+s.left.word+'</div>';
+            cmp += '<p style="text-align:center;margin:10px 0;font-weight:600">'+s.left.rule+'</p>';
+            cmp += '<p style="text-align:center;font-size:1.1rem;margin-top:15px">'+s.left.example+'</p>';
+            cmp += '<p style="text-align:center;font-size:0.9rem;color:var(--gray)">'+s.left.exampleTr+'</p>';
+            cmp += '</div>';
+            cmp += '<div style="padding:20px;background:rgba(155,109,255,0.1);border:2px solid var(--'+s.right.color+');border-radius:12px">';
+            cmp += '<div class="keyword" style="color:var(--'+s.right.color+');font-size:1.8rem">'+s.right.word+'</div>';
+            cmp += '<p style="text-align:center;margin:10px 0;font-weight:600">'+s.right.rule+'</p>';
+            cmp += '<p style="text-align:center;font-size:1.1rem;margin-top:15px">'+s.right.example+'</p>';
+            cmp += '<p style="text-align:center;font-size:0.9rem;color:var(--gray)">'+s.right.exampleTr+'</p>';
+            cmp += '</div>';
+            cmp += '</div></div>';
+            return cmp;
+        case 'tip':
+            let tip = '<div class="card '+c+'">';
+            if(s.emoji) tip += '<div class="emoji-big">'+s.emoji+'</div>';
+            tip += '<p class="text center" style="margin-bottom:20px;font-weight:700;font-size:1.3rem;color:var(--purple)">'+s.title+'</p>';
+            s.tips.forEach(t => {
+                tip += '<div style="margin:10px 0;padding:12px 15px;background:rgba(155,109,255,0.1);border-left:3px solid var(--purple);border-radius:6px">';
+                tip += '<p style="font-size:1.1rem">💡 '+t+'</p>';
+                tip += '</div>';
+            });
+            tip += '</div>';
+            return tip;
+        case 'challenge':
+            let chal = '<div class="card '+c+'">';
+            if(s.emoji) chal += '<div class="emoji-big">'+s.emoji+'</div>';
+            chal += '<p class="text center" style="margin-bottom:20px;font-weight:700;font-size:1.3rem;color:var(--purple)">'+s.title+'</p>';
+            chal += '<p class="text center" style="margin-bottom:15px;font-style:italic">'+s.situation+'</p>';
+            chal += '<p class="text center" style="margin-bottom:20px;color:var(--gold);font-weight:600">🎯 '+s.yourGoal+'</p>';
+            chal += '<div style="text-align:center">';
+            s.options.forEach((opt, idx) => {
+                chal += '<div class="quiz-option" onclick="handleChallengeAnswer('+idx+','+s.correct+',\''+s.explanation.replace(/'/g, "\\'")+'\')" style="margin:10px">'+opt+'</div>';
+            });
+            chal += '</div><div class="quiz-feedback"></div></div>';
+            return chal;
+        case 'confidence':
+            let conf = '<div class="card" style="border-color:var(--gold);background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(255,140,0,0.05))">';
+            if(s.emoji) conf += '<div class="emoji-big">'+s.emoji+'</div>';
+            conf += '<p class="text center" style="font-size:1.3rem;line-height:1.8">'+s.text+'</p>';
+            conf += '</div>';
+            return conf;
         case 'cta': return '<div class="card"><p class="text center">'+s.text+'</p></div>';
         case 'end': return '<div class="card"><div style="text-align:center"><div style="font-size:3.5rem;margin-bottom:20px">🗣️🔓</div><h1 class="slide-title">UNLOCK</h1><p style="font-family:Orbitron;font-size:2.5rem;color:var(--gold);margin:10px 0">2026</p><p class="slide-subtitle" style="margin-top:20px">Destrave Seu Inglês</p><div style="margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:15px;max-width:600px;margin-left:auto;margin-right:auto"><a href="./games/word-drop.html" class="end-game-btn" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:25px;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,191,255,0.2));border:2px solid var(--green);border-radius:12px;text-decoration:none;cursor:pointer;color:var(--white)"><div style="font-size:3rem;margin-bottom:10px">📍</div><div style="font-weight:700;font-size:1rem">Word Drop</div></a><a href="./games/word-match.html" class="end-game-btn" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:25px;background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,140,0,0.2));border:2px solid var(--gold);border-radius:12px;text-decoration:none;cursor:pointer;color:var(--white)"><div style="font-size:3rem;margin-bottom:10px">🎯</div><div style="font-weight:700;font-size:1rem">Word Match</div></a><a href="./games/word-stack.html" class="end-game-btn" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:25px;background:linear-gradient(135deg,rgba(155,109,255,0.2),rgba(200,150,255,0.2));border:2px solid var(--purple);border-radius:12px;text-decoration:none;cursor:pointer;color:var(--white)"><div style="font-size:3rem;margin-bottom:10px">📚</div><div style="font-weight:700;font-size:1rem">Word Stack</div></a></div></div></div>';
         default: return '<div class="card"><p class="text center">Slide não reconhecido</p></div>';
@@ -939,6 +1122,44 @@ function handleMCChoice(btn, selectedIdx, correctIdx) {
 function handleTimedAnswer(selectedIdx, correctIdx, btn) {
     clearTimeout(window.timerInterval);
     handleQuizAnswer(selectedIdx, correctIdx);
+}
+
+function handleChallengeAnswer(selectedIdx, correctIdx, explanation) {
+    const slide = document.querySelector('.slide.active');
+    const options = slide.querySelectorAll('.quiz-option');
+    const feedback = slide.querySelector('.quiz-feedback');
+
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+
+    if (selectedIdx === correctIdx) {
+        playSuccessSound();
+        triggerVibration(60);
+        options[correctIdx].classList.add('correct');
+        feedback.classList.add('show', 'correct');
+        feedback.innerHTML = '✅ Perfeito! ' + explanation;
+        createCelebration(true);
+        showMotivationalBadge();
+        awardStreakBonus(1);
+        setTimeout(() => {
+            animateStreakCounter();
+            showStreakPopup(getCurrentStreak());
+            unlockNextButton();
+            autoAdvanceSlide();
+        }, 1200);
+    } else {
+        playFailSound();
+        triggerVibration(50);
+        options[selectedIdx].classList.add('incorrect');
+        options[correctIdx].classList.add('correct');
+        feedback.classList.add('show', 'incorrect');
+        feedback.innerHTML = '❌ Quase! A correta é: ' + options[correctIdx].textContent + '<br><br>' + explanation;
+        setTimeout(() => {
+            options[selectedIdx].classList.remove('incorrect');
+            options[correctIdx].classList.remove('correct');
+            feedback.classList.remove('show', 'incorrect');
+            options.forEach(opt => opt.style.pointerEvents = 'auto');
+        }, 3000);
+    }
 }
 
 let timerInterval;
