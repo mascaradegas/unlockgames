@@ -178,6 +178,12 @@
             <div class="aula-card" onclick="openLesson('get')"><span class="emoji">🤲✨</span><div class="title">GET</div><div class="desc">Pegar/conseguir</div></div>
             <div class="aula-card" onclick="openLesson('directions')"><span class="emoji">🧭</span><div class="title">DIRECTIONS</div><div class="desc">Direções</div></div>
             <div class="aula-card" onclick="openLesson('orderingFood')"><span class="emoji">🍔🍟</span><div class="title">ORDERING FOOD</div><div class="desc">Pedindo comida</div></div>
+            <div class="aula-card" onclick="openLesson('atTheDoctor')"><span class="emoji">🏥👨‍⚕️</span><div class="title">AT THE DOCTOR</div><div class="desc">Falar sintomas</div></div>
+            <div class="aula-card" onclick="openLesson('hardwareStore')"><span class="emoji">🔧🏪</span><div class="title">HARDWARE STORE</div><div class="desc">Loja de ferramentas</div></div>
+            <div class="aula-card" onclick="openLesson('materialsSupplies')"><span class="emoji">🧱🎨</span><div class="title">MATERIALS & SUPPLIES</div><div class="desc">Materiais de reforma</div></div>
+            <div class="aula-card" onclick="openLesson('pricesMoney')"><span class="emoji">💰🏷️</span><div class="title">PRICES & MONEY</div><div class="desc">Preço e pagamento</div></div>
+            <div class="aula-card" onclick="openLesson('returningItems')"><span class="emoji">🔄🧾</span><div class="title">RETURNING ITEMS</div><div class="desc">Devolver produtos</div></div>
+            <div class="aula-card" onclick="openLesson('trafficStop')"><span class="emoji">🚔🚗</span><div class="title">TRAFFIC STOP</div><div class="desc">Parada policial</div></div>
         </div>
     </div>
     <div id="lessonView">
@@ -401,6 +407,11 @@ const lessonsData = {
             { text: 'She is tired', explanation: 'Correct! "is" is used for singular (she).' },
             { text: 'She am tired', explanation: 'Incorrect. "am" is only for I. Use "is" for she.' }
         ], correct: 1 },
+        { type: 'example', cardClass: 'cyan', emoji: '🏪', question: 'The store <span class="hl-cyan">is</span> open.', questionTr: 'A loja está aberta.', answer: 'Singular → use IS', answerTr: 'Uma coisa só' },
+        { type: 'example', cardClass: 'green', emoji: '👥', question: 'My friends <span class="hl-green">are</span> here.', questionTr: 'Meus amigos estão aqui.', answer: 'Plural → use ARE', answerTr: 'Mais de um' },
+        { type: 'example', cardClass: 'cyan', emoji: '🎮', question: 'The game <span class="hl-cyan">is</span> fun.', questionTr: 'O jogo é divertido.', answer: 'Singular → use IS', answerTr: 'Uma coisa' },
+        { type: 'text', text: '<strong>Recapitulando:</strong><br><span class="hl-cyan">IS</span> = singular (he, she, it, the store, etc)<br><span class="hl-green">ARE</span> = plural ou YOU<br><span class="hl-cyan">AM</span> = só I' },
+        { type: 'fill-blank', cardClass: 'green', prompt: 'Complete:', sentence: 'We _____ ready.', correctWord: 'are' },
         { type: 'end' }
     ]},
     thereIsAre: { title: "THERE IS / ARE", slides: [
@@ -560,8 +571,20 @@ const lessonsData = {
         { type: 'end' }
     ]}
 };
-let currentLesson = null, currentSlide = 0, totalSlides = 0;
+let currentLesson = null, currentSlide = 0, totalSlides = 0, currentLessonId = null, lessonCompleted = false;
+const lessonIdMap = {
+    'isAre': 1, 'numbers': 2, 'doYouHave': 3, 'get': 4, 'goCome': 5,
+    'goingTo': 6, 'haveHas': 7, 'haveToNeedTo': 8, 'hereThere': 9,
+    'howMuchMany': 10, 'how': 11, 'isAreQuestions': 12, 'can': 13,
+    'days': 14, 'directions': 15, 'doDoesdid': 16, 'letMeCanI': 17,
+    'likeLoveHate': 18, 'lookingFor': 19, 'monthsSeasons': 20,
+    'moodsFeelings': 21, 'numbersRealLife': 22, 'thisThat': 23, 'wantNeed': 24,
+    'atTheDoctor': 25, 'hardwareStore': 26, 'materialsSupplies': 27,
+    'pricesMoney': 28, 'returningItems': 29, 'trafficStop': 30, 'orderingFood': 31
+};
 function openLesson(id) {
+    currentLessonId = lessonIdMap[id] || null;
+    lessonCompleted = false;
     currentLesson = lessonsData[id]; currentSlide = 0; totalSlides = currentLesson.slides.length;
     document.getElementById('gridView').style.display = 'none';
     document.getElementById('lessonView').classList.add('lesson-view-active');
@@ -757,6 +780,8 @@ function showSlide(i) {
     document.getElementById('total').textContent = totalSlides;
     document.getElementById('prev').style.opacity = i === 0 ? '0.3' : '1';
 
+    const nextBtn = document.getElementById('next');
+
     // Check if current slide requires answer
     const activeSlide = document.querySelector('.slide.active');
 
@@ -767,7 +792,6 @@ function showSlide(i) {
                           activeSlide.querySelector('.fill-input') ||
                           activeSlide.querySelector('.mc-choice');
 
-    const nextBtn = document.getElementById('next');
     if (requiresAnswer) {
         nextBtn.style.opacity = '0.3';
         nextBtn.style.pointerEvents = 'auto'; // Allow clicks so we can show denial effect
@@ -779,7 +803,6 @@ function showSlide(i) {
         nextBtn.removeAttribute('data-locked');
         nextBtn.title = 'Próximo slide';
     }
-    document.getElementById('next').style.opacity = i === totalSlides - 1 ? '0.3' : '1';
     document.getElementById('progress').style.width = ((i + 1) / totalSlides * 100) + '%';
 }
 function nextSlide() {
@@ -789,7 +812,9 @@ function nextSlide() {
         triggerRedAuraDeny();
         return;
     }
-    if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+    if (currentSlide < totalSlides - 1) {
+        showSlide(currentSlide + 1);
+    }
 }
 
 function triggerRedAuraDeny() {
@@ -875,7 +900,10 @@ function showRedDenyWarning() {
 function prevSlide() { if (currentSlide > 0) showSlide(currentSlide - 1); }
 document.addEventListener('keydown', e => {
     if (!currentLesson) return;
-    if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+        if (currentSlide === totalSlides - 1) claimCompletion();
+        else nextSlide();
+    }
     if (e.key === 'ArrowLeft') prevSlide();
     if (e.key === 'Escape') backToGrid();
 });
@@ -1250,7 +1278,11 @@ document.getElementById('lessonView').addEventListener('touchend', e => {
     const diff = startX - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
 }, { passive: true });
-document.getElementById('next').addEventListener('touchstart', e => { e.preventDefault(); nextSlide(); }, { passive: false });
+document.getElementById('next').addEventListener('touchstart', e => {
+    e.preventDefault();
+    if (currentSlide === totalSlides - 1) claimCompletion();
+    else nextSlide();
+}, { passive: false });
 document.getElementById('prev').addEventListener('touchstart', e => { e.preventDefault(); prevSlide(); }, { passive: false });
 
 // ========== 11 NOVAS AULAS ==========
@@ -1292,6 +1324,11 @@ lessonsData.doYouHave = { title: "DO YOU HAVE...?", slides: [
     { type: 'text', text: '<span class="hl-cyan">DO YOU HAVE...?</span><br><br>A pergunta mais útil pra pedir coisas.' },
     { type: 'quiz', cardClass: 'cyan', question: 'Complete: _____ you have a phone?', options: ['Can', 'Do', 'Are'], correct: 1 },
     { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete the question:', sentence: '_____ you have a car?', correctWord: 'Do' },
+    { type: 'example', cardClass: 'green', emoji: '📱', question: '<span class="hl-green">Do you have</span> a phone charger?', questionTr: 'Você tem carregador?', answer: 'Yes, I do.', answerTr: 'Sim, tenho.' },
+    { type: 'example', cardClass: 'green', emoji: '🎟️', question: '<span class="hl-green">Do you have</span> tickets?', questionTr: 'Você tem ingressos?', answer: 'Not yet.', answerTr: 'Ainda não.' },
+    { type: 'text', text: '<strong>Respostas positivas:</strong><br><span class="hl-cyan">Yes, I do.</span> = Sim, tenho.<br><span class="hl-cyan">Yes, here you go.</span> = Sim, aqui.' },
+    { type: 'text', text: '<strong>Respostas negativas:</strong><br><span class="hl-cyan">No, I don\'t.</span> = Não, não tenho.<br><span class="hl-cyan">Sorry, I don\'t have any.</span> = Desculpa, não tenho nenhum.' },
+    { type: 'multiple-choice', cardClass: 'cyan', question: 'Qual é a resposta certa para "Do you have a pen?"', options: [{ text: 'Yes, I have a pen', explanation: 'Gramaticalmente correto, mas "Yes, I do" é mais natural.' }, { text: 'Yes, I do.', explanation: 'Correto! É a resposta mais natural.' }, { text: 'Yes, I have.', explanation: 'Incompleto. Deveria ser "Yes, I do."' }], correct: 1 },
     { type: 'end' }
 ]};
 lessonsData.goingTo = { title: "I'M GOING TO", slides: [
@@ -1312,6 +1349,11 @@ lessonsData.goCome = { title: "GO / COME", slides: [
     { type: 'single-example', cardClass: 'green', emoji: '👋', text: '<span class="hl-green">Come</span> here!', translation: 'Vem aqui!' },
     { type: 'single-example', cardClass: 'green', emoji: '🎉', text: 'Are you <span class="hl-green">coming</span> to the party?', translation: 'Você vem pra festa?' },
     { type: 'text', text: '<span class="hl-cyan">GO</span> → sair de onde você está<br><br><span class="hl-green">COME</span> → vir pra onde você está' },
+    { type: 'example', cardClass: 'cyan', emoji: '🛫', question: 'When are you <span class="hl-cyan">going</span> to Hawaii?', questionTr: 'Quando você vai pro Havaí?', answer: 'Next month.', answerTr: 'Mês que vem.' },
+    { type: 'example', cardClass: 'green', emoji: '🚗', question: '<span class="hl-green">Come</span> with me!', questionTr: 'Vem comigo!', answer: 'Sure!', answerTr: 'Claro!' },
+    { type: 'quiz', cardClass: 'cyan', question: '"Are you going to the beach?" - qual você responderia se quer ir?', options: ["Yes, I'm going.", "Yes, I'm coming.", 'I do not know.'], correct: 0 },
+    { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: 'She is _____ to the store.', correctWord: 'going' },
+    { type: 'text', text: '<strong>Phrasal verbs:</strong><br><span class="hl-cyan">Go away</span> = ir embora<br><span class="hl-cyan">Go back</span> = voltar<br><span class="hl-green">Come back</span> = voltar (vir de volta)' },
     { type: 'end' }
 ]};
 lessonsData.get = { title: "GET", slides: [
@@ -1323,6 +1365,11 @@ lessonsData.get = { title: "GET", slides: [
     { type: 'single-example', cardClass: 'cyan', emoji: '😤', text: "I'm <span class='hl-cyan'>getting</span> tired.", translation: 'Tô ficando cansado.' },
     { type: 'single-example', cardClass: 'cyan', emoji: '🤔', text: "I don't <span class='hl-cyan'>get</span> it.", translation: 'Não tô entendendo.' },
     { type: 'text', text: '<span class="hl-cyan">GET</span> = pegar, conseguir, chegar, ficar, entender...<br><br>O contexto define o significado.' },
+    { type: 'example', cardClass: 'green', emoji: '🍔', question: "<span class='hl-green'>Can I get</span> a coffee?", questionTr: 'Posso pedir um café?', answer: 'Sure!', answerTr: 'Claro!' },
+    { type: 'example', cardClass: 'green', emoji: '💻', question: '<span class="hl-green">Did you get</span> the email?', questionTr: 'Você recebeu o email?', answer: 'Yes, I did.', answerTr: 'Sim, recebi.' },
+    { type: 'quiz', cardClass: 'cyan', question: '"I don\'t get it" significa:', options: ['não tenho', 'não entendo', 'não pego'], correct: 1 },
+    { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: "I'm _____ bored.", correctWord: 'getting' },
+    { type: 'text', text: '<strong>Phrasal verbs com GET:</strong><br><span class="hl-cyan">Get up</span> = acordar<br><span class="hl-cyan">Get down</span> = descer<br><span class="hl-cyan">Get away</span> = escapar' },
     { type: 'end' }
 ]};
 lessonsData.directions = { title: "DIRECTIONS", slides: [
@@ -1351,6 +1398,12 @@ lessonsData.numbers = { title: "NUMBERS", slides: [
     { type: 'text', text: '11 eleven · 12 twelve · 13 thirteen<br>14 fourteen · 15 fifteen · 16 sixteen<br>17 seventeen · 18 eighteen · 19 nineteen · 20 twenty' },
     { type: 'text', text: '10 ten · 20 twenty · 30 thirty · 40 forty<br>50 fifty · 60 sixty · 70 seventy<br>80 eighty · 90 ninety · 100 hundred' },
     { type: 'text', text: 'Dezena + unidade:<br><br><span class="hl-cyan">25</span> = twenty-five<br><span class="hl-cyan">83</span> = eighty-three' },
+    { type: 'quiz', cardClass: 'cyan', question: 'Como é 42 em inglês?', options: ['forty-two', 'four-two', 'fortytwenty'], correct: 0 },
+    { type: 'fill-blank', cardClass: 'cyan', prompt: 'Complete:', sentence: '30 em inglês é _____', correctWord: 'thirty' },
+    { type: 'text', text: '<strong>Números maiores:</strong><br><span class="hl-cyan">100</span> = hundred<br><span class="hl-cyan">1,000</span> = thousand<br><span class="hl-cyan">1,000,000</span> = million' },
+    { type: 'example', cardClass: 'cyan', emoji: '💰', question: '<span class="hl-cyan">Two thousand</span> dollars', questionTr: 'Dois mil dólares', answer: '2,000', answerTr: 'Números grandes' },
+    { type: 'text', text: '<strong>Na vida real:</strong><br>Idade, hora, preço, telefone, endereço...<br><br>Você precisa de números TODO DIA!' },
+    { type: 'fill-blank', cardClass: 'green', prompt: 'Complete:', sentence: '99 em inglês é _____ _____', correctWord: 'ninety-nine' },
     { type: 'end' }
 ]};
 lessonsData.orderingFood = { title: "ORDERING FOOD", slides: [
@@ -1362,6 +1415,128 @@ lessonsData.orderingFood = { title: "ORDERING FOOD", slides: [
     { type: 'single-example', cardClass: 'green', text: "That's all, thanks.", translation: 'Só isso, obrigado.' },
     { type: 'single-example', cardClass: 'cyan', emoji: '💳', text: '<span class="hl-cyan">Can I have the check?</span>', translation: 'Pode trazer a conta?' },
     { type: 'text', text: "<span class='hl-cyan'>I'll have...</span><br><span class='hl-cyan'>Can I get...</span><br><span class='hl-cyan'>I'd like...</span><br><br>Três formas de pedir." },
+    { type: 'end' }
+]};
+
+// ========== 6 NEW SCENARIO LESSONS ==========
+lessonsData.atTheDoctor = { title: "AT THE DOCTOR", slides: [
+    { type: 'title', emoji: '🏥👨‍⚕️', title: 'AT THE DOCTOR', subtitle: 'Falar seus sintomas em inglês' },
+    { type: 'text', text: 'Você tá doente.<br>Precisa ir no médico.<br><br>Mas como explica o que tá sentindo?' },
+    { type: 'rule', cardClass: 'cyan', text: 'A frase mais importante:', keyword: '"IT HURTS"', keywordAfter: '= Tá doendo' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '👆', text: '<span class="hl-cyan">It hurts here.</span>', translation: 'Tá doendo aqui. (aponta pro lugar)' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🤕', text: '<span class="hl-cyan">My head hurts.</span>', translation: 'Minha cabeça tá doendo.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🤢', text: '<span class="hl-cyan">My stomach hurts.</span>', translation: 'Meu estômago tá doendo.' },
+    { type: 'rule', cardClass: 'green', text: 'Outra forma fácil:', keyword: '"I HAVE..."', keywordAfter: '= Eu tenho / Eu tô com...' },
+    { type: 'single-example', cardClass: 'green', emoji: '🤒', text: '<span class="hl-green">I have a fever.</span>', translation: 'Eu tô com febre.' },
+    { type: 'single-example', cardClass: 'green', emoji: '😷', text: '<span class="hl-green">I have a cough.</span>', translation: 'Eu tô com tosse.' },
+    { type: 'single-example', cardClass: 'green', emoji: '🤕', text: '<span class="hl-green">I have a headache.</span>', translation: 'Eu tenho uma dor de cabeça.' },
+    { type: 'single-example', cardClass: 'green', emoji: '🌀', text: '<span class="hl-green">I feel dizzy.</span>', translation: 'Eu me sinto tonto.' },
+    { type: 'example', cardClass: 'orange', emoji: '⏰', question: '"Since when?" / "How long?"', questionTr: 'O médico vai perguntar', answer: 'Since yesterday. / For 3 days.', answerTr: 'Desde ontem. / Há 3 dias.' },
+    { type: 'example', cardClass: 'purple', emoji: '💊', question: '"Any allergies?"', questionTr: 'Alguma alergia?', answer: "No allergies. / I'm allergic to penicillin.", answerTr: 'Nenhuma. / Sou alérgico a penicilina.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '👁️', text: '<span class="hl-cyan">My eye hurts.</span>', translation: 'Meu olho tá doendo.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🗣️', text: '<span class="hl-cyan">My throat hurts.</span>', translation: 'Minha garganta tá doendo.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🤐', text: '<span class="hl-cyan">My back hurts.</span>', translation: 'Minhas costas tão doendo.' },
+    { type: 'quiz', cardClass: 'cyan', question: 'Como você diz "Meu estômago tá doendo"?', options: ['My stomach is bad.', 'My stomach hurts.', 'I have stomach pain.'], correct: 1 },
+    { type: 'text', text: '<span class="hl-cyan">It hurts</span> = tá doendo<br><br><span class="hl-green">I have...</span> = eu tô com...<br><br><span class="hl-orange">Since / For</span> = desde / há' },
+    { type: 'end' }
+]};
+
+lessonsData.hardwareStore = { title: "HARDWARE STORE", slides: [
+    { type: 'title', emoji: '🔧🏪', title: 'HARDWARE STORE', subtitle: 'Loja de ferramentas' },
+    { type: 'text', text: 'Você precisa de uma ferramenta.<br><br>Mas não sabe o nome em inglês.<br>Como pede ajuda?' },
+    { type: 'rule', cardClass: 'cyan', text: 'A frase que salva:', keyword: '"I NEED SOMETHING TO..."', keywordAfter: '= Preciso de algo pra...' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🪛', text: '<span class="hl-cyan">I need something to</span> open this.', translation: 'Preciso de algo pra abrir isso.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🔨', text: '<span class="hl-cyan">I need something to</span> hang a picture.', translation: 'Preciso de algo pra pendurar um quadro.' },
+    { type: 'rule', cardClass: 'green', text: 'Se você sabe o nome:', keyword: '"DO YOU HAVE...?"', keywordAfter: '= Vocês têm...?' },
+    { type: 'text', text: '<span class="hl-green">Do you have</span> a hammer?<br><br><span class="hl-green">Do you have</span> screws?<br><br><span class="hl-green">Do you have</span> tape?' },
+    { type: 'rule', cardClass: 'orange', text: 'Pra achar na loja:', keyword: '"WHERE CAN I FIND...?"', keywordAfter: '= Onde eu acho...?' },
+    { type: 'single-example', cardClass: 'orange', emoji: '🎨', text: '<span class="hl-orange">Where can I find</span> the paint?', translation: 'Onde eu acho a tinta?' },
+    { type: 'text', text: '<strong>Ferramentas básicas:</strong><br><br><span class="hl-purple">Hammer</span> = martelo<br><span class="hl-purple">Screwdriver</span> = chave de fenda<br><span class="hl-purple">Drill</span> = furadeira<br><span class="hl-purple">Pliers</span> = alicate' },
+    { type: 'text', text: '<strong>Materiais comuns:</strong><br><br><span class="hl-purple">Screws</span> = parafusos<br><span class="hl-purple">Nails</span> = pregos<br><span class="hl-purple">Tape</span> = fita<br><span class="hl-purple">Glue</span> = cola' },
+    { type: 'text', text: '<strong>Mais úteis:</strong><br><br><span class="hl-purple">Wrench</span> = chave inglesa<br><span class="hl-purple">Level</span> = nível<br><span class="hl-purple">Saw</span> = serra<br><span class="hl-purple">Tape measure</span> = trena' },
+    { type: 'text', text: '💡 Não sabe o nome?<br><br><strong>Mostra uma foto no celular.</strong><br><br>"I need this."' },
+    { type: 'single-example', cardClass: 'green', emoji: '✂️', text: '<span class="hl-green">Can you cut it for me?</span>', translation: 'Você pode cortar pra mim?' },
+    { type: 'quiz', cardClass: 'cyan', question: 'Qual é a melhor forma de pedir algo que não sabe o nome?', options: ['I need something.', 'I need something to hang a picture.', 'Can you help me?'], correct: 1 },
+    { type: 'text', text: '<span class="hl-cyan">I need something to...</span><br>= preciso de algo pra...<br><br><span class="hl-green">Do you have...?</span><br>= vocês têm...?<br><br><span class="hl-orange">Where can I find...?</span><br>= onde eu acho...?' },
+    { type: 'end' }
+]};
+
+lessonsData.materialsSupplies = { title: "MATERIALS & SUPPLIES", slides: [
+    { type: 'title', emoji: '🧱🎨', title: 'MATERIALS & SUPPLIES', subtitle: 'Materiais de construção e reforma' },
+    { type: 'text', text: 'Você tá fazendo uma reforma.<br>Precisa comprar material.<br><br>Como pede na loja?' },
+    { type: 'rule', cardClass: 'cyan', text: 'Começa com:', keyword: '"I NEED..."', keywordAfter: '= Eu preciso de...' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🎨', text: '<span class="hl-cyan">I need paint</span> for the bedroom.', translation: 'Preciso de tinta pro quarto.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🪵', text: '<span class="hl-cyan">I need wood</span> for a shelf.', translation: 'Preciso de madeira pra uma prateleira.' },
+    { type: 'rule', cardClass: 'green', text: 'Não sabe a quantidade?', keyword: '"HOW MUCH DO I NEED?"', keywordAfter: '= Quanto eu preciso?' },
+    { type: 'single-example', cardClass: 'green', text: 'The room is 10 by 12 feet.<br><span class="hl-green">How much paint do I need?</span>', translation: 'O quarto é 10 por 12 pés. Quanta tinta eu preciso?' },
+    { type: 'rule', cardClass: 'orange', text: 'Pra perguntar tamanho:', keyword: '"WHAT SIZE?"', keywordAfter: '= Qual tamanho?' },
+    { type: 'single-example', cardClass: 'orange', text: '<span class="hl-orange">What size</span> do you have?', translation: 'Qual tamanho vocês têm?' },
+    { type: 'single-example', cardClass: 'purple', emoji: '✂️', text: '<span class="hl-purple">Can you cut it for me?</span>', translation: 'Você pode cortar pra mim?' },
+    { type: 'text', text: '<strong>Materiais básicos:</strong><br><br><span class="hl-purple">Wood</span> = madeira<br><span class="hl-purple">Paint</span> = tinta<br><span class="hl-purple">Cement</span> = cimento<br><span class="hl-purple">Sand</span> = areia' },
+    { type: 'text', text: '<strong>Mais materiais:</strong><br><br><span class="hl-purple">Tile</span> = azulejo/piso<br><span class="hl-purple">Drywall</span> = gesso/drywall<br><span class="hl-purple">Pipe</span> = cano<br><span class="hl-purple">Wire</span> = fio elétrico' },
+    { type: 'text', text: '<strong>Pra pintura:</strong><br><br><span class="hl-purple">Brush</span> = pincel<br><span class="hl-purple">Roller</span> = rolo<br><span class="hl-purple">Primer</span> = primer/selador<br><span class="hl-purple">Tape</span> = fita crepe' },
+    { type: 'text', text: '<strong>Medidas nos EUA:</strong><br><br><span class="hl-cyan">Feet</span> (pés) e <span class="hl-cyan">Inches</span> (polegadas)<br><br>1 foot = ~30 cm<br>1 inch = ~2,5 cm' },
+    { type: 'text', text: '<strong>Tipos de piso:</strong><br><br><span class="hl-purple">Tile</span> = azulejo<br><span class="hl-purple">Laminate</span> = laminado<br><span class="hl-purple">Hardwood</span> = madeira<br><span class="hl-purple">Carpet</span> = carpete' },
+    { type: 'quiz', cardClass: 'cyan', question: 'Como perguntar quanto de tinta você precisa?', options: ['How many paint?', 'How much paint do I need?', 'What paint I need?'], correct: 1 },
+    { type: 'text', text: '<span class="hl-cyan">I need...</span> = eu preciso de...<br><br><span class="hl-green">How much do I need?</span> = quanto eu preciso?<br><br><span class="hl-orange">What size?</span> = qual tamanho?' },
+    { type: 'end' }
+]};
+
+lessonsData.pricesMoney = { title: "PRICES & MONEY", slides: [
+    { type: 'title', emoji: '💰🏷️', title: 'PRICES & MONEY', subtitle: 'Preço e pagamento' },
+    { type: 'text', text: 'Você tá na loja.<br>Quer saber o preço.<br><br>Mas como pergunta?' },
+    { type: 'rule', cardClass: 'cyan', text: 'A pergunta mais útil:', keyword: '"HOW MUCH?"', keywordAfter: '= Quanto custa?' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🏷️', text: '<span class="hl-cyan">How much is this?</span>', translation: 'Quanto custa isso?' },
+    { type: 'text', text: '<strong>O vendedor responde:</strong><br><br>"It\'s $25." (São 25 dólares.)<br><br>"That\'s $10.99." (São 10,99.)' },
+    { type: 'single-example', cardClass: 'orange', emoji: '😬', text: '<span class="hl-orange">That\'s too expensive.</span>', translation: 'Isso é caro demais.' },
+    { type: 'text', text: '<strong>Pedir desconto:</strong><br><br><span class="hl-orange">Any discount?</span> (Tem desconto?)<br><br><span class="hl-orange">Can you do better?</span> (Consegue um preço melhor?)' },
+    { type: 'example', cardClass: 'purple', emoji: '💳', question: '"Cash or card?"', questionTr: 'Dinheiro ou cartão?', answer: 'Card. / Cash.', answerTr: 'Cartão. / Dinheiro.' },
+    { type: 'single-example', cardClass: 'green', text: '"Your total is $47.50."', translation: 'Seu total é 47,50.' },
+    { type: 'example', cardClass: 'cyan', emoji: '💵', question: '"Here\'s your change."', questionTr: 'Aqui está seu troco.', answer: 'Keep the change.', answerTr: 'Fica com o troco.' },
+    { type: 'text', text: '<strong>Formas de pagamento:</strong><br><br><span class="hl-purple">Cash</span> = dinheiro<br><span class="hl-purple">Card</span> = cartão<br><span class="hl-purple">Credit card</span> = cartão de crédito<br><span class="hl-purple">Debit card</span> = cartão de débito' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '🧾', text: '<span class="hl-cyan">Here\'s your receipt.</span>', translation: 'Aqui está seu recibo.' },
+    { type: 'quiz', cardClass: 'cyan', question: 'Qual frase pede desconto na loja?', options: ['Give me a discount.', 'Do you have discount?', 'Can you do better?'], correct: 2 },
+    { type: 'text', text: '<span class="hl-cyan">How much?</span> = quanto custa?<br><br><span class="hl-orange">Too expensive</span> = caro demais<br><br><span class="hl-purple">Cash or card?</span> = dinheiro ou cartão?<br><br><span class="hl-green">Change</span> = troco' },
+    { type: 'end' }
+]};
+
+lessonsData.returningItems = { title: "RETURNING ITEMS", slides: [
+    { type: 'title', emoji: '🔄🧾', title: 'RETURNING ITEMS', subtitle: 'Devolvendo produtos' },
+    { type: 'text', text: 'Você comprou algo.<br>Não serviu. Não funcionou.<br><br>Quer devolver.' },
+    { type: 'rule', cardClass: 'cyan', text: 'A frase mais importante:', keyword: '"I WANT TO RETURN THIS"', keywordAfter: '= Quero devolver isso.' },
+    { type: 'single-example', cardClass: 'cyan', emoji: '👕', text: '<span class="hl-cyan">I want to return this.</span>', translation: 'Quero devolver isso. (mostra o produto)' },
+    { type: 'text', text: '<strong>Por que tá devolvendo?</strong><br><br><span class="hl-green">It doesn\'t fit.</span> (Não serve.)<br><br><span class="hl-green">It doesn\'t work.</span> (Não funciona.)' },
+    { type: 'text', text: '<span class="hl-green">It\'s damaged.</span> (Tá danificado.)<br><br><span class="hl-green">It\'s the wrong size.</span> (É o tamanho errado.)' },
+    { type: 'example', cardClass: 'orange', emoji: '🧾', question: '"Do you have the receipt?"', questionTr: 'Você tem o recibo?', answer: 'Yes, here it is. / No, I don\'t have it.', answerTr: 'Sim, aqui está. / Não, não tenho.' },
+    { type: 'text', text: '😬 Sem recibo?<br><br>Muitas lojas ainda aceitam.<br>Tenta assim mesmo.' },
+    { type: 'example', cardClass: 'purple', emoji: '💵', question: '"Refund or exchange?"', questionTr: 'Devolução do dinheiro ou troca?', answer: 'Refund, please. / I\'d like to exchange it.', answerTr: 'Devolução. / Quero trocar.' },
+    { type: 'single-example', cardClass: 'orange', text: '"Store credit only."', translation: 'Só crédito na loja. (Não devolve dinheiro, dá um vale.)' },
+    { type: 'single-example', cardClass: 'cyan', text: '<span class="hl-cyan">It\'s under warranty.</span>', translation: 'Tá na garantia.' },
+    { type: 'single-example', cardClass: 'green', emoji: '⏰', text: '<span class="hl-green">What\'s the return period?</span>', translation: 'Qual é o prazo de devolução?' },
+    { type: 'text', text: '<strong>Informação importante:</strong><br><br><span class="hl-red">Restocking fee</span> = taxa de reabastecimento<br><br>(Às vezes há uma taxa pra devolver)' },
+    { type: 'quiz', cardClass: 'cyan', question: 'O que significa "refund"?', options: ['Trocar por outro produto', 'Dinheiro de volta', 'Devolver para verificar'], correct: 1 },
+    { type: 'text', text: '<span class="hl-cyan">Return</span> = devolver<br><br><span class="hl-purple">Refund</span> = dinheiro de volta<br><br><span class="hl-purple">Exchange</span> = trocar<br><br><span class="hl-orange">Receipt</span> = recibo' },
+    { type: 'end' }
+]};
+
+lessonsData.trafficStop = { title: "TRAFFIC STOP", slides: [
+    { type: 'title', emoji: '🚔🚗', title: 'TRAFFIC STOP', subtitle: 'Parada policial' },
+    { type: 'text', text: 'A polícia te parou.<br><br>Você tá nervoso.<br>Não sabe o que falar.' },
+    { type: 'text', cardClass: 'red', text: '⚠️ <strong>Regra #1:</strong><br><br>Mãos no volante.<br>Não mexe em nada<br>até ele pedir.' },
+    { type: 'example', cardClass: 'orange', emoji: '👮', question: '"License and registration."', questionTr: 'Carteira e documento do carro.', answer: '"Here you go, officer."', answerTr: 'Aqui está, oficial.' },
+    { type: 'single-example', cardClass: 'orange', text: '"Insurance?"', translation: 'Seguro do carro.' },
+    { type: 'example', cardClass: 'cyan', emoji: '❓', question: '"Do you know why I pulled you over?"', questionTr: 'Você sabe por que eu te parei?', answer: '"No, officer." / "I\'m not sure."', answerTr: 'Não, oficial. / Não tenho certeza.' },
+    { type: 'single-example', cardClass: 'green', emoji: '🙏', text: '<span class="hl-green">"I\'m sorry, officer."</span>', translation: 'Desculpa, oficial.' },
+    { type: 'single-example', cardClass: 'green', text: '<span class="hl-green">"I didn\'t know."</span>', translation: 'Eu não sabia.' },
+    { type: 'example', cardClass: 'orange', emoji: '🚪', question: '"Step out of the car."', questionTr: 'Saia do carro.', answer: 'Sempre obedeça. Movimentos lentos.', answerTr: 'Mãos visíveis.' },
+    { type: 'text', text: 'Ele pode te dar:<br><br><span class="hl-green">Warning</span> = só aviso (sem multa)<br><br><span class="hl-red">Ticket</span> = multa' },
+    { type: 'single-example', cardClass: 'orange', text: '"Sign here."', translation: 'Assina aqui. (Assinar não é admitir culpa!)' },
+    { type: 'single-example', cardClass: 'green', text: '<span class="hl-green">Where are you going?</span>', translation: 'Para onde você vai?' },
+    { type: 'single-example', cardClass: 'green', emoji: '🚗', text: '<span class="hl-green">Where are you coming from?</span>', translation: 'De onde você está vindo?' },
+    { type: 'single-example', cardClass: 'orange', emoji: '💨', text: '<span class="hl-orange">How fast were you going?</span>', translation: 'Qual era sua velocidade?' },
+    { type: 'single-example', cardClass: 'red', text: '"Have you been drinking?"', translation: 'Você bebeu?' },
+    { type: 'quiz', cardClass: 'cyan', question: 'Qual é a resposta SEGURA quando o policial pergunta "Do you know why I pulled you over?"?', options: ['No, I wasn\'t speeding.', 'No, officer.', 'I was just going 50.'], correct: 1 },
+    { type: 'text', text: '<span class="hl-orange">License</span> = carteira<br><br><span class="hl-orange">Registration</span> = documento<br><br><span class="hl-orange">Insurance</span> = seguro<br><br><span class="hl-green">"Here you go, officer."</span>' },
     { type: 'end' }
 ]};
 
