@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AULAS | UNLOCK 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="../assets/load-classes.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --blue-bg: #0a1628; --gold: #FFD700; --green: #00FF88; --orange: #FF8C00; --purple: #9B6DFF; --red: #FF4444; --cyan: #00BFFF; --white: #E8E8E8; --gray: #8899aa; }
@@ -144,6 +145,22 @@
     <div class="bg"></div>
     <div id="gridView">
         <div class="grid-header"><h1>📚 AULAS</h1><p>Escolha uma aula para estudar</p></div>
+
+        <!-- GAME CLASSES SECTION -->
+        <div style="max-width: 1000px; margin: 0 auto; padding: 20px;">
+            <div style="margin-bottom: 30px;">
+                <h2 style="font-family: 'Orbitron', sans-serif; color: var(--gold); margin-bottom: 15px; font-size: 1.3rem;">🎮 MODOS DE JOGO</h2>
+                <div class="aulas-grid" id="gameClassesGrid">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- STUDY LESSONS SECTION -->
+        <div style="max-width: 1000px; margin: 0 auto; padding: 20px;">
+            <h2 style="font-family: 'Orbitron', sans-serif; color: var(--cyan); margin-bottom: 15px; font-size: 1.3rem;">📖 LIÇÕES DE ESTUDO</h2>
+        </div>
+
         <div class="aulas-grid">
             <div class="aula-card" onclick="openLesson('what')"><span class="emoji">❓🤔</span><div class="title">WHAT</div><div class="desc">Perguntar "o que"</div></div>
             <div class="aula-card" onclick="openLesson('where')"><span class="emoji">📍❓</span><div class="title">WHERE</div><div class="desc">Perguntar lugar</div></div>
@@ -1539,6 +1556,102 @@ lessonsData.trafficStop = { title: "TRAFFIC STOP", slides: [
     { type: 'text', text: '<span class="hl-orange">License</span> = carteira<br><br><span class="hl-orange">Registration</span> = documento<br><br><span class="hl-orange">Insurance</span> = seguro<br><br><span class="hl-green">"Here you go, officer."</span>' },
     { type: 'end' }
 ]};
+
+// LOAD GAME CLASSES FROM classes-data.json
+async function loadGameClasses() {
+    try {
+        const response = await fetch('../assets/classes-data.json');
+        if (!response.ok) throw new Error('Failed to load classes');
+
+        const data = await response.json();
+        const grid = document.getElementById('gameClassesGrid');
+
+        if (!grid || !data.classes) return;
+
+        grid.innerHTML = '';
+
+        data.classes.forEach(cls => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+
+            const card = document.createElement('div');
+            card.className = 'aula-card';
+            card.style.cursor = 'pointer';
+            card.innerHTML = `<span class="emoji">${cls.emoji}</span><div class="title">${cls.title}</div><div class="desc">${cls.description.substring(0, 40)}...</div>`;
+
+            // Game mode buttons
+            const gameButtonsDiv = document.createElement('div');
+            gameButtonsDiv.style.cssText = `
+                display: flex;
+                gap: 8px;
+                margin-top: 10px;
+                justify-content: center;
+                flex-wrap: wrap;
+            `;
+
+            const games = ['word-match', 'word-drop', 'word-stack'];
+            const gameIcons = ['🎯', '⬇️', '📚'];
+            const gameNames = ['Match', 'Drop', 'Stack'];
+
+            games.forEach((game, idx) => {
+                const btn = document.createElement('button');
+                btn.style.cssText = `
+                    padding: 6px 10px;
+                    background: rgba(0,255,136,0.2);
+                    border: 1px solid var(--green);
+                    border-radius: 6px;
+                    color: var(--green);
+                    cursor: pointer;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    transition: all 0.2s;
+                `;
+                btn.textContent = `${gameIcons[idx]} ${gameNames[idx]}`;
+                btn.onmouseover = () => btn.style.background = 'rgba(0,255,136,0.4)';
+                btn.onmouseout = () => btn.style.background = 'rgba(0,255,136,0.2)';
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    window.location.href = `./games/${game}.html?class=${cls.id}`;
+                };
+                gameButtonsDiv.appendChild(btn);
+            });
+
+            // Study button (📚)
+            const studyBtn = document.createElement('button');
+            studyBtn.textContent = '📚 Estudo';
+            studyBtn.style.cssText = `
+                padding: 6px 10px;
+                background: rgba(255,215,0,0.2);
+                border: 1px solid var(--gold);
+                border-radius: 6px;
+                color: var(--gold);
+                cursor: pointer;
+                font-size: 0.75rem;
+                font-weight: 600;
+                transition: all 0.2s;
+            `;
+            studyBtn.onmouseover = () => studyBtn.style.background = 'rgba(255,215,0,0.4)';
+            studyBtn.onmouseout = () => studyBtn.style.background = 'rgba(255,215,0,0.2)';
+            studyBtn.onclick = (e) => {
+                e.stopPropagation();
+                // Try to find matching lesson ID - for now just goes to aulas page
+                window.location.href = `./aulas.html?class=${cls.id}`;
+            };
+
+            gameButtonsDiv.appendChild(studyBtn);
+            card.appendChild(gameButtonsDiv);
+
+            wrapper.appendChild(card);
+            grid.appendChild(wrapper);
+        });
+
+    } catch (error) {
+        console.error('Error loading game classes:', error);
+    }
+}
+
+// Load game classes when page loads
+document.addEventListener('DOMContentLoaded', loadGameClasses);
 
 // AUTO-OPEN LESSON FROM URL PARAMETER
 (function() {
